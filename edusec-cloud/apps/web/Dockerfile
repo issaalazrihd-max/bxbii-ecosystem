@@ -10,7 +10,7 @@ RUN pnpm install --no-frozen-lockfile
 
 FROM deps AS build
 COPY . .
-RUN pnpm --filter @bxbii/web build
+RUN pnpm --filter @edusec/web build
 
 FROM base AS runner
 ENV NODE_ENV=production
