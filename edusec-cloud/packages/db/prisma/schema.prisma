@@ -83,6 +83,7 @@ model Branch {
   transferHistoryTo     StudentTransferHistory[] @relation("TransferHistoryNewBranch")
   employeesPrimary      Employee[]              @relation("EmployeePrimaryBranch")
   employeeAssignments   EmployeeBranchAssignment[]
+  trainersPrimary       Trainer[]               @relation("TrainerPrimaryBranch")
   inventoryItems        InventoryItem[]
   inventoryTransfersOut InventoryTransfer[]     @relation("InventoryTransferSource")
   inventoryTransfersIn  InventoryTransfer[]     @relation("InventoryTransferDestination")
@@ -436,6 +437,7 @@ model Employee {
   employeeCode    String         @map("employee_code")
   firstName       String         @map("first_name")
   lastName        String         @map("last_name")
+  position        String?
   email           String?
   mobile          String?
   status          EmployeeStatus @default(ACTIVE)
@@ -448,6 +450,34 @@ model Employee {
 
   @@unique([tenantId, employeeCode])
   @@map("employees")
+}
+
+// ---------------------------------------------------------------------------
+// Trainers (Phase 1 demo scope — full Trainer Management module lands later)
+// ---------------------------------------------------------------------------
+
+enum TrainerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Trainer {
+  id              String        @id @default(uuid())
+  tenantId        String        @map("tenant_id")
+  trainerCode     String        @map("trainer_code")
+  fullName        String        @map("full_name")
+  specialization  String?
+  email           String?
+  mobile          String?
+  teachingHours   Int           @default(0) @map("teaching_hours")
+  status          TrainerStatus @default(ACTIVE)
+  primaryBranchId String        @map("primary_branch_id")
+  primaryBranch   Branch        @relation("TrainerPrimaryBranch", fields: [primaryBranchId], references: [id])
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@unique([tenantId, trainerCode])
+  @@map("trainers")
 }
 
 model EmployeeBranchAssignment {
