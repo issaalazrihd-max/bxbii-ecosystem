@@ -1,5 +1,5 @@
-# Multi-stage build for the EduSec Cloud API (NestJS).
-FROM node:20-alpine AS base
+# Multi-stage build for the bxbii API (NestJS).
+FROM node:22-alpine AS base
 RUN corepack enable
 WORKDIR /repo
 
@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS build
 COPY . .
 RUN pnpm db:generate
-RUN pnpm --filter @edusec/api build
+RUN pnpm --filter @bxbii/api build
 
 FROM base AS runner
 ENV NODE_ENV=production
