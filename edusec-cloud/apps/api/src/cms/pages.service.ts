@@ -1,4 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { Prisma } from "@edusec/db";
 import { PrismaService } from "../prisma/prisma.service";
 import { AuditService } from "../audit/audit.service";
 import { AccessTokenPayload } from "../auth/auth.service";
@@ -110,8 +111,8 @@ export class PagesService {
         tenantId: user.tenantId,
         pageId,
         sectionType: dto.sectionType,
-        arContent: dto.arContent ?? {},
-        enContent: dto.enContent ?? {},
+                arContent: (dto.arContent ?? {}) as Prisma.InputJsonValue,
+                enContent: (dto.enContent ?? {}) as Prisma.InputJsonValue,
         isVisible: dto.isVisible ?? true,
         position: maxPosition + 1,
       },
@@ -132,8 +133,8 @@ export class PagesService {
     const updated = await this.prisma.pageSection.update({
       where: { id: sectionId },
       data: {
-        arContent: dto.arContent,
-        enContent: dto.enContent,
+        arContent: dto.arContent as Prisma.InputJsonValue | undefined,
+        enContent: dto.enContent as Prisma.InputJsonValue | undefined,
         isVisible: dto.isVisible,
       },
     });
