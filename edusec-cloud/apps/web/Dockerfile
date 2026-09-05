@@ -1,5 +1,5 @@
-# Multi-stage build for the EduSec Cloud web app (Next.js).
-FROM node:20-alpine AS base
+# Multi-stage build for the bxbii web app (Next.js).
+FROM node:22-alpine AS base
 RUN corepack enable
 WORKDIR /repo
 
@@ -10,7 +10,7 @@ RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
 COPY . .
-RUN pnpm --filter @edusec/web build
+RUN pnpm --filter @bxbii/web build
 
 FROM base AS runner
 ENV NODE_ENV=production
