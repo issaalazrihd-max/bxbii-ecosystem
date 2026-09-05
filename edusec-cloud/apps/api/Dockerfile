@@ -12,12 +12,14 @@ RUN pnpm install --no-frozen-lockfile
 FROM deps AS build
 COPY . .
 RUN pnpm db:generate
+RUN pnpm --filter @edusec/db build
 RUN pnpm --filter @edusec/api build
 
 FROM base AS runner
 ENV NODE_ENV=production
 COPY --from=build /repo/node_modules ./node_modules
 COPY --from=build /repo/packages/db ./packages/db
+COPY --from=build /repo/apps/api/node_modules ./apps/api/node_modules
 COPY --from=build /repo/apps/api/dist ./apps/api/dist
 COPY --from=build /repo/apps/api/package.json ./apps/api/package.json
 EXPOSE 4000
