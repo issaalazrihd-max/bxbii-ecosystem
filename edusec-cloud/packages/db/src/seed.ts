@@ -74,7 +74,7 @@ async function main() {
 
   // A Super Admin, based at Head Office, so there is somewhere to log in
   // from immediately after `pnpm db:migrate && pnpm db:seed`.
-  const superAdminEmail = "admin@edusec.local";
+  const superAdminEmail = "admin@bxbii.local";
   const passwordHash = await argon2.hash("ChangeMe123!");
 
   const adminUser = await prisma.user.upsert({
