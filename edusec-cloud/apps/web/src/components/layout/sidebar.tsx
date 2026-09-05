@@ -24,7 +24,7 @@ export function Sidebar() {
       }`}
     >
       <div className="flex items-center justify-between px-4 py-4">
-        {!collapsed && <span className="text-lg font-semibold">EduSec Cloud</span>}
+        {!collapsed && <span className="text-lg font-semibold">bxbii cloud</span>}
         <button
           onClick={() => setCollapsed((c) => !c)}
           className="rounded p-1 text-white/70 hover:bg-white/10 hover:text-white"
