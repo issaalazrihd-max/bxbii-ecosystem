@@ -17,7 +17,7 @@ const DEFAULT_BRANCHES = [
 ];
 
 async function main() {
-  console.log("Seeding EduSec Cloud foundation data...");
+  console.log("Seeding bxbii foundation data...");
 
   const tenant = await prisma.tenant.upsert({
     where: { id: DEFAULT_TENANT_ID },
@@ -113,8 +113,160 @@ async function main() {
   console.log(`  super admin ready: ${superAdminEmail} / ChangeMe123! (CHANGE THIS IMMEDIATELY IN ANY REAL DEPLOYMENT)`);
 
   await seedCms(tenant.id, adminUser.id);
+  await seedDemoData(tenant.id, branches);
 
   console.log("Seed complete.");
+}
+
+/**
+ * Fictional demo dataset (Institute Management System spec, Sections 28-37):
+ * a fully-invented dataset so the platform looks operational immediately
+ * after install. Every name, ID, email, and phone number below is made up —
+ * none of it refers to a real person. Guarded by a one-time count check, the
+ * same way seedCms is, so re-seeding never duplicates rows or clobbers
+ * anything an admin has since edited by hand.
+ *
+ * Marked DEMO DATA in the fullName/notes fields is not applicable yet (no
+ * notes field on Student in this phase) — the whole dataset is demo data by
+ * construction, and a "Reset demo data" admin action is future scope
+ * (Section 37) once real tenant data can coexist with it.
+ */
+async function seedDemoData(tenantId: string, branches: Record<string, { id: string }>) {
+  const existingStudents = await prisma.student.count({ where: { tenantId } });
+  if (existingStudents > 0) {
+    console.log("  Demo dataset already seeded — skipping.");
+    return;
+  }
+
+  const branchCodes = ["HO", "MCT", "SLL", "SOH"] as const;
+
+  // -- Fictional employees (Section 31, 21) --------------------------------
+  const EMPLOYEE_SEED: Array<{ first: string; last: string; position: string; branch: (typeof branchCodes)[number] }> = [
+    { first: "Sultan", last: "Al-Harthy", position: "Branch Manager", branch: "HO" },
+    { first: "Maryam", last: "Al-Balushi", position: "Academic Manager", branch: "HO" },
+    { first: "Yousuf", last: "Al-Kindi", position: "Finance Officer", branch: "HO" },
+    { first: "Fatma", last: "Al-Riyami", position: "HR Officer", branch: "HO" },
+    { first: "Khalid", last: "Al-Mamari", position: "Branch Manager", branch: "MCT" },
+    { first: "Aisha", last: "Al-Farsi", position: "Admissions Officer", branch: "MCT" },
+    { first: "Salim", last: "Al-Hinai", position: "Receptionist", branch: "MCT" },
+    { first: "Noora", last: "Al-Zadjali", position: "Branch Manager", branch: "SLL" },
+    { first: "Hamed", last: "Al-Shukaili", position: "Student Affairs Officer", branch: "SLL" },
+    { first: "Layla", last: "Al-Amri", position: "Branch Manager", branch: "SOH" },
+    { first: "Rashid", last: "Al-Saadi", position: "Receptionist", branch: "SOH" },
+  ];
+
+  let employeeSeq = 1;
+  for (const e of EMPLOYEE_SEED) {
+    const employeeCode = `EMP-${String(employeeSeq).padStart(4, "0")}`;
+    await prisma.employee.upsert({
+      where: { tenantId_employeeCode: { tenantId, employeeCode } },
+      update: {},
+      create: {
+        tenantId,
+        employeeCode,
+        firstName: e.first,
+        lastName: e.last,
+        position: e.position,
+        email: `${e.first}.${e.last}@bxbii.local`.toLowerCase(),
+        mobile: `+968 9${String(1000000 + employeeSeq).slice(-7)}`,
+        status: "ACTIVE",
+        primaryBranchId: branches[e.branch].id,
+      },
+    });
+    employeeSeq += 1;
+  }
+  console.log(`  ${EMPLOYEE_SEED.length} fictional employees seeded`);
+
+  // -- Fictional trainers (Section 32, 20) ---------------------------------
+  const TRAINER_SEED: Array<{ first: string; last: string; specialization: string; branch: (typeof branchCodes)[number]; hours: number }> = [
+    { first: "Omar", last: "Al-Lawati", specialization: "General English", branch: "HO", hours: 18 },
+    { first: "Huda", last: "Al-Rawahi", specialization: "Business English", branch: "MCT", hours: 22 },
+    { first: "Tariq", last: "Al-Habsi", specialization: "Information Technology", branch: "MCT", hours: 16 },
+    { first: "Reem", last: "Al-Busaidi", specialization: "Digital Marketing", branch: "SLL", hours: 12 },
+    { first: "Adil", last: "Al-Ghafri", specialization: "Project Management", branch: "SLL", hours: 20 },
+    { first: "Shatha", last: "Al-Ismaili", specialization: "Professional Development", branch: "SOH", hours: 14 },
+    { first: "Nasser", last: "Al-Wahaibi", specialization: "Vocational Training", branch: "SOH", hours: 24 },
+  ];
+
+  let trainerSeq = 1;
+  for (const t of TRAINER_SEED) {
+    const trainerCode = `TRN-${String(trainerSeq).padStart(4, "0")}`;
+    await prisma.trainer.upsert({
+      where: { tenantId_trainerCode: { tenantId, trainerCode } },
+      update: {},
+      create: {
+        tenantId,
+        trainerCode,
+        fullName: `${t.first} ${t.last}`,
+        specialization: t.specialization,
+        email: `${t.first}.${t.last}@bxbii.local`.toLowerCase(),
+        mobile: `+968 9${String(2000000 + trainerSeq).slice(-7)}`,
+        teachingHours: t.hours,
+        status: "ACTIVE",
+        primaryBranchId: branches[t.branch].id,
+      },
+    });
+    trainerSeq += 1;
+  }
+  console.log(`  ${TRAINER_SEED.length} fictional trainers seeded`);
+
+  // -- 30+ fictional students (Sections 29, 9-10) --------------------------
+  // Fully invented first/last name pools, combined programmatically, so the
+  // dataset is obviously synthetic rather than resembling any real roster.
+  const FIRST_NAMES = [
+    "Ahmed", "Sara", "Mohammed", "Fatima", "Ali", "Mariam", "Hassan", "Zainab",
+    "Ibrahim", "Noor", "Yousuf", "Amal", "Waleed", "Hind", "Faisal", "Latifa",
+    "Saeed", "Buthaina", "Nasser", "Salma", "Bader", "Amina", "Talal", "Wafa",
+    "Marwan", "Iman", "Adnan", "Rania", "Karim", "Dana",
+  ];
+  const LAST_NAMES = [
+    "Al-Habsi", "Al-Farsi", "Al-Balushi", "Al-Riyami", "Al-Kindi", "Al-Hinai",
+    "Al-Zadjali", "Al-Shukaili", "Al-Amri", "Al-Saadi", "Al-Ghafri", "Al-Busaidi",
+  ];
+  // Weighted so the dataset covers every scenario called out in Section 29
+  // (active, new, outstanding balance, fully paid, high/low attendance,
+  // completed, in exams, certificate-eligible, transferred) once Fees/Exam/
+  // Certificate models exist — for now this drives StudentStatus + branch mix.
+  const STATUS_CYCLE: Array<"LEAD" | "APPLICANT" | "PENDING" | "ACTIVE" | "ON_HOLD" | "SUSPENDED" | "WITHDRAWN" | "COMPLETED" | "GRADUATED"> = [
+    "ACTIVE", "ACTIVE", "ACTIVE", "LEAD", "APPLICANT", "PENDING",
+    "ACTIVE", "ON_HOLD", "ACTIVE", "COMPLETED", "GRADUATED", "ACTIVE",
+    "SUSPENDED", "ACTIVE", "WITHDRAWN",
+  ];
+
+  let studentSeq = 1;
+  const totalStudents = 32;
+  for (let i = 0; i < totalStudents; i += 1) {
+    const first = FIRST_NAMES[i % FIRST_NAMES.length];
+    const last = LAST_NAMES[i % LAST_NAMES.length];
+    const branchCode = branchCodes[i % branchCodes.length];
+    const status = STATUS_CYCLE[i % STATUS_CYCLE.length];
+    const studentCode = `STU-${String(studentSeq).padStart(5, "0")}`;
+    // A handful of students (every 7th) are modeled as having transferred
+    // in from another branch — current branch differs from primary branch,
+    // matching the Student Transfer workflow's already-built data shape.
+    const transferred = i % 7 === 0 && i > 0;
+    const primaryBranchCode = transferred ? branchCodes[(i + 1) % branchCodes.length] : branchCode;
+
+    await prisma.student.upsert({
+      where: { tenantId_studentCode: { tenantId, studentCode } },
+      update: {},
+      create: {
+        tenantId,
+        studentCode,
+        firstName: first,
+        lastName: last,
+        gender: i % 2 === 0 ? "MALE" : "FEMALE",
+        dateOfBirth: new Date(1995 + (i % 15), i % 12, 1 + (i % 27)),
+        email: `${first}.${last}${studentSeq}@bxbii-demo.local`.toLowerCase(),
+        mobile: `+968 9${String(3000000 + studentSeq).slice(-7)}`,
+        status,
+        primaryBranchId: branches[primaryBranchCode].id,
+        currentBranchId: branches[branchCode].id,
+      },
+    });
+    studentSeq += 1;
+  }
+  console.log(`  ${totalStudents} fictional students seeded across ${branchCodes.length} branches (DEMO DATA)`);
 }
 
 /**
