@@ -12,7 +12,7 @@ RUN pnpm install --no-frozen-lockfile
 FROM deps AS build
 COPY . .
 RUN pnpm db:generate
-RUN pnpm --filter @bxbii/api build
+RUN pnpm --filter @edusec/api build
 
 FROM base AS runner
 ENV NODE_ENV=production
