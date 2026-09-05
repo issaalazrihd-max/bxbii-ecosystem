@@ -7,6 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { BranchesModule } from "./branches/branches.module";
 import { StudentsModule } from "./students/students.module";
 import { CmsModule } from "./cms/cms.module";
+import { DashboardModule } from "./dashboard/dashboard.module";
 import { HealthController } from "./common/health.controller";
 
 @Module({
@@ -19,6 +20,7 @@ import { HealthController } from "./common/health.controller";
     BranchesModule,
     StudentsModule,
     CmsModule,
+    DashboardModule,
   ],
   controllers: [HealthController],
 })
