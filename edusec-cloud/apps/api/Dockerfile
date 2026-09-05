@@ -1,5 +1,6 @@
 # Multi-stage build for the bxbii API (NestJS).
 FROM node:22-alpine AS base
+RUN apk add --no-cache openssl
 RUN corepack enable
 WORKDIR /repo
 
