@@ -1,6 +1,7 @@
 /**
- * Pre-built role templates (EduSec Cloud brief, Section 43). Every EduSec
- * Cloud tenant gets these out of the box — the opposite of the legacy Yii
+ * Pre-built role templates (from the platform's original Multi-Branch
+ * requirements brief, Section 43). Every bxbii tenant gets these out of
+ * the box — the opposite of the legacy Yii
  * "Rights" engine, which shipped with an empty user_type/AuthAssignment
  * table and left every institute to build roles from scratch (Phase 1
  * Analysis, Section 2.7).
@@ -21,7 +22,7 @@ export const ROLE_TEMPLATES: Array<{
     code: "SUPER_ADMIN",
     name: "Super Administrator",
     description: "Full system access across every module, branch, and the platform website/CMS.",
-    permissions: ["branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage"],
+    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage"],
   },
   {
     code: "PLATFORM_ADMIN",
@@ -33,31 +34,31 @@ export const ROLE_TEMPLATES: Array<{
     code: "INSTITUTE_ADMIN",
     name: "Institute Administrator",
     description: "Institute-wide management across all branches.",
-    permissions: ["branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "cms.pages.view", "cms.navigation.view"],
+    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "cms.pages.view", "cms.navigation.view"],
   },
   {
     code: "BRANCH_MANAGER",
     name: "Branch Manager",
     description: "Manages their assigned branch's day-to-day operations.",
-    permissions: ["branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review"],
   },
   {
     code: "ACADEMIC_MANAGER",
     name: "Academic Manager",
     description: "Manages academic operations (programs, courses, timetable — Phase 4).",
-    permissions: ["branches.list", "students.list", "students.view", "students.transfer.review"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.transfer.review"],
   },
   {
     code: "ADMISSIONS_OFFICER",
     name: "Admissions Officer",
     description: "Manages leads and admissions (full CRM lands in Phase 4).",
-    permissions: ["branches.list", "students.list", "students.view", "students.create", "students.transfer.request"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request"],
   },
   {
     code: "FINANCE_OFFICER",
     name: "Finance Officer",
     description: "Manages invoices and student finance (Phase 5).",
-    permissions: ["branches.list", "students.list", "students.view"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view"],
   },
   {
     code: "ACCOUNTANT",
