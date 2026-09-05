@@ -153,7 +153,7 @@ export default function PageEditor({ params }: { params: { pageId: string } }) {
           <Field label="Status">
             <select
               value={page.status}
-              onChange={(e) => saveMeta({ status: e.target.value })}
+              onChange={(e) => saveMeta({ status: e.target.value as AdminPage["status"] })}
               className="w-full rounded border border-surface-border px-3 py-1.5 text-sm"
             >
               <option value="DRAFT">Draft</option>
