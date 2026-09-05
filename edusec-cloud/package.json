@@ -1,20 +1,30 @@
 {
-  "name": "edusec-cloud",
-  "version": "0.1.0",
-  "private": true,
-  "description": "EduSec Cloud — Institute Management & ERP platform (Phase 2 foundation scaffold)",
-  "scripts": {
-    "dev:api": "pnpm --filter @edusec/api start:dev",
-    "dev:web": "pnpm --filter @edusec/web dev",
-    "build": "pnpm -r build",
-    "lint": "pnpm -r lint",
-    "db:generate": "pnpm --filter @edusec/db exec prisma generate",
-    "db:migrate": "pnpm --filter @edusec/db exec prisma migrate dev",
-    "db:migrate:deploy": "pnpm --filter @edusec/db exec prisma migrate deploy",
-    "db:seed": "pnpm --filter @edusec/db exec prisma db seed",
-    "db:studio": "pnpm --filter @edusec/db exec prisma studio"
-  },
-  "engines": {
-    "node": ">=20"
-  }
+    "name": "edusec-cloud",
+    "version": "0.1.0",
+    "private": true,
+    "description": "EduSec Cloud — Institute Management & ERP platform (Phase 2 foundation scaffold)",
+    "scripts": {
+          "dev:api": "pnpm --filter @edusec/api start:dev",
+          "dev:web": "pnpm --filter @edusec/web dev",
+          "build": "pnpm -r build",
+          "lint": "pnpm -r lint",
+          "db:generate": "pnpm --filter @edusec/db exec prisma generate",
+          "db:migrate": "pnpm --filter @edusec/db exec prisma migrate dev",
+          "db:migrate:deploy": "pnpm --filter @edusec/db exec prisma migrate deploy",
+          "db:seed": "pnpm --filter @edusec/db exec prisma db seed",
+          "db:studio": "pnpm --filter @edusec/db exec prisma studio"
+    },
+    "engines": {
+          "node": ">=22"
+    },
+    "pnpm": {
+          "onlyBuiltDependencies": [
+                  "@nestjs/core",
+                  "@prisma/client",
+                  "@prisma/engines",
+                  "argon2",
+                  "esbuild",
+                  "prisma"
+          ]
+    }
 }
