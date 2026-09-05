@@ -6,7 +6,7 @@ WORKDIR /repo
 FROM base AS deps
 COPY pnpm-workspace.yaml package.json ./
 COPY apps/web/package.json apps/web/package.json
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 FROM deps AS build
 COPY . .
