@@ -10,7 +10,7 @@ export function setTokens(tokens: { accessToken: string; refreshToken: string })
   accessToken = tokens.accessToken;
   refreshToken = tokens.refreshToken;
   if (typeof window !== "undefined") {
-    window.sessionStorage.setItem("edusec.refreshToken", tokens.refreshToken);
+    window.sessionStorage.setItem("bxbii.refreshToken", tokens.refreshToken);
   }
 }
 
@@ -18,7 +18,7 @@ export function clearTokens() {
   accessToken = null;
   refreshToken = null;
   if (typeof window !== "undefined") {
-    window.sessionStorage.removeItem("edusec.refreshToken");
+    window.sessionStorage.removeItem("bxbii.refreshToken");
   }
 }
 
@@ -82,6 +82,17 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   listBranches: () => request<unknown[]>("/branches"),
+  getDashboardSummary: () =>
+    request<{
+      totalStudents: number;
+      activeStudents: number;
+      newStudentsThisMonth: number;
+      studentsByStatus: Record<string, number>;
+      totalEmployees: number;
+      totalTrainers: number;
+      activeTrainers: number;
+      totalBranches: number;
+    }>("/dashboard/summary"),
   searchStudents: (query?: string, branchId?: string) => {
     const params = new URLSearchParams();
     if (query) params.set("query", query);
