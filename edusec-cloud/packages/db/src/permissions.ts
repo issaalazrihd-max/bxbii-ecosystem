@@ -5,13 +5,15 @@
  *
  * This mirrors the granularity of the legacy Yii "Rights" engine (Phase 1
  * Analysis, Section 2.7) — one entry per controller action — but unlike
- * that engine, EduSec Cloud ships pre-built roles against this catalog
+ * that engine, this platform ships pre-built roles against this catalog
  * instead of leaving every install to build roles from a blank slate.
  *
  * As later phases add modules (Programs, Timetable, Finance, ...), extend
  * this list and re-run the seed — it is idempotent (upsert by code).
  */
 export const PERMISSIONS: Array<{ module: string; action: string; code: string }> = [
+  { module: "dashboard", action: "view", code: "dashboard.view" },
+
   { module: "branches", action: "list", code: "branches.list" },
   { module: "branches", action: "create", code: "branches.create" },
 
