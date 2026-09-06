@@ -507,12 +507,16 @@ export function TrainingCourse() {
     <div dir={lang === "ar" ? "rtl" : "ltr"}>
       {/* Hero */}
       <section className="bg-brand text-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-accent-light">
+        {/* Typography/spacing pass (Task #41 follow-up): py-20 and the h1's
+            sm:text-5xl step now match every other page hero on the site
+            (the CMS Hero block and /programs) instead of drifting slightly
+            smaller; the eyebrow's font-medium matches the same pattern too. */}
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+          <p className="mb-3 text-sm font-medium uppercase tracking-wide text-accent-light">
             {t("مِران ستوديو · Miran Studio", "Miran Studio · مِران ستوديو")}
           </p>
-          <h1 className="max-w-2xl text-3xl font-bold sm:text-4xl">المالية لغير الماليين</h1>
-          <p className="mt-4 max-w-2xl text-white/80">
+          <h1 className="max-w-2xl text-3xl font-bold sm:text-5xl">المالية لغير الماليين</h1>
+          <p className="mt-4 max-w-2xl text-white/80 sm:text-lg">
             {t(
               "افهم المال. قُد القرار. برنامج تدريبي من bxbii — 7 أيام، شرح عربي واضح، فيديو وتمرين وسؤال تحقق في كل يوم، من أول مصطلح إلى القصة المالية الكاملة.",
               "Understand the numbers. Lead the decision. A 7-day bxbii program — clear explanations, a video, an exercise, and a check-in every day.",

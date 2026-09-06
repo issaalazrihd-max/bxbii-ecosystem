@@ -109,7 +109,10 @@ export function ProgramsPage() {
   return (
     <div>
       <section className="bg-brand text-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6">
+        {/* py-20 matches the CMS page-builder's Hero block (section-renderer.tsx)
+            and the /training hero — interface pass (Task #41 follow-up):
+            every hero on the site now shares the same vertical rhythm. */}
+        <div className="mx-auto max-w-6xl px-4 py-20 text-center sm:px-6">
           <p className="mb-3 text-sm font-medium uppercase tracking-wide text-accent-light">{copy.eyebrow}</p>
           <h1 className="text-3xl font-bold sm:text-5xl">{copy.title}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-white/80 sm:text-lg">{copy.subtitle}</p>
