@@ -122,10 +122,15 @@ function NavEntry({
       </button>
       {open && (
         <div
+          // Logical (start/end) properties instead of physical left/right so
+          // the dropdown opens on the correct side, and the mobile submenu's
+          // indent rail sits on the correct side, in both LTR and RTL (brief
+          // Section 33 — the Arabic experience must not just be a mirrored
+          // English layout with the wrong-side artifacts that implies).
           className={
             mobile
-              ? "ml-3 flex flex-col gap-1 border-l border-white/10 pl-2"
-              : "absolute left-0 top-full min-w-[12rem] rounded border border-surface-border bg-surface py-1 shadow-lg"
+              ? "ms-3 flex flex-col gap-1 border-s border-white/10 ps-2"
+              : "absolute start-0 top-full min-w-[12rem] rounded border border-surface-border bg-surface py-1 shadow-lg"
           }
         >
           {children.map((child) =>
