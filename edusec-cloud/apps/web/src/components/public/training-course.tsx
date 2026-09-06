@@ -498,7 +498,13 @@ export function TrainingCourse() {
   const t = (ar: string, en: string) => (lang === "ar" ? ar : en);
 
   return (
-    <div dir="rtl">
+    // Was hardcoded dir="rtl" regardless of the language toggle, so switching
+    // to English on this page left every translated string (the hero copy,
+    // stat labels, "Open lesson", etc.) rendered in a right-to-left block —
+    // English paragraphs came out right-aligned with bidi-reordered
+    // punctuation. Now the direction follows the same `lang` the rest of the
+    // page already uses to choose Arabic vs. English text.
+    <div dir={lang === "ar" ? "rtl" : "ltr"}>
       {/* Hero */}
       <section className="bg-brand text-white">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
@@ -616,7 +622,10 @@ function DayModal({
       onClick={onClose}
     >
       <div
-        dir="rtl"
+        // Same fix as the page shell above: this modal has its own `lang`
+        // prop already, so use it instead of forcing rtl regardless of the
+        // active language toggle.
+        dir={lang === "ar" ? "rtl" : "ltr"}
         role="dialog"
         aria-modal="true"
         className="w-full max-w-2xl rounded-lg bg-surface shadow-xl"
@@ -740,7 +749,7 @@ function DayModal({
                   <button
                     key={i}
                     onClick={() => setSelected(i)}
-                    className={`block w-full rounded border px-3 py-2 text-right text-sm transition ${
+                    className={`block w-full rounded border px-3 py-2 text-start text-sm transition ${
                       showCorrect
                         ? "border-status-success bg-status-success/10 text-status-success"
                         : showWrong
