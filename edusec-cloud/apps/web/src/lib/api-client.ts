@@ -162,6 +162,17 @@ export interface AdminProgram {
   isVisible: boolean;
 }
 
+export interface AdminContactSubmission {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  subject: string | null;
+  message: string;
+  status: "NEW" | "READ" | "ARCHIVED";
+  createdAt: string;
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/login", {
@@ -246,4 +257,15 @@ export const api = {
     request<{ id: string; deleted: boolean }>(`/cms/programs/${programId}`, { method: "DELETE" }),
   reorderPrograms: (orderedProgramIds: string[]) =>
     request<AdminProgram[]>("/cms/programs/reorder", { method: "POST", body: JSON.stringify({ orderedProgramIds }) }),
+
+  // --- CMS: Contact submissions inbox (Contact module, fed by the public
+  // /contact-us page's form) -----------------------------------------------
+  listContactSubmissions: () => request<AdminContactSubmission[]>("/cms/contact"),
+  updateContactSubmissionStatus: (submissionId: string, status: AdminContactSubmission["status"]) =>
+    request<AdminContactSubmission>(`/cms/contact/${submissionId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
+  deleteContactSubmission: (submissionId: string) =>
+    request<{ id: string; deleted: boolean }>(`/cms/contact/${submissionId}`, { method: "DELETE" }),
 };

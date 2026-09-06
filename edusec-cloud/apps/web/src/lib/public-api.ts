@@ -77,6 +77,15 @@ export interface PublicProgram {
   position: number;
 }
 
+/** Body the /contact-us page's form sends (Contact module). */
+export interface ContactFormInput {
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+}
+
 async function publicFetch<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${API_URL}/api/v1${path}`, {
@@ -95,9 +104,30 @@ async function publicFetch<T>(path: string): Promise<T | null> {
   }
 }
 
+/**
+ * POST variant of publicFetch, for the one public endpoint that writes
+ * rather than reads (the contact form). Returns whether the submission
+ * succeeded instead of throwing, so the form component can show an inline
+ * error message rather than crash — same "degrade gracefully" spirit as
+ * publicFetch's null-on-failure.
+ */
+async function publicPost(path: string, body: unknown): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/v1${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export const publicApi = {
   getHomePage: () => publicFetch<PublicPage>("/public/pages/home"),
   getPageBySlug: (slug: string) => publicFetch<PublicPage>(`/public/pages/${slug}`),
   getNavigation: () => publicFetch<PublicNavItem[]>("/public/navigation"),
   getPrograms: () => publicFetch<PublicProgram[]>("/public/programs"),
+  submitContactForm: (data: ContactFormInput) => publicPost("/public/contact", data),
 };
