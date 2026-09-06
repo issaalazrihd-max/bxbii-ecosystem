@@ -575,7 +575,7 @@ export function TrainingCourse() {
                 </div>
                 <button
                   onClick={() => setOpenDay(day.id)}
-                  className="mt-5 w-full rounded bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-light"
+                  className="mt-5 w-full rounded bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                 >
                   {t("افتح الدرس", "Open lesson")}
                 </button>
@@ -638,7 +638,11 @@ function DayModal({
             </p>
             <h2 className="text-xl font-bold">{day.title}</h2>
           </div>
-          <button onClick={onClose} aria-label={t("إغلاق", "Close")} className="text-2xl leading-none text-white/80 hover:text-white">
+          <button
+            onClick={onClose}
+            aria-label={t("إغلاق", "Close")}
+            className="rounded text-2xl leading-none text-white/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand"
+          >
             ×
           </button>
         </div>
@@ -716,7 +720,7 @@ function DayModal({
             <p className="mb-2 text-sm text-slate-700">{day.apply.prompt}</p>
             {day.apply.hint && (
               <details className="text-sm text-slate-600">
-                <summary className="cursor-pointer font-medium text-accent">
+                <summary className="cursor-pointer rounded font-medium text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
                   {t("اعرض الحل المشروح", "Show the worked solution")}
                 </summary>
                 <p className="mt-2">{day.apply.hint}</p>
@@ -749,7 +753,7 @@ function DayModal({
                   <button
                     key={i}
                     onClick={() => setSelected(i)}
-                    className={`block w-full rounded border px-3 py-2 text-start text-sm transition ${
+                    className={`block w-full rounded border px-3 py-2 text-start text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle ${
                       showCorrect
                         ? "border-status-success bg-status-success/10 text-status-success"
                         : showWrong
@@ -772,7 +776,10 @@ function DayModal({
         </div>
 
         <div className="flex items-center justify-between rounded-b-lg border-t border-surface-border px-6 py-4">
-          <button onClick={onClose} className="text-sm text-slate-500 hover:text-slate-700">
+          <button
+            onClick={onClose}
+            className="rounded text-sm text-slate-500 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+          >
             {t("إغلاق", "Close")}
           </button>
           <button
@@ -781,7 +788,7 @@ function DayModal({
               onComplete();
               onClose();
             }}
-            className="rounded bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-light disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-light disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           >
             {isDone ? t("مكتمل ✓", "Completed ✓") : t("تحقق وأكمل اليوم", "Confirm & complete day")}
           </button>

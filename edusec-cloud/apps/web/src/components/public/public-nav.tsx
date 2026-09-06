@@ -18,6 +18,15 @@ import { useLanguage, LanguageToggle } from "./language-provider";
  */
 const APP_LOGIN_URL = "https://app.bxbii.com/login";
 
+// Interface pass (Task #41): a shared focus-visible ring so every keyboard
+// user gets a visible indicator of the focused control — nothing in this
+// header had one before. Two variants because the header sits on the dark
+// brand background while dropdown submenus sit on the light surface.
+const FOCUS_ON_BRAND =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand";
+const FOCUS_ON_SURFACE =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
+
 export function PublicNav({ items }: { items: PublicNavItem[] }) {
   const { lang } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -26,7 +35,7 @@ export function PublicNav({ items }: { items: PublicNavItem[] }) {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-brand text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
+        <Link href="/" className={`rounded text-lg font-semibold tracking-tight ${FOCUS_ON_BRAND}`}>
           bxbii
         </Link>
 
@@ -40,14 +49,14 @@ export function PublicNav({ items }: { items: PublicNavItem[] }) {
           <LanguageToggle />
           <a
             href={APP_LOGIN_URL}
-            className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-accent-light"
+            className={`rounded bg-accent px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-accent-light ${FOCUS_ON_BRAND}`}
           >
             {lang === "ar" ? "الدخول إلى التطبيق" : "Login to Application"}
           </a>
         </div>
 
         <button
-          className="rounded p-2 text-white/90 hover:bg-white/10 md:hidden"
+          className={`rounded p-2 text-white/90 hover:bg-white/10 md:hidden ${FOCUS_ON_BRAND}`}
           onClick={() => setMobileOpen((v) => !v)}
           aria-label="Toggle menu"
         >
@@ -66,7 +75,7 @@ export function PublicNav({ items }: { items: PublicNavItem[] }) {
             <LanguageToggle />
             <a
               href={APP_LOGIN_URL}
-              className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white"
+              className={`rounded bg-accent px-3 py-1.5 text-sm font-medium text-white ${FOCUS_ON_BRAND}`}
             >
               {lang === "ar" ? "الدخول إلى التطبيق" : "Login to Application"}
             </a>
@@ -92,8 +101,8 @@ function NavEntry({
   const hasChildren = children.length > 0;
 
   const linkClasses = mobile
-    ? "block rounded px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10"
-    : "rounded px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10";
+    ? `block rounded px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10 ${FOCUS_ON_BRAND}`
+    : `rounded px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10 ${FOCUS_ON_BRAND}`;
 
   if (!hasChildren) {
     if (!item.href) return null;
@@ -141,8 +150,8 @@ function NavEntry({
                 target={child.openInNewTab ? "_blank" : undefined}
                 className={
                   mobile
-                    ? "block rounded px-3 py-2 text-sm text-white/80 hover:bg-white/10"
-                    : "block px-4 py-2 text-sm text-slate-700 hover:bg-surface-subtle"
+                    ? `block rounded px-3 py-2 text-sm text-white/80 hover:bg-white/10 ${FOCUS_ON_BRAND}`
+                    : `block px-4 py-2 text-sm text-slate-700 hover:bg-surface-subtle ${FOCUS_ON_SURFACE} focus-visible:ring-inset`
                 }
               >
                 {pickText(child.enLabel, child.arLabel, lang)}

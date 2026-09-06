@@ -56,7 +56,9 @@ export function LanguageToggle() {
   return (
     <button
       onClick={() => setLang(lang === "en" ? "ar" : "en")}
-      className="rounded border border-white/30 px-2.5 py-1 text-xs font-medium text-white/90 hover:bg-white/10"
+      // Interface pass (Task #41): added a visible focus-visible ring —
+      // this control had no keyboard-focus indicator at all before.
+      className="rounded border border-white/30 px-2.5 py-1 text-xs font-medium text-white/90 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand"
       aria-label="Toggle language"
     >
       {lang === "en" ? "العربية" : "English"}

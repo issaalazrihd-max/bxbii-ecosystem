@@ -17,7 +17,17 @@ import { useLanguage } from "./language-provider";
  * page. Products/Courses/Projects render an honest "coming soon" panel
  * until the Store, LMS, and Projects modules exist (later phases) to back
  * them with real data.
+ *
+ * Interface pass (Task #41): every interactive element below now carries
+ * a visible focus-visible ring. None of them had one before — fine for a
+ * mouse, but a real accessibility gap for anyone navigating by keyboard,
+ * who previously got no visual indication of which control was focused.
+ * FOCUS_RING is one shared class string so it stays consistent everywhere
+ * it's used instead of every block inventing its own.
  */
+const FOCUS_RING =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
+
 export function SectionRenderer({ sections }: { sections: PublicSection[] }) {
   const { lang } = useLanguage();
   const visible = [...sections].filter((s) => s.isVisible).sort((a, b) => a.position - b.position);
@@ -45,7 +55,7 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
             {c.ctaLabel && c.ctaHref && (
               <Link
                 href={c.ctaHref}
-                className="mt-8 inline-block rounded bg-accent px-6 py-3 text-sm font-semibold hover:bg-accent-light"
+                className={`mt-8 inline-block rounded bg-accent px-6 py-3 text-sm font-semibold hover:bg-accent-light ${FOCUS_RING} focus-visible:ring-offset-brand`}
               >
                 {c.ctaLabel}
               </Link>
@@ -101,7 +111,10 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
     case "BUTTON":
       return c.href ? (
         <div className="mx-auto max-w-6xl px-4 py-6 text-center sm:px-6">
-          <Link href={c.href} className="inline-block rounded bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand-light">
+          <Link
+            href={c.href}
+            className={`inline-block rounded bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand-light ${FOCUS_RING}`}
+          >
             {c.label ?? "Learn more"}
           </Link>
         </div>
@@ -154,7 +167,7 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
           <div className="flex flex-wrap items-center justify-center gap-8">
             {logos.map((logo, i) =>
               logo.url ? (
-                <a key={i} href={logo.url} target="_blank" rel="noreferrer">
+                <a key={i} href={logo.url} target="_blank" rel="noreferrer" className={`rounded ${FOCUS_RING}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={logo.logoUrl} alt={logo.name ?? ""} className="h-10 grayscale hover:grayscale-0" />
                 </a>
@@ -176,7 +189,12 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
           <ul className="divide-y divide-surface-border rounded-lg border border-surface-border">
             {files.map((f, i) => (
               <li key={i}>
-                <a href={f.url} className="flex items-center gap-2 px-4 py-3 text-sm text-accent hover:bg-surface-subtle" target="_blank" rel="noreferrer">
+                <a
+                  href={f.url}
+                  className={`flex items-center gap-2 px-4 py-3 text-sm text-accent hover:bg-surface-subtle ${FOCUS_RING} focus-visible:ring-inset`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   📄 {f.name ?? f.url}
                 </a>
               </li>
@@ -212,6 +230,8 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
   }
 }
 
+const FORM_FIELD = `w-full rounded border border-surface-border px-3 py-2 text-sm ${FOCUS_RING} focus-visible:ring-offset-0 focus-visible:border-accent`;
+
 function ContactFormBlock({
   title,
   description,
@@ -241,10 +261,13 @@ function ContactFormBlock({
             setSent(true);
           }}
         >
-          <input required placeholder="Your name" className="w-full rounded border border-surface-border px-3 py-2 text-sm" />
-          <input required type="email" placeholder="Email" className="w-full rounded border border-surface-border px-3 py-2 text-sm" />
-          <textarea required placeholder="Message" rows={4} className="w-full rounded border border-surface-border px-3 py-2 text-sm" />
-          <button type="submit" className="rounded bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-light">
+          <input required placeholder="Your name" className={FORM_FIELD} />
+          <input required type="email" placeholder="Email" className={FORM_FIELD} />
+          <textarea required placeholder="Message" rows={4} className={FORM_FIELD} />
+          <button
+            type="submit"
+            className={`rounded bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-light ${FOCUS_RING}`}
+          >
             {submitLabel ?? "Send"}
           </button>
         </form>

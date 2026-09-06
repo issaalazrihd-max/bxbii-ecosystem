@@ -130,7 +130,7 @@ export function ProgramsPage() {
           <p className="mx-auto mt-3 max-w-xl text-slate-600">{copy.corporateBody}</p>
           <Link
             href="/contact-us"
-            className="mt-6 inline-block rounded bg-accent px-6 py-3 text-sm font-semibold text-white hover:bg-accent-light"
+            className="mt-6 inline-block rounded bg-accent px-6 py-3 text-sm font-semibold text-white hover:bg-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
           >
             {copy.corporateCta}
           </Link>
@@ -183,7 +183,7 @@ function ProgramCard({
         {isOpen && program.href ? (
           <Link
             href={program.href}
-            className="block w-full rounded bg-accent px-4 py-2 text-center text-sm font-semibold text-white hover:bg-accent-light"
+            className="block w-full rounded bg-accent px-4 py-2 text-center text-sm font-semibold text-white hover:bg-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           >
             {copy.registerCta}
           </Link>
