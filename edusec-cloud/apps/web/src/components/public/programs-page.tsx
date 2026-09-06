@@ -16,53 +16,6 @@ type Program = {
   href?: string;
 };
 
-/**
- * Real, currently-live programs. Only "finance-non-financials" links
- * anywhere or claims to be open — everything else is an honestly-labeled
- * "coming soon" placeholder for a training domain that doesn't have real
- * content yet, rather than a fabricated course with a fake date or a fake
- * registration link. Add real entries here as new programs actually ship.
- */
-const PROGRAMS: Program[] = [
-  {
-    id: "finance-non-financials",
-    domain: { en: "Business & Finance", ar: "الأعمال والمالية" },
-    name: { en: "Finance for Non-Financials", ar: "المالية لغير الماليين" },
-    description: {
-      en: "A 7-day interactive program by Miran Studio that builds a practical understanding of financial statements and number-driven decision-making — no finance background required.",
-      ar: "برنامج تفاعلي من مِران ستوديو مدته 7 أيام، لبناء فهم عملي للقوائم المالية واتخاذ القرار بالأرقام — دون الحاجة لخلفية مالية مسبقة.",
-    },
-    duration: { en: "7 days, self-paced", ar: "7 أيام، بالسرعة التي تناسبك" },
-    format: { en: "Online", ar: "عن بُعد" },
-    status: "open",
-    href: "/training",
-  },
-  {
-    id: "technology-digital",
-    domain: { en: "Technology & Digital Skills", ar: "التقنية والمهارات الرقمية" },
-    name: { en: "Technology & Digital Skills Track", ar: "مسار التقنية والمهارات الرقمية" },
-    description: {
-      en: "A dedicated technology training track is in development.",
-      ar: "مسار تدريبي متخصص في التقنية قيد الإعداد حالياً.",
-    },
-    duration: { en: "To be announced", ar: "يُعلن لاحقاً" },
-    format: { en: "Online", ar: "عن بُعد" },
-    status: "comingSoon",
-  },
-  {
-    id: "leadership-management",
-    domain: { en: "Leadership & Management", ar: "القيادة والإدارة" },
-    name: { en: "Leadership & Management Track", ar: "مسار القيادة والإدارة" },
-    description: {
-      en: "A leadership and people-management program is in development.",
-      ar: "برنامج في القيادة وإدارة الفرق قيد الإعداد حالياً.",
-    },
-    duration: { en: "To be announced", ar: "يُعلن لاحقاً" },
-    format: { en: "Online", ar: "عن بُعد" },
-    status: "comingSoon",
-  },
-];
-
 const t = {
   en: {
     eyebrow: "Programs",
@@ -81,6 +34,7 @@ const t = {
     corporateBody:
       "Looking to train a team or department? bxbii can tailor a program's schedule and delivery for your organization.",
     corporateCta: "Contact us about corporate training",
+    emptyState: "Programs are being updated — check back shortly.",
   },
   ar: {
     eyebrow: "البرامج",
@@ -99,10 +53,18 @@ const t = {
     corporateBody:
       "هل ترغب في تدريب فريق أو قسم كامل؟ يمكن لـ bxbii تخصيص جدول البرنامج وطريقة تقديمه لمؤسستكم.",
     corporateCta: "تواصل معنا بخصوص التدريب المؤسسي",
+    emptyState: "يتم تحديث البرامج حالياً — يرجى المحاولة بعد قليل.",
   },
 };
 
-export function ProgramsPage() {
+/**
+ * Programs are now real CMS data (Task #44 — Programs module) instead of a
+ * hardcoded array: the (public)/programs route fetches them server-side via
+ * publicApi.getPrograms() and passes them in here already mapped to this
+ * component's existing Program shape, so this file's own rendering logic —
+ * and the page's visual output — is unchanged from the pre-CMS version.
+ */
+export function ProgramsPage({ programs }: { programs: Program[] }) {
   const { lang } = useLanguage();
   const copy = t[lang];
 
@@ -120,11 +82,15 @@ export function ProgramsPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PROGRAMS.map((program) => (
-            <ProgramCard key={program.id} program={program} lang={lang} copy={copy} />
-          ))}
-        </div>
+        {programs.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {programs.map((program) => (
+              <ProgramCard key={program.id} program={program} lang={lang} copy={copy} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-sm text-slate-400">{copy.emptyState}</p>
+        )}
       </section>
 
       <section className="border-t border-surface-border bg-surface-subtle">
