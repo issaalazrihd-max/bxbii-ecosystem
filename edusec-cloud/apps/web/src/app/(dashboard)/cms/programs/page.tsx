@@ -70,7 +70,7 @@ function toDto(d: Draft) {
     arFormat: d.arFormat,
     enFormat: d.enFormat,
     status: d.status,
-    hrefOverride: d.hrefOverride.trim() || undefined,
+    hrefOverride: d.hrefOverride.trim() || null,
   };
 }
 
