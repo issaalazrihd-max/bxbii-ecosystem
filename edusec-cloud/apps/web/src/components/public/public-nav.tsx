@@ -10,7 +10,14 @@ import { useLanguage, LanguageToggle } from "./language-provider";
  * Fully dynamic top navigation (brief Section 31) — every item, including
  * submenus, comes from the CMS Navigation API. Nothing here is hard-coded;
  * an editor can add, reorder, or hide menu items without a code change.
+ *
+ * The "Login to Application" button is the one intentional exception: it
+ * always points at the dedicated app.bxbii.com subdomain (the Institute
+ * Management System / staff dashboard), kept separate from the public
+ * marketing site served on bxbii.com / www.bxbii.com.
  */
+const APP_LOGIN_URL = "https://app.bxbii.com/login";
+
 export function PublicNav({ items }: { items: PublicNavItem[] }) {
   const { lang } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,12 +38,12 @@ export function PublicNav({ items }: { items: PublicNavItem[] }) {
 
         <div className="hidden items-center gap-3 md:flex">
           <LanguageToggle />
-          <Link
-            href="/login"
-            className="rounded bg-accent px-3 py-1.5 text-sm font-medium hover:bg-accent-light"
+          <a
+            href={APP_LOGIN_URL}
+            className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-accent-light"
           >
-            {lang === "ar" ? "دخول" : "Sign in"}
-          </Link>
+            {lang === "ar" ? "الدخول إلى التطبيق" : "Login to Application"}
+          </a>
         </div>
 
         <button
@@ -57,9 +64,12 @@ export function PublicNav({ items }: { items: PublicNavItem[] }) {
           </nav>
           <div className="mt-3 flex items-center gap-3">
             <LanguageToggle />
-            <Link href="/login" className="rounded bg-accent px-3 py-1.5 text-sm font-medium">
-              {lang === "ar" ? "دخول" : "Sign in"}
-            </Link>
+            <a
+              href={APP_LOGIN_URL}
+              className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white"
+            >
+              {lang === "ar" ? "الدخول إلى التطبيق" : "Login to Application"}
+            </a>
           </div>
         </div>
       )}
