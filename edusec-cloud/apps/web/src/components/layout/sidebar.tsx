@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/cms/pages", label: "Pages" },
   { href: "/cms/navigation", label: "Navigation" },
   { href: "/cms/programs", label: "Programs" },
+  { href: "/cms/contact", label: "Messages" },
 ];
 
 /** Collapsible sidebar navigation (brief Section 3). */
