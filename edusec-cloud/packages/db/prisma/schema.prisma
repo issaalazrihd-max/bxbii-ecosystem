@@ -29,12 +29,13 @@ model Tenant {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  branches        Branch[]
-  users           User[]
-  roles           Role[]
-  pages           Page[]
-  navigationItems NavigationItem[]
-  programs        Program[]
+  branches           Branch[]
+  users              User[]
+  roles              Role[]
+  pages              Page[]
+  navigationItems    NavigationItem[]
+  programs           Program[]
+  contactSubmissions ContactSubmission[]
 
   @@map("tenants")
 }
@@ -713,4 +714,38 @@ model Program {
   @@unique([tenantId, slug])
   @@index([tenantId, position])
   @@map("programs")
+}
+
+// ---------------------------------------------------------------------------
+// Contact submissions (bxbii Ecosystem brief — Contact module) — messages
+// visitors send from the public /contact-us page's CONTACT_FORM block.
+// Platform-wide like Page/NavigationItem/Program above, not branch-scoped:
+// the public website is one front door for the whole tenant, not any one
+// branch. Unlike Program, this is an inbox of citizen-submitted rows, not
+// editorial content, so it carries no isVisible/position fields — every
+// submission is real and ordering is purely by recency (createdAt).
+// ---------------------------------------------------------------------------
+
+enum ContactSubmissionStatus {
+  NEW
+  READ
+  ARCHIVED
+}
+
+model ContactSubmission {
+  id        String                  @id @default(uuid())
+  tenantId  String                  @map("tenant_id")
+  tenant    Tenant                  @relation(fields: [tenantId], references: [id])
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  status    ContactSubmissionStatus @default(NEW)
+  createdAt DateTime                @default(now()) @map("created_at")
+  updatedAt DateTime                @updatedAt @map("updated_at")
+
+  @@index([tenantId, status])
+  @@index([tenantId, createdAt])
+  @@map("contact_submissions")
 }
