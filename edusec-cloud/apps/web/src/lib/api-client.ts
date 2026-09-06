@@ -143,6 +143,25 @@ export interface AdminNavItem {
   children: AdminNavItem[];
 }
 
+export interface AdminProgram {
+  id: string;
+  slug: string;
+  arDomain: string;
+  enDomain: string;
+  arName: string;
+  enName: string;
+  arDescription: string;
+  enDescription: string;
+  arDuration: string;
+  enDuration: string;
+  arFormat: string;
+  enFormat: string;
+  status: "OPEN" | "COMING_SOON";
+  hrefOverride: string | null;
+  position: number;
+  isVisible: boolean;
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/login", {
@@ -215,4 +234,16 @@ export const api = {
     request<{ id: string; deleted: boolean }>(`/cms/navigation/${itemId}`, { method: "DELETE" }),
   reorderNavigation: (items: { id: string; parentId?: string | null }[]) =>
     request<AdminNavItem[]>("/cms/navigation/reorder", { method: "POST", body: JSON.stringify({ items }) }),
+
+  // --- CMS: Programs catalog (Programs module, backs the public /programs
+  // page) --------------------------------------------------------------
+  listPrograms: () => request<AdminProgram[]>("/cms/programs"),
+  createProgram: (dto: Omit<AdminProgram, "id" | "position" | "isVisible"> & { isVisible?: boolean }) =>
+    request<AdminProgram>("/cms/programs", { method: "POST", body: JSON.stringify(dto) }),
+  updateProgram: (programId: string, dto: Partial<Omit<AdminProgram, "id">>) =>
+    request<AdminProgram>(`/cms/programs/${programId}`, { method: "PATCH", body: JSON.stringify(dto) }),
+  deleteProgram: (programId: string) =>
+    request<{ id: string; deleted: boolean }>(`/cms/programs/${programId}`, { method: "DELETE" }),
+  reorderPrograms: (orderedProgramIds: string[]) =>
+    request<AdminProgram[]>("/cms/programs/reorder", { method: "POST", body: JSON.stringify({ orderedProgramIds }) }),
 };

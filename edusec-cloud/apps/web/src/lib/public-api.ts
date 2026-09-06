@@ -58,6 +58,25 @@ export interface PublicNavItem {
   children: PublicNavItem[];
 }
 
+/** One row of the Programs catalog (Programs module), as the public site sees it. */
+export interface PublicProgram {
+  id: string;
+  slug: string;
+  arDomain: string;
+  enDomain: string;
+  arName: string;
+  enName: string;
+  arDescription: string;
+  enDescription: string;
+  arDuration: string;
+  enDuration: string;
+  arFormat: string;
+  enFormat: string;
+  status: "OPEN" | "COMING_SOON";
+  hrefOverride: string | null;
+  position: number;
+}
+
 async function publicFetch<T>(path: string): Promise<T | null> {
   try {
     const res = await fetch(`${API_URL}/api/v1${path}`, {
@@ -80,4 +99,5 @@ export const publicApi = {
   getHomePage: () => publicFetch<PublicPage>("/public/pages/home"),
   getPageBySlug: (slug: string) => publicFetch<PublicPage>(`/public/pages/${slug}`),
   getNavigation: () => publicFetch<PublicNavItem[]>("/public/navigation"),
+  getPrograms: () => publicFetch<PublicProgram[]>("/public/programs"),
 };
