@@ -4,7 +4,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 // refresh token into an httpOnly cookie set by the API — kept simple here
 // since this is a foundation scaffold, not the finished auth UX.
 let accessToken: string | null = null;
-let refreshToken: string | null = null;
+let refreshToken: string | null =
+  typeof window !== "undefined" ? window.sessionStorage.getItem("bxbii.refreshToken") : null;
+let refreshPromise: Promise<void> | null = null;
 
 export function setTokens(tokens: { accessToken: string; refreshToken: string }) {
   accessToken = tokens.accessToken;
@@ -22,7 +24,52 @@ export function clearTokens() {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+/**
+ * The access token only ever lives in memory, so it's gone after any full
+ * page load (typing a URL, hitting refresh, opening a new tab). The refresh
+ * token survives in sessionStorage, so on the first request after a reload
+ * we exchange it for a fresh access token before calling the API. This is
+ * what fixes admin pages (e.g. /cms/navigation) showing "Unauthorized" and
+ * a false empty state whenever they're reached other than by clicking
+ * through the app right after logging in — previously nothing ever
+ * rehydrated the access token from the stored refresh token.
+ *
+ * Concurrent callers (e.g. a page that fires two requests in parallel)
+ * share one in-flight refresh so the single-use refresh token isn't
+ * consumed twice.
+ */
+async function ensureAccessToken(): Promise<void> {
+  if (accessToken || !refreshToken) return;
+
+  if (!refreshPromise) {
+    const tokenToUse = refreshToken;
+    refreshPromise = fetch(`${API_URL}/api/v1/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: tokenToUse }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          clearTokens();
+          return;
+        }
+        const data = (await res.json()) as { accessToken: string; refreshToken: string };
+        setTokens(data);
+      })
+      .catch(() => {
+        clearTokens();
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+}
+
+async function request<T>(path: string, options: RequestInit = {}, _retried = false): Promise<T> {
+  await ensureAccessToken();
+
   const res = await fetch(`${API_URL}/api/v1${path}`, {
     ...options,
     headers: {
@@ -31,6 +78,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       ...options.headers,
     },
   });
+
+  // Access tokens are short-lived (15m). If one expired mid-session, do a
+  // single transparent refresh-and-retry before giving up.
+  if (res.status === 401 && !_retried && refreshToken) {
+    accessToken = null;
+    await ensureAccessToken();
+    if (accessToken) return request<T>(path, options, true);
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
