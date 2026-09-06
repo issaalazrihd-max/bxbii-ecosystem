@@ -7,7 +7,7 @@
  * Analysis, Section 2.7).
  *
  * Permission lists here only cover what this foundation scaffold actually
- * implements (Branches, Students + transfer workflow, CMS/Navigation/Programs). As Phase 4+ modules
+ * implements (Branches, Students + transfer workflow, CMS/Navigation/Programs/Contact). As Phase 4+ modules
  * land (Admissions/CRM, Finance, HR, Inventory, Facilities, ...), extend
  * each role's permission list — the role and its code/name never need to
  * change, just what it's allowed to do.
@@ -22,13 +22,13 @@ export const ROLE_TEMPLATES: Array<{
     code: "SUPER_ADMIN",
     name: "Super Administrator",
     description: "Full system access across every module, branch, and the platform website/CMS.",
-    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage", "cms.programs.view", "cms.programs.manage"],
+    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage", "cms.programs.view", "cms.programs.manage", "cms.contact.view", "cms.contact.manage"],
   },
   {
     code: "PLATFORM_ADMIN",
     name: "Platform Administrator",
     description: "Manages the public website: pages, the page builder, navigation, and site-wide settings (bxbii Ecosystem brief, Section 32) — distinct from Institute Admin, which manages one institute's operations.",
-    permissions: ["cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage", "cms.programs.view", "cms.programs.manage"],
+    permissions: ["cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage", "cms.programs.view", "cms.programs.manage", "cms.contact.view", "cms.contact.manage"],
   },
   {
     code: "INSTITUTE_ADMIN",
@@ -46,13 +46,13 @@ export const ROLE_TEMPLATES: Array<{
     code: "ACADEMIC_MANAGER",
     name: "Academic Manager",
     description: "Manages academic operations (programs, courses, timetable — Phase 4).",
-    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.transfer.review", "cms.programs.view", "cms.programs.manage"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.transfer.review", "cms.programs.view", "cms.programs.manage", "cms.contact.view", "cms.contact.manage"],
   },
   {
     code: "ADMISSIONS_OFFICER",
     name: "Admissions Officer",
     description: "Manages leads and admissions (full CRM lands in Phase 4).",
-    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "cms.contact.view"],
   },
   {
     code: "FINANCE_OFFICER",

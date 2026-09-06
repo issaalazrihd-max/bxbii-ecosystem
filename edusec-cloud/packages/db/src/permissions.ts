@@ -38,4 +38,10 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   // Program has no nested sub-resource the way a Page has Sections.
   { module: "cms", action: "programs.view", code: "cms.programs.view" },
   { module: "cms", action: "programs.manage", code: "cms.programs.manage" },
+
+  // Contact submissions inbox (bxbii Ecosystem brief — Contact module),
+  // fed by the public /contact-us page's form. Same view/manage split as
+  // Programs/Navigation — a submission has no nested sub-resource either.
+  { module: "cms", action: "contact.view", code: "cms.contact.view" },
+  { module: "cms", action: "contact.manage", code: "cms.contact.manage" },
 ];
