@@ -25,6 +25,19 @@ export function clearTokens() {
 }
 
 /**
+ * Whether a session is stored at all (a refresh token we could rehydrate
+ * an access token from), regardless of whether that refresh token still
+ * turns out to be valid server-side. Used by route guards (e.g. the
+ * (dashboard) layout) to decide "send this visitor to /login" vs. "let
+ * them through and let the existing 401/refresh handling in request()
+ * take it from there" — it intentionally does not call the API, so it
+ * can run synchronously on mount before any request is made.
+ */
+export function hasSession(): boolean {
+  return !!refreshToken;
+}
+
+/**
  * The access token only ever lives in memory, so it's gone after any full
  * page load (typing a URL, hitting refresh, opening a new tab). The refresh
  * token survives in sessionStorage, so on the first request after a reload
