@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { PublicSection } from "@/lib/public-api";
+import { publicApi } from "@/lib/public-api";
 import { pickContent, type Lang } from "@/lib/i18n";
 import { useLanguage } from "./language-provider";
 
@@ -213,7 +214,7 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
       ) : null;
 
     case "CONTACT_FORM":
-      return <ContactFormBlock title={c.title} description={c.description} submitLabel={c.submitLabel} />;
+      return <ContactFormBlock title={c.title} description={c.description} submitLabel={c.submitLabel} lang={lang} />;
 
     case "PRODUCTS":
     case "COURSES":
@@ -232,43 +233,119 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
 
 const FORM_FIELD = `w-full rounded border border-surface-border px-3 py-2 text-sm ${FOCUS_RING} focus-visible:ring-offset-0 focus-visible:border-accent`;
 
+/**
+ * Field labels/placeholders and the send/success/error copy are UI chrome,
+ * not editorial content, so they live here as a plain bilingual object
+ * rather than as ar/enContent fields on the section (title/description/
+ * submitLabel stay page-builder-editable since an editor writes those per
+ * page).
+ */
+const contactFormCopy = {
+  en: {
+    name: "Your name",
+    email: "Email",
+    phone: "Phone (optional)",
+    subject: "Subject (optional)",
+    message: "Message",
+    send: "Send",
+    sending: "Sending...",
+    success: "Thanks — we'll be in touch shortly.",
+    error: "Something went wrong sending your message. Please try again.",
+  },
+  ar: {
+    name: "الاسم",
+    email: "البريد الإلكتروني",
+    phone: "الهاتف (اختياري)",
+    subject: "الموضوع (اختياري)",
+    message: "الرسالة",
+    send: "إرسال",
+    sending: "جارٍ الإرسال...",
+    success: "شكراً لتواصلكم — سنرد عليكم قريباً.",
+    error: "حدث خطأ أثناء إرسال رسالتكم. يرجى المحاولة مرة أخرى.",
+  },
+};
+
+/**
+ * Contact module: wired to the real POST /public/contact endpoint instead
+ * of the previous Phase-2 shell that faked a success message without
+ * sending anything anywhere. Field values are free text a visitor types,
+ * not editorial content, so — unlike title/description/submitLabel above
+ * — the inputs never get a hardcoded dir: they inherit the document-level
+ * dir the language toggle already sets, exactly like the Task #40 fix for
+ * other public-facing free-text inputs.
+ */
 function ContactFormBlock({
   title,
   description,
   submitLabel,
+  lang,
 }: {
   title?: string;
   description?: string;
   submitLabel?: string;
+  lang: Lang;
 }) {
-  const [sent, setSent] = useState(false);
+  const copy = contactFormCopy[lang];
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [values, setValues] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+
+  const update = (key: keyof typeof values) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setValues((v) => ({ ...v, [key]: e.target.value }));
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    const ok = await publicApi.submitContactForm({
+      name: values.name,
+      email: values.email,
+      phone: values.phone || undefined,
+      subject: values.subject || undefined,
+      message: values.message,
+    });
+    if (ok) {
+      setStatus("sent");
+      setValues({ name: "", email: "", phone: "", subject: "", message: "" });
+    } else {
+      setStatus("error");
+    }
+  };
+
   return (
     <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
       {title && <h2 className="mb-2 text-2xl font-bold text-brand">{title}</h2>}
       {description && <p className="mb-6 text-slate-600">{description}</p>}
-      {sent ? (
+      {status === "sent" ? (
         <p className="rounded border border-status-success/30 bg-status-success/10 px-4 py-3 text-status-success">
-          Thanks — we&apos;ll be in touch shortly.
+          {copy.success}
         </p>
       ) : (
-        <form
-          className="space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            // No backend endpoint for public inquiries exists yet — this is
-            // a Phase 2 shell block. Wiring this to a real Contact/Lead API
-            // is tracked as follow-up work, not silently pretended away.
-            setSent(true);
-          }}
-        >
-          <input required placeholder="Your name" className={FORM_FIELD} />
-          <input required type="email" placeholder="Email" className={FORM_FIELD} />
-          <textarea required placeholder="Message" rows={4} className={FORM_FIELD} />
+        <form className="space-y-4" onSubmit={onSubmit}>
+          <input required placeholder={copy.name} value={values.name} onChange={update("name")} className={FORM_FIELD} />
+          <input
+            required
+            type="email"
+            placeholder={copy.email}
+            value={values.email}
+            onChange={update("email")}
+            className={FORM_FIELD}
+          />
+          <input placeholder={copy.phone} value={values.phone} onChange={update("phone")} className={FORM_FIELD} />
+          <input placeholder={copy.subject} value={values.subject} onChange={update("subject")} className={FORM_FIELD} />
+          <textarea
+            required
+            placeholder={copy.message}
+            rows={4}
+            value={values.message}
+            onChange={update("message")}
+            className={FORM_FIELD}
+          />
+          {status === "error" && <p className="text-sm text-status-danger">{copy.error}</p>}
           <button
             type="submit"
-            className={`rounded bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-light ${FOCUS_RING}`}
+            disabled={status === "sending"}
+            className={`rounded bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-light disabled:opacity-50 ${FOCUS_RING}`}
           >
-            {submitLabel ?? "Send"}
+            {status === "sending" ? copy.sending : submitLabel ?? copy.send}
           </button>
         </form>
       )}
