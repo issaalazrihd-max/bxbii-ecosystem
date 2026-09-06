@@ -8,8 +8,8 @@
  * that engine, this platform ships pre-built roles against this catalog
  * instead of leaving every install to build roles from a blank slate.
  *
- * As later phases add modules (Programs, Timetable, Finance, ...), extend
- * this list and re-run the seed — it is idempotent (upsert by code).
+ * As later phases add modules (Timetable, Finance, ...), extend this list
+ * and re-run the seed — it is idempotent (upsert by code).
  */
 export const PERMISSIONS: Array<{ module: string; action: string; code: string }> = [
   { module: "dashboard", action: "view", code: "dashboard.view" },
@@ -32,4 +32,10 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   { module: "cms", action: "pages.delete", code: "cms.pages.delete" },
   { module: "cms", action: "navigation.view", code: "cms.navigation.view" },
   { module: "cms", action: "navigation.manage", code: "cms.navigation.manage" },
+
+  // Programs catalog (bxbii Ecosystem brief — Programs module), backing the
+  // public /programs page. Same view/manage split as Navigation, since a
+  // Program has no nested sub-resource the way a Page has Sections.
+  { module: "cms", action: "programs.view", code: "cms.programs.view" },
+  { module: "cms", action: "programs.manage", code: "cms.programs.manage" },
 ];

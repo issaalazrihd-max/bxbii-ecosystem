@@ -113,6 +113,7 @@ async function main() {
   console.log(`  super admin ready: ${superAdminEmail} / ChangeMe123! (CHANGE THIS IMMEDIATELY IN ANY REAL DEPLOYMENT)`);
 
   await seedCms(tenant.id, adminUser.id);
+  await seedPrograms(tenant.id);
   await seedDemoData(tenant.id, branches);
 
   console.log("Seed complete.");
@@ -470,6 +471,96 @@ async function seedCms(tenantId: string, adminUserId: string) {
   await navEntry("اتصل بنا", "Contact Us", contact.id, 6);
 
   console.log("  9 navigation items seeded (incl. Projects submenu)");
+}
+
+/**
+ * Programs catalog (bxbii Ecosystem brief — Programs module), backing the
+ * public /programs page. Seeded with exactly the same three entries that
+ * were hardcoded in components/public/programs-page.tsx before this module
+ * existed, so switching the page over to real data does not change what
+ * visitors see: one real open program (Finance for Non-Financials, linking
+ * to /training) plus two honestly-labeled "coming soon" domains with no
+ * fake dates or links. Guarded by a one-time count check, same pattern as
+ * seedCms, so re-running the seed never duplicates rows or overwrites an
+ * admin's edits.
+ */
+async function seedPrograms(tenantId: string) {
+  const existingPrograms = await prisma.program.count({ where: { tenantId } });
+  if (existingPrograms > 0) {
+    console.log("  Programs catalog already seeded — skipping.");
+    return;
+  }
+
+  const PROGRAM_SEED: Array<{
+    slug: string;
+    arDomain: string;
+    enDomain: string;
+    arName: string;
+    enName: string;
+    arDescription: string;
+    enDescription: string;
+    arDuration: string;
+    enDuration: string;
+    arFormat: string;
+    enFormat: string;
+    status: "OPEN" | "COMING_SOON";
+    hrefOverride: string | null;
+  }> = [
+    {
+      slug: "finance-non-financials",
+      arDomain: "الأعمال والمالية",
+      enDomain: "Business & Finance",
+      arName: "المالية لغير الماليين",
+      enName: "Finance for Non-Financials",
+      arDescription:
+        "برنامج تفاعلي من مِران ستوديو مدته 7 أيام، لبناء فهم عملي للقوائم المالية واتخاذ القرار بالأرقام — دون الحاجة لخلفية مالية مسبقة.",
+      enDescription:
+        "A 7-day interactive program by Miran Studio that builds a practical understanding of financial statements and number-driven decision-making — no finance background required.",
+      arDuration: "7 أيام، بالسرعة التي تناسبك",
+      enDuration: "7 days, self-paced",
+      arFormat: "عن بُعد",
+      enFormat: "Online",
+      status: "OPEN",
+      hrefOverride: "/training",
+    },
+    {
+      slug: "technology-digital",
+      arDomain: "التقنية والمهارات الرقمية",
+      enDomain: "Technology & Digital Skills",
+      arName: "مسار التقنية والمهارات الرقمية",
+      enName: "Technology & Digital Skills Track",
+      arDescription: "مسار تدريبي متخصص في التقنية قيد الإعداد حالياً.",
+      enDescription: "A dedicated technology training track is in development.",
+      arDuration: "يُعلن لاحقاً",
+      enDuration: "To be announced",
+      arFormat: "عن بُعد",
+      enFormat: "Online",
+      status: "COMING_SOON",
+      hrefOverride: null,
+    },
+    {
+      slug: "leadership-management",
+      arDomain: "القيادة والإدارة",
+      enDomain: "Leadership & Management",
+      arName: "مسار القيادة والإدارة",
+      enName: "Leadership & Management Track",
+      arDescription: "برنامج في القيادة وإدارة الفرق قيد الإعداد حالياً.",
+      enDescription: "A leadership and people-management program is in development.",
+      arDuration: "يُعلن لاحقاً",
+      enDuration: "To be announced",
+      arFormat: "عن بُعد",
+      enFormat: "Online",
+      status: "COMING_SOON",
+      hrefOverride: null,
+    },
+  ];
+
+  let position = 0;
+  for (const p of PROGRAM_SEED) {
+    await prisma.program.create({ data: { tenantId, position, ...p } });
+    position += 1;
+  }
+  console.log(`  ${PROGRAM_SEED.length} programs seeded`);
 }
 
 main()
