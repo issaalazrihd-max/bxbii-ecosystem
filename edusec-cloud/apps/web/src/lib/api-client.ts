@@ -182,6 +182,23 @@ export interface AdminPartner {
   isVisible: boolean;
 }
 
+export interface AdminCourse {
+  id: string;
+  slug: string;
+  arTitle: string;
+  enTitle: string;
+  arDescription: string;
+  enDescription: string;
+  arDuration: string;
+  enDuration: string;
+  arFormat: string;
+  enFormat: string;
+  status: "OPEN" | "COMING_SOON";
+  hrefOverride: string | null;
+  position: number;
+  isVisible: boolean;
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/login", {
@@ -289,4 +306,16 @@ export const api = {
     request<{ id: string; deleted: boolean }>(`/cms/partners/${partnerId}`, { method: "DELETE" }),
   reorderPartners: (orderedPartnerIds: string[]) =>
     request<AdminPartner[]>("/cms/partners/reorder", { method: "POST", body: JSON.stringify({ orderedPartnerIds }) }),
+
+  // --- CMS: Courses catalog (Courses module, backs the COURSES
+  // page-builder block) -----------------------------------------------------
+  listCourses: () => request<AdminCourse[]>("/cms/courses"),
+  createCourse: (dto: Omit<AdminCourse, "id" | "position" | "isVisible"> & { isVisible?: boolean }) =>
+    request<AdminCourse>("/cms/courses", { method: "POST", body: JSON.stringify(dto) }),
+  updateCourse: (courseId: string, dto: Partial<Omit<AdminCourse, "id">>) =>
+    request<AdminCourse>(`/cms/courses/${courseId}`, { method: "PATCH", body: JSON.stringify(dto) }),
+  deleteCourse: (courseId: string) =>
+    request<{ id: string; deleted: boolean }>(`/cms/courses/${courseId}`, { method: "DELETE" }),
+  reorderCourses: (orderedCourseIds: string[]) =>
+    request<AdminCourse[]>("/cms/courses/reorder", { method: "POST", body: JSON.stringify({ orderedCourseIds }) }),
 };
