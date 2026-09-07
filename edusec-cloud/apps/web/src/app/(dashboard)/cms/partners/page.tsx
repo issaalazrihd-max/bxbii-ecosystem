@@ -30,7 +30,7 @@ function toDto(d: Draft) {
   return {
     name: d.name.trim(),
     logoUrl: d.logoUrl.trim(),
-    websiteUrl: d.websiteUrl.trim() || undefined,
+    websiteUrl: d.websiteUrl.trim() || null,
   };
 }
 
