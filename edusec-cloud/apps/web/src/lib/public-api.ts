@@ -77,6 +77,15 @@ export interface PublicProgram {
   position: number;
 }
 
+/** One row of the Partner roster (Partners module), as the public site sees it. */
+export interface PublicPartner {
+  id: string;
+  name: string;
+  logoUrl: string;
+  websiteUrl: string | null;
+  position: number;
+}
+
 /** Body the /contact-us page's form sends (Contact module). */
 export interface ContactFormInput {
   name: string;
@@ -129,5 +138,6 @@ export const publicApi = {
   getPageBySlug: (slug: string) => publicFetch<PublicPage>(`/public/pages/${slug}`),
   getNavigation: () => publicFetch<PublicNavItem[]>("/public/navigation"),
   getPrograms: () => publicFetch<PublicProgram[]>("/public/programs"),
+  getPartners: () => publicFetch<PublicPartner[]>("/public/partners"),
   submitContactForm: (data: ContactFormInput) => publicPost("/public/contact", data),
 };
