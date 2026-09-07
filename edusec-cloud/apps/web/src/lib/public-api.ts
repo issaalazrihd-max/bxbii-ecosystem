@@ -86,6 +86,23 @@ export interface PublicPartner {
   position: number;
 }
 
+/** One row of the Courses catalog (Courses module), as the public site sees it. */
+export interface PublicCourse {
+  id: string;
+  slug: string;
+  arTitle: string;
+  enTitle: string;
+  arDescription: string;
+  enDescription: string;
+  arDuration: string;
+  enDuration: string;
+  arFormat: string;
+  enFormat: string;
+  status: "OPEN" | "COMING_SOON";
+  hrefOverride: string | null;
+  position: number;
+}
+
 /** Body the /contact-us page's form sends (Contact module). */
 export interface ContactFormInput {
   name: string;
@@ -138,6 +155,7 @@ export const publicApi = {
   getPageBySlug: (slug: string) => publicFetch<PublicPage>(`/public/pages/${slug}`),
   getNavigation: () => publicFetch<PublicNavItem[]>("/public/navigation"),
   getPrograms: () => publicFetch<PublicProgram[]>("/public/programs"),
+  getCourses: () => publicFetch<PublicCourse[]>("/public/courses"),
   getPartners: () => publicFetch<PublicPartner[]>("/public/partners"),
   submitContactForm: (data: ContactFormInput) => publicPost("/public/contact", data),
 };
