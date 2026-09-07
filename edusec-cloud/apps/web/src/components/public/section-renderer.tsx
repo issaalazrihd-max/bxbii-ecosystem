@@ -2,23 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { PublicSection, PublicPartner, PublicCourse } from "@/lib/public-api";
+import type { PublicSection, PublicPartner, PublicCourse, PublicProgram } from "@/lib/public-api";
 import { publicApi } from "@/lib/public-api";
 import { pickContent, type Lang } from "@/lib/i18n";
 import { useLanguage } from "./language-provider";
 
 /**
  * Renders one Page Builder block (brief Section 30's palette: Hero,
- * Heading, Text, Image, Video, Button, Products, Courses, Projects,
- * Gallery, Team, Partners, Contact Form, Files, PDF, Custom).
+ * Heading, Text, Image, Video, Button, Products, Programs, Courses,
+ * Projects, Gallery, Team, Partners, Contact Form, Files, PDF, Custom).
  *
  * Content shape is intentionally loose JSON per section (that's the point
  * of the page builder), so every field read here is defensive — a
  * half-filled block renders something reasonable instead of crashing the
  * page. Products/Projects still render an honest "coming soon" panel until
  * the Store and Projects modules exist (later phases) to back them with
- * real data; Courses (like Partners before it) now has a real backing
- * module and renders actual data instead.
+ * real data; Programs, Courses and Partners now have real backing modules
+ * and render actual data instead.
  *
  * Interface pass (Task #41): every interactive element below now carries
  * a visible focus-visible ring. None of them had one before — fine for a
@@ -164,6 +164,9 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
     case "PARTNERS":
       return <PartnersBlock title={c.title} />;
 
+    case "PROGRAMS":
+      return <ProgramsBlock title={c.title} lang={lang} />;
+
     case "COURSES":
       return <CoursesBlock title={c.title} lang={lang} />;
 
@@ -265,12 +268,142 @@ function PartnersBlock({ title }: { title?: string }) {
 }
 
 /**
+ * One catalog card shared by Programs and Courses — same OPEN/COMING_SOON
+ * badge treatment, same layout, only the fields feeding it differ. Pulled
+ * out once ProgramsBlock needed the exact card CoursesBlock already had,
+ * instead of forking a second near-identical copy.
+ */
+function CatalogCard({
+  status,
+  name,
+  description,
+  duration,
+  format,
+  hrefOverride,
+  lang,
+}: {
+  status: "OPEN" | "COMING_SOON";
+  name: string;
+  description: string;
+  duration?: string;
+  format?: string;
+  hrefOverride?: string | null;
+  lang: Lang;
+}) {
+  const isOpen = status === "OPEN";
+  const card = (
+    <div className="flex h-full flex-col rounded-lg border border-surface-border p-5">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+            isOpen ? "bg-status-success/10 text-status-success" : "bg-surface-subtle text-slate-500"
+          }`}
+        >
+          {isOpen ? (lang === "ar" ? "التسجيل متاح" : "Open") : lang === "ar" ? "قريباً" : "Coming soon"}
+        </span>
+      </div>
+      <h3 className="text-lg font-semibold text-brand">{name}</h3>
+      <p className="mt-2 flex-1 text-sm text-slate-600">{description}</p>
+      <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
+        {duration && <span>{duration}</span>}
+        {format && <span>{format}</span>}
+      </div>
+    </div>
+  );
+  return isOpen && hrefOverride ? (
+    <Link href={hrefOverride} className={`rounded-lg ${FOCUS_RING}`}>
+      {card}
+    </Link>
+  ) : (
+    <div>{card}</div>
+  );
+}
+
+/**
+ * Programs module: fetches the real programs catalog from GET
+ * /public/programs — the same real-data upgrade Courses and Partners
+ * already have, so the homepage's Tuwaiq-inspired "training domains"
+ * section reads live off the same table the dedicated /programs page
+ * uses instead of duplicating program content as static section JSON.
+ * Groups cards by domain (Program.arDomain/enDomain) since that grouping
+ * already exists on the model — it's exactly the "browse by domain" shape
+ * a Tuwaiq-style homepage uses, with zero new backend data. Ends with a
+ * link to /programs for the full catalog, mirroring the "view all" pattern.
+ */
+function ProgramsBlock({ title, lang }: { title?: string; lang: Lang }) {
+  const [programs, setPrograms] = useState<PublicProgram[] | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    publicApi.getPrograms().then((result) => {
+      if (active) setPrograms(result ?? []);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!programs || programs.length === 0) return null;
+
+  const domains: { label: string; items: PublicProgram[] }[] = [];
+  const byLabel = new Map<string, { label: string; items: PublicProgram[] }>();
+  for (const p of programs) {
+    const label = (lang === "ar" ? p.arDomain : p.enDomain) || "";
+    let bucket = byLabel.get(label);
+    if (!bucket) {
+      bucket = { label, items: [] };
+      byLabel.set(label, bucket);
+      domains.push(bucket);
+    }
+    bucket.items.push(p);
+  }
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
+      <div className="space-y-8">
+        {domains.map((domain) => (
+          <div key={domain.label || "_"}>
+            {domain.label && (
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-accent">{domain.label}</h3>
+            )}
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {domain.items.map((program) => (
+                <CatalogCard
+                  key={program.id}
+                  status={program.status}
+                  name={lang === "ar" ? program.arName : program.enName}
+                  description={lang === "ar" ? program.arDescription : program.enDescription}
+                  duration={lang === "ar" ? program.arDuration : program.enDuration}
+                  format={lang === "ar" ? program.arFormat : program.enFormat}
+                  hrefOverride={program.hrefOverride}
+                  lang={lang}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-8 text-center">
+        <Link
+          href="/programs"
+          className={`inline-block rounded border border-brand px-5 py-2 text-sm font-semibold text-brand hover:bg-brand hover:text-white ${FOCUS_RING}`}
+        >
+          {lang === "ar" ? "عرض جميع البرامج" : "View all programs"}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Courses module: fetches the real course catalog from GET /public/courses,
  * the same upgrade Partners got — replacing the generic "coming soon"
  * placeholder this block used to share with Products/Projects now that a
  * real Courses admin module backs it. Mirrors PartnersBlock's loading/empty
  * behavior (render nothing rather than a broken-looking empty grid), and
- * borrows the OPEN/COMING_SOON card treatment already proven on /programs.
+ * shares CatalogCard with ProgramsBlock for the OPEN/COMING_SOON treatment
+ * already proven on /programs.
  */
 function CoursesBlock({ title, lang }: { title?: string; lang: Lang }) {
   const [courses, setCourses] = useState<PublicCourse[] | null>(null);
@@ -291,45 +424,18 @@ function CoursesBlock({ title, lang }: { title?: string; lang: Lang }) {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {courses.map((course) => {
-          const courseTitle = lang === "ar" ? course.arTitle : course.enTitle;
-          const description = lang === "ar" ? course.arDescription : course.enDescription;
-          const duration = lang === "ar" ? course.arDuration : course.enDuration;
-          const format = lang === "ar" ? course.arFormat : course.enFormat;
-          const isOpen = course.status === "OPEN";
-          const card = (
-            <div className="flex h-full flex-col rounded-lg border border-surface-border p-5">
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    isOpen ? "bg-status-success/10 text-status-success" : "bg-surface-subtle text-slate-500"
-                  }`}
-                >
-                  {isOpen
-                    ? lang === "ar"
-                      ? "التسجيل متاح"
-                      : "Open"
-                    : lang === "ar"
-                      ? "قريباً"
-                      : "Coming soon"}
-                </span>
-              </div>
-              <h3 className="text-lg font-semibold text-brand">{courseTitle}</h3>
-              <p className="mt-2 flex-1 text-sm text-slate-600">{description}</p>
-              <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
-                {duration && <span>{duration}</span>}
-                {format && <span>{format}</span>}
-              </div>
-            </div>
-          );
-          return isOpen && course.hrefOverride ? (
-            <Link key={course.id} href={course.hrefOverride} className={`rounded-lg ${FOCUS_RING}`}>
-              {card}
-            </Link>
-          ) : (
-            <div key={course.id}>{card}</div>
-          );
-        })}
+        {courses.map((course) => (
+          <CatalogCard
+            key={course.id}
+            status={course.status}
+            name={lang === "ar" ? course.arTitle : course.enTitle}
+            description={lang === "ar" ? course.arDescription : course.enDescription}
+            duration={lang === "ar" ? course.arDuration : course.enDuration}
+            format={lang === "ar" ? course.arFormat : course.enFormat}
+            hrefOverride={course.hrefOverride}
+            lang={lang}
+          />
+        ))}
       </div>
     </div>
   );
