@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { PublicSection, PublicPartner } from "@/lib/public-api";
+import type { PublicSection, PublicPartner, PublicCourse } from "@/lib/public-api";
 import { publicApi } from "@/lib/public-api";
 import { pickContent, type Lang } from "@/lib/i18n";
 import { useLanguage } from "./language-provider";
@@ -15,9 +15,10 @@ import { useLanguage } from "./language-provider";
  * Content shape is intentionally loose JSON per section (that's the point
  * of the page builder), so every field read here is defensive — a
  * half-filled block renders something reasonable instead of crashing the
- * page. Products/Courses/Projects render an honest "coming soon" panel
- * until the Store, LMS, and Projects modules exist (later phases) to back
- * them with real data.
+ * page. Products/Projects still render an honest "coming soon" panel until
+ * the Store and Projects modules exist (later phases) to back them with
+ * real data; Courses (like Partners before it) now has a real backing
+ * module and renders actual data instead.
  *
  * Interface pass (Task #41): every interactive element below now carries
  * a visible focus-visible ring. None of them had one before — fine for a
@@ -163,6 +164,9 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
     case "PARTNERS":
       return <PartnersBlock title={c.title} />;
 
+    case "COURSES":
+      return <CoursesBlock title={c.title} lang={lang} />;
+
     case "FILES": {
       const files: any[] = Array.isArray(c.files) ? c.files : [];
       return (
@@ -198,7 +202,6 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
       return <ContactFormBlock title={c.title} description={c.description} submitLabel={c.submitLabel} lang={lang} />;
 
     case "PRODUCTS":
-    case "COURSES":
     case "PROJECTS":
       return <ComingSoonBlock title={c.title} type={section.sectionType} lang={lang} />;
 
@@ -256,6 +259,77 @@ function PartnersBlock({ title }: { title?: string }) {
             <img key={partner.id} src={partner.logoUrl} alt={partner.name} className="h-10 grayscale hover:grayscale-0" />
           ),
         )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Courses module: fetches the real course catalog from GET /public/courses,
+ * the same upgrade Partners got — replacing the generic "coming soon"
+ * placeholder this block used to share with Products/Projects now that a
+ * real Courses admin module backs it. Mirrors PartnersBlock's loading/empty
+ * behavior (render nothing rather than a broken-looking empty grid), and
+ * borrows the OPEN/COMING_SOON card treatment already proven on /programs.
+ */
+function CoursesBlock({ title, lang }: { title?: string; lang: Lang }) {
+  const [courses, setCourses] = useState<PublicCourse[] | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    publicApi.getCourses().then((result) => {
+      if (active) setCourses(result ?? []);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!courses || courses.length === 0) return null;
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {courses.map((course) => {
+          const courseTitle = lang === "ar" ? course.arTitle : course.enTitle;
+          const description = lang === "ar" ? course.arDescription : course.enDescription;
+          const duration = lang === "ar" ? course.arDuration : course.enDuration;
+          const format = lang === "ar" ? course.arFormat : course.enFormat;
+          const isOpen = course.status === "OPEN";
+          const card = (
+            <div className="flex h-full flex-col rounded-lg border border-surface-border p-5">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                    isOpen ? "bg-status-success/10 text-status-success" : "bg-surface-subtle text-slate-500"
+                  }`}
+                >
+                  {isOpen
+                    ? lang === "ar"
+                      ? "التسجيل متاح"
+                      : "Open"
+                    : lang === "ar"
+                      ? "قريباً"
+                      : "Coming soon"}
+                </span>
+              </div>
+              <h3 className="text-lg font-semibold text-brand">{courseTitle}</h3>
+              <p className="mt-2 flex-1 text-sm text-slate-600">{description}</p>
+              <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
+                {duration && <span>{duration}</span>}
+                {format && <span>{format}</span>}
+              </div>
+            </div>
+          );
+          return isOpen && course.hrefOverride ? (
+            <Link key={course.id} href={course.hrefOverride} className={`rounded-lg ${FOCUS_RING}`}>
+              {card}
+            </Link>
+          ) : (
+            <div key={course.id}>{card}</div>
+          );
+        })}
       </div>
     </div>
   );
@@ -390,8 +464,8 @@ function ComingSoonBlock({ title, type, lang }: { title?: string; type: string; 
         <h2 className="text-xl font-bold text-brand">{title ?? type}</h2>
         <p className="mt-2 text-sm text-slate-500">
           {lang === "ar"
-            ? "هذا القسم جاهز للعرض بمجرد ربطه بوحدة المتجر/الدورات/المشاريع القادمة."
-            : "This section is wired into the page — it will populate automatically once the Store / Courses / Projects module goes live."}
+            ? "هذا القسم جاهز للعرض بمجرد ربطه بوحدة المتجر أو المشاريع القادمة."
+            : "This section is wired into the page — it will populate automatically once the Store / Projects module goes live."}
         </p>
       </div>
     </div>
