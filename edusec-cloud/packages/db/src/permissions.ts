@@ -44,4 +44,10 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   // Programs/Navigation — a submission has no nested sub-resource either.
   { module: "cms", action: "contact.view", code: "cms.contact.view" },
   { module: "cms", action: "contact.manage", code: "cms.contact.manage" },
+
+  // Partner logos (bxbii Ecosystem brief — Partners module), backing the
+  // PARTNERS page-builder block. Same view/manage split as Programs/
+  // Navigation/Contact — a partner has no nested sub-resource either.
+  { module: "cms", action: "partners.view", code: "cms.partners.view" },
+  { module: "cms", action: "partners.manage", code: "cms.partners.manage" },
 ];
