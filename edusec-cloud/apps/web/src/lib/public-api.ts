@@ -16,6 +16,7 @@ export type PublicSectionType =
   | "VIDEO"
   | "BUTTON"
   | "PRODUCTS"
+  | "PROGRAMS"
   | "COURSES"
   | "PROJECTS"
   | "GALLERY"
