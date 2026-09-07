@@ -16,6 +16,7 @@ const BLOCK_TYPES = [
   "VIDEO",
   "BUTTON",
   "PRODUCTS",
+  "PROGRAMS",
   "COURSES",
   "PROJECTS",
   "GALLERY",
