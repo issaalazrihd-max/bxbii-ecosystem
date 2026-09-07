@@ -3,6 +3,7 @@ import { Public } from "../auth/decorators/public.decorator";
 import { PagesService } from "./pages.service";
 import { NavigationService } from "./navigation.service";
 import { ProgramsService } from "./programs.service";
+import { CoursesService } from "./courses.service";
 import { ContactService } from "./contact.service";
 import { PartnersService } from "./partners.service";
 import { CreateContactSubmissionDto } from "./dto/create-contact-submission.dto";
@@ -11,10 +12,10 @@ import { CreateContactSubmissionDto } from "./dto/create-contact-submission.dto"
  * Unauthenticated read model for the public bxbii website itself — the
  * Next.js site fetches from here to render the Home page, any CMS page by
  * slug, the site-wide navigation tree, the Programs catalog (bxbii
- * Ecosystem brief, Sections 28-31 + Programs module), the Partners roster
- * (Partners module), and to accept submissions from the /contact-us page's
- * form (Contact module). No @RequirePermissions here on purpose: this is
- * the front door.
+ * Ecosystem brief, Sections 28-31 + Programs module), the Courses catalog
+ * (Courses module), the Partners roster (Partners module), and to accept
+ * submissions from the /contact-us page's form (Contact module). No
+ * @RequirePermissions here on purpose: this is the front door.
  */
 @Controller("public")
 export class PublicSiteController {
@@ -22,6 +23,7 @@ export class PublicSiteController {
     private readonly pages: PagesService,
     private readonly navigation: NavigationService,
     private readonly programs: ProgramsService,
+    private readonly courses: CoursesService,
     private readonly contact: ContactService,
     private readonly partners: PartnersService,
   ) {}
@@ -49,6 +51,12 @@ export class PublicSiteController {
   @Get("programs")
   programsList() {
     return this.programs.publicList();
+  }
+
+  @Public()
+  @Get("courses")
+  coursesList() {
+    return this.courses.publicList();
   }
 
   @Public()
