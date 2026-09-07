@@ -242,9 +242,9 @@ function PartnersBlock({ title }: { title?: string }) {
   if (!partners || partners.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
-      <div className="flex flex-wrap items-center justify-center gap-8">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      {title && <h2 className="mb-8 text-center text-2xl font-bold text-brand sm:text-3xl">{title}</h2>}
+      <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 rounded-2xl bg-surface-subtle px-6 py-8">
         {partners.map((partner) =>
           partner.websiteUrl ? (
             <a
@@ -252,14 +252,19 @@ function PartnersBlock({ title }: { title?: string }) {
               href={partner.websiteUrl}
               target="_blank"
               rel="noreferrer"
-              className={`rounded ${FOCUS_RING}`}
+              className={`rounded transition hover:opacity-100 ${FOCUS_RING}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={partner.logoUrl} alt={partner.name} className="h-10 grayscale hover:grayscale-0" />
+              <img src={partner.logoUrl} alt={partner.name} className="h-10 grayscale transition hover:grayscale-0" />
             </a>
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img key={partner.id} src={partner.logoUrl} alt={partner.name} className="h-10 grayscale hover:grayscale-0" />
+            <img
+              key={partner.id}
+              src={partner.logoUrl}
+              alt={partner.name}
+              className="h-10 grayscale transition hover:grayscale-0"
+            />
           ),
         )}
       </div>
@@ -272,8 +277,15 @@ function PartnersBlock({ title }: { title?: string }) {
  * badge treatment, same layout, only the fields feeding it differ. Pulled
  * out once ProgramsBlock needed the exact card CoursesBlock already had,
  * instead of forking a second near-identical copy.
+ *
+ * Visual pass (homepage redesign phase 2): rounded-xl + soft shadow that
+ * lifts slightly on hover, a small colored icon badge, and a dot-style
+ * status pill — purely presentational, no new data fields. `icon` is a
+ * single emoji supplied per block (Programs/Courses each pass their own),
+ * so it never depends on backend content that might be missing.
  */
 function CatalogCard({
+  icon,
   status,
   name,
   description,
@@ -282,6 +294,7 @@ function CatalogCard({
   hrefOverride,
   lang,
 }: {
+  icon?: string;
   status: "OPEN" | "COMING_SOON";
   name: string;
   description: string;
@@ -292,30 +305,38 @@ function CatalogCard({
 }) {
   const isOpen = status === "OPEN";
   const card = (
-    <div className="flex h-full flex-col rounded-lg border border-surface-border p-5">
-      <div className="mb-2 flex items-center justify-between gap-2">
+    <div className="group flex h-full flex-col rounded-xl border border-surface-border bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      <div className={`mb-3 flex items-center gap-2 ${icon ? "justify-between" : "justify-end"}`}>
+        {icon && (
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/10 text-lg">
+            {icon}
+          </span>
+        )}
         <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
             isOpen ? "bg-status-success/10 text-status-success" : "bg-surface-subtle text-slate-500"
           }`}
         >
+          <span className={`h-1.5 w-1.5 rounded-full ${isOpen ? "bg-status-success" : "bg-slate-400"}`} />
           {isOpen ? (lang === "ar" ? "التسجيل متاح" : "Open") : lang === "ar" ? "قريباً" : "Coming soon"}
         </span>
       </div>
       <h3 className="text-lg font-semibold text-brand">{name}</h3>
       <p className="mt-2 flex-1 text-sm text-slate-600">{description}</p>
-      <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500">
-        {duration && <span>{duration}</span>}
-        {format && <span>{format}</span>}
-      </div>
+      {(duration || format) && (
+        <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
+          {duration && <span className="rounded-full bg-surface-subtle px-2.5 py-1">{duration}</span>}
+          {format && <span className="rounded-full bg-surface-subtle px-2.5 py-1">{format}</span>}
+        </div>
+      )}
     </div>
   );
   return isOpen && hrefOverride ? (
-    <Link href={hrefOverride} className={`rounded-lg ${FOCUS_RING}`}>
+    <Link href={hrefOverride} className={`block h-full rounded-xl ${FOCUS_RING}`}>
       {card}
     </Link>
   ) : (
-    <div>{card}</div>
+    <div className="h-full">{card}</div>
   );
 }
 
@@ -359,18 +380,19 @@ function ProgramsBlock({ title, lang }: { title?: string; lang: Lang }) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
-      <div className="space-y-8">
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      {title && <h2 className="mb-8 text-center text-2xl font-bold text-brand sm:text-3xl">{title}</h2>}
+      <div className="space-y-10">
         {domains.map((domain) => (
           <div key={domain.label || "_"}>
             {domain.label && (
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-accent">{domain.label}</h3>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-accent">{domain.label}</h3>
             )}
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {domain.items.map((program) => (
                 <CatalogCard
                   key={program.id}
+                  icon="🎓"
                   status={program.status}
                   name={lang === "ar" ? program.arName : program.enName}
                   description={lang === "ar" ? program.arDescription : program.enDescription}
@@ -384,12 +406,20 @@ function ProgramsBlock({ title, lang }: { title?: string; lang: Lang }) {
           </div>
         ))}
       </div>
-      <div className="mt-8 text-center">
+      <div className="mt-10 text-center">
         <Link
           href="/programs"
-          className={`inline-block rounded border border-brand px-5 py-2 text-sm font-semibold text-brand hover:bg-brand hover:text-white ${FOCUS_RING}`}
+          className={`inline-flex items-center gap-2 rounded border border-brand px-5 py-2 text-sm font-semibold text-brand hover:bg-brand hover:text-white ${FOCUS_RING}`}
         >
-          {lang === "ar" ? "عرض جميع البرامج" : "View all programs"}
+          {lang === "ar" ? (
+            <>
+              <span aria-hidden>←</span> عرض جميع البرامج
+            </>
+          ) : (
+            <>
+              View all programs <span aria-hidden>→</span>
+            </>
+          )}
         </Link>
       </div>
     </div>
@@ -421,12 +451,13 @@ function CoursesBlock({ title, lang }: { title?: string; lang: Lang }) {
   if (!courses || courses.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
+    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      {title && <h2 className="mb-8 text-center text-2xl font-bold text-brand sm:text-3xl">{title}</h2>}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map((course) => (
           <CatalogCard
             key={course.id}
+            icon="📘"
             status={course.status}
             name={lang === "ar" ? course.arTitle : course.enTitle}
             description={lang === "ar" ? course.arDescription : course.enDescription}
