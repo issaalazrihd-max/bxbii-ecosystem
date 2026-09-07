@@ -16,7 +16,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 // ---------------------------------------------------------------------------
@@ -24,18 +24,19 @@ datasource db {
 // ---------------------------------------------------------------------------
 
 model Tenant {
-  id        String   @id @default(uuid())
-  name      String
+  id String @id @default(uuid())
+  name String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  branches           Branch[]
-  users              User[]
-  roles              Role[]
-  pages              Page[]
-  navigationItems    NavigationItem[]
-  programs           Program[]
+  branches Branch[]
+  users User[]
+  roles Role[]
+  pages Page[]
+  navigationItems NavigationItem[]
+  programs Program[]
   contactSubmissions ContactSubmission[]
+  partners Partner[]
 
   @@map("tenants")
 }
@@ -55,41 +56,41 @@ enum BranchStatus {
 }
 
 model Branch {
-  id                   String       @id @default(uuid())
-  tenantId             String       @map("tenant_id")
-  tenant               Tenant       @relation(fields: [tenantId], references: [id])
-  branchCode           String       @map("branch_code")
-  branchName           String       @map("branch_name")
-  branchType           BranchType   @default(BRANCH) @map("branch_type")
-  parentBranchId       String?      @map("parent_branch_id")
-  parentBranch         Branch?      @relation("BranchHierarchy", fields: [parentBranchId], references: [id])
-  childBranches        Branch[]     @relation("BranchHierarchy")
-  addressLine1         String?      @map("address_line1")
-  addressLine2         String?      @map("address_line2")
-  city                 String?
-  country              String?
-  phone                String?
-  email                String?
-  status               BranchStatus @default(ACTIVE)
-  createdAt            DateTime     @default(now()) @map("created_at")
-  updatedAt            DateTime     @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  branchCode String @map("branch_code")
+  branchName String @map("branch_name")
+  branchType BranchType @default(BRANCH) @map("branch_type")
+  parentBranchId String? @map("parent_branch_id")
+  parentBranch Branch? @relation("BranchHierarchy", fields: [parentBranchId], references: [id])
+  childBranches Branch[] @relation("BranchHierarchy")
+  addressLine1 String? @map("address_line1")
+  addressLine2 String? @map("address_line2")
+  city String?
+  country String?
+  phone String?
+  email String?
+  status BranchStatus @default(ACTIVE)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  usersPrimary          User[]                     @relation("UserPrimaryBranch")
-  userBranchAccess      UserBranchAccess[]
-  studentsPrimary       Student[]                  @relation("StudentPrimaryBranch")
-  studentsCurrent       Student[]                  @relation("StudentCurrentBranch")
-  studentBranchHistory  StudentBranchHistory[]
-  transfersFrom         StudentTransferRequest[]   @relation("TransferFromBranch")
-  transfersTo           StudentTransferRequest[]   @relation("TransferToBranch")
-  transferHistoryFrom   StudentTransferHistory[]   @relation("TransferHistoryPrevBranch")
-  transferHistoryTo     StudentTransferHistory[]   @relation("TransferHistoryNewBranch")
-  employeesPrimary      Employee[]                 @relation("EmployeePrimaryBranch")
-  employeeAssignments   EmployeeBranchAssignment[]
-  trainersPrimary       Trainer[]                  @relation("TrainerPrimaryBranch")
-  inventoryItems        InventoryItem[]
-  inventoryTransfersOut InventoryTransfer[]        @relation("InventoryTransferSource")
-  inventoryTransfersIn  InventoryTransfer[]        @relation("InventoryTransferDestination")
-  crossBranchLogs       CrossBranchAccessLog[]
+  usersPrimary User[] @relation("UserPrimaryBranch")
+  userBranchAccess UserBranchAccess[]
+  studentsPrimary Student[] @relation("StudentPrimaryBranch")
+  studentsCurrent Student[] @relation("StudentCurrentBranch")
+  studentBranchHistory StudentBranchHistory[]
+  transfersFrom StudentTransferRequest[] @relation("TransferFromBranch")
+  transfersTo StudentTransferRequest[] @relation("TransferToBranch")
+  transferHistoryFrom StudentTransferHistory[] @relation("TransferHistoryPrevBranch")
+  transferHistoryTo StudentTransferHistory[] @relation("TransferHistoryNewBranch")
+  employeesPrimary Employee[] @relation("EmployeePrimaryBranch")
+  employeeAssignments EmployeeBranchAssignment[]
+  trainersPrimary Trainer[] @relation("TrainerPrimaryBranch")
+  inventoryItems InventoryItem[]
+  inventoryTransfersOut InventoryTransfer[] @relation("InventoryTransferSource")
+  inventoryTransfersIn InventoryTransfer[] @relation("InventoryTransferDestination")
+  crossBranchLogs CrossBranchAccessLog[]
 
   @@unique([tenantId, branchCode])
   @@map("branches")
@@ -106,38 +107,38 @@ enum UserStatus {
 }
 
 model User {
-  id              String     @id @default(uuid())
-  tenantId        String     @map("tenant_id")
-  tenant          Tenant     @relation(fields: [tenantId], references: [id])
-  email           String     @unique
-  passwordHash    String     @map("password_hash")
-  fullName        String     @map("full_name")
-  status          UserStatus @default(ACTIVE)
-  primaryBranchId String?    @map("primary_branch_id")
-  primaryBranch   Branch?    @relation("UserPrimaryBranch", fields: [primaryBranchId], references: [id])
-  lastLoginAt     DateTime?  @map("last_login_at")
-  createdAt       DateTime   @default(now()) @map("created_at")
-  updatedAt       DateTime   @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  email String @unique
+  passwordHash String @map("password_hash")
+  fullName String @map("full_name")
+  status UserStatus @default(ACTIVE)
+  primaryBranchId String? @map("primary_branch_id")
+  primaryBranch Branch? @relation("UserPrimaryBranch", fields: [primaryBranchId], references: [id])
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  roles           UserRole[]
-  branchAccess    UserBranchAccess[] @relation("UserBranchAccessUser")
-  grantedAccess   UserBranchAccess[] @relation("UserBranchAccessGrantedBy")
-  auditLogs       AuditLog[]
+  roles UserRole[]
+  branchAccess UserBranchAccess[] @relation("UserBranchAccessUser")
+  grantedAccess UserBranchAccess[] @relation("UserBranchAccessGrantedBy")
+  auditLogs AuditLog[]
   crossBranchLogs CrossBranchAccessLog[]
-  refreshTokens   RefreshToken[]
-  createdPages    Page[]
+  refreshTokens RefreshToken[]
+  createdPages Page[]
 
   @@map("users")
 }
 
 model RefreshToken {
-  id        String    @id @default(uuid())
-  userId    String    @map("user_id")
-  user      User      @relation(fields: [userId], references: [id])
-  tokenHash String    @map("token_hash")
-  expiresAt DateTime  @map("expires_at")
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  user User @relation(fields: [userId], references: [id])
+  tokenHash String @map("token_hash")
+  expiresAt DateTime @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
-  createdAt DateTime  @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([userId])
   @@map("refresh_tokens")
@@ -147,17 +148,17 @@ model RefreshToken {
 /// the legacy Yii "Rights" extension, which shipped with zero seeded roles
 /// (Phase 1 Analysis, Section 2.7), EduSec Cloud ships these out of the box.
 model Role {
-  id          String   @id @default(uuid())
-  tenantId    String   @map("tenant_id")
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  code        String
-  name        String
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  code String
+  name String
   description String?
-  isSystem    Boolean  @default(false) @map("is_system")
-  createdAt   DateTime @default(now()) @map("created_at")
+  isSystem Boolean @default(false) @map("is_system")
+  createdAt DateTime @default(now()) @map("created_at")
 
   permissions RolePermission[]
-  users       UserRole[]
+  users UserRole[]
 
   @@unique([tenantId, code])
   @@map("roles")
@@ -166,10 +167,10 @@ model Role {
 /// One row per module.action — mirrors the granularity of the legacy Rights
 /// engine (Phase 1 Analysis, Section 2.7) but with pre-defined roles on top.
 model Permission {
-  id     String @id @default(uuid())
+  id String @id @default(uuid())
   module String
   action String
-  code   String @unique // e.g. "students.create"
+  code String @unique // e.g. "students.create"
 
   roles RolePermission[]
 
@@ -178,10 +179,10 @@ model Permission {
 }
 
 model RolePermission {
-  roleId       String     @map("role_id")
-  role         Role       @relation(fields: [roleId], references: [id])
-  permissionId String     @map("permission_id")
-  permission   Permission @relation(fields: [permissionId], references: [id])
+  roleId String @map("role_id")
+  role Role @relation(fields: [roleId], references: [id])
+  permissionId String @map("permission_id")
+  permission Permission @relation(fields: [permissionId], references: [id])
 
   @@id([roleId, permissionId])
   @@map("role_permissions")
@@ -189,9 +190,9 @@ model RolePermission {
 
 model UserRole {
   userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
   roleId String @map("role_id")
-  role   Role   @relation(fields: [roleId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
 
   @@id([userId, roleId])
   @@map("user_roles")
@@ -210,19 +211,19 @@ enum BranchAccessLevel {
 }
 
 model UserBranchAccess {
-  id     String @id @default(uuid())
+  id String @id @default(uuid())
   userId String @map("user_id")
-  user   User   @relation("UserBranchAccessUser", fields: [userId], references: [id])
+  user User @relation("UserBranchAccessUser", fields: [userId], references: [id])
   // Null branchId + HEAD_OFFICE level = implicit access to ALL branches
   // without one row per branch (Multi-Branch doc, Section 4.1). A non-null
   // branchId scopes CROSS_BRANCH_VIEW/CROSS_BRANCH_EDIT to that one branch.
-  branchId      String?           @map("branch_id")
-  branch        Branch?           @relation(fields: [branchId], references: [id])
-  accessLevel   BranchAccessLevel @map("access_level")
-  moduleScope   String?           @map("module_scope") // null = applies to all modules
-  grantedById   String?           @map("granted_by")
-  grantedBy     User?             @relation("UserBranchAccessGrantedBy", fields: [grantedById], references: [id])
-  grantedAt     DateTime          @default(now()) @map("granted_at")
+  branchId String? @map("branch_id")
+  branch Branch? @relation(fields: [branchId], references: [id])
+  accessLevel BranchAccessLevel @map("access_level")
+  moduleScope String? @map("module_scope") // null = applies to all modules
+  grantedById String? @map("granted_by")
+  grantedBy User? @relation("UserBranchAccessGrantedBy", fields: [grantedById], references: [id])
+  grantedAt DateTime @default(now()) @map("granted_at")
 
   @@map("user_branch_access")
 }
@@ -232,16 +233,16 @@ model UserBranchAccess {
 // ---------------------------------------------------------------------------
 
 model AuditLog {
-  id         String   @id @default(uuid())
-  tenantId   String   @map("tenant_id")
-  actorId    String?  @map("actor_id")
-  actor      User?    @relation(fields: [actorId], references: [id])
-  action     String
-  entityType String   @map("entity_type")
-  entityId   String   @map("entity_id")
-  beforeData Json?    @map("before_data")
-  afterData  Json?    @map("after_data")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  actorId String? @map("actor_id")
+  actor User? @relation(fields: [actorId], references: [id])
+  action String
+  entityType String @map("entity_type")
+  entityId String @map("entity_id")
+  beforeData Json? @map("before_data")
+  afterData Json? @map("after_data")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([tenantId, entityType, entityId])
   @@map("audit_log")
@@ -259,16 +260,16 @@ enum CrossBranchEventType {
 /// A tagged subset of audit events specific to cross-branch boundary
 /// crossings (Multi-Branch doc, Section 12) — not a parallel logging system.
 model CrossBranchAccessLog {
-  id             String               @id @default(uuid())
-  tenantId       String               @map("tenant_id")
-  actorId        String?              @map("actor_id")
-  actor          User?                @relation(fields: [actorId], references: [id])
-  eventType      CrossBranchEventType @map("event_type")
-  targetBranchId String               @map("target_branch_id")
-  targetBranch   Branch               @relation(fields: [targetBranchId], references: [id])
-  entityType     String               @map("entity_type")
-  entityId       String               @map("entity_id")
-  createdAt      DateTime             @default(now()) @map("created_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  actorId String? @map("actor_id")
+  actor User? @relation(fields: [actorId], references: [id])
+  eventType CrossBranchEventType @map("event_type")
+  targetBranchId String @map("target_branch_id")
+  targetBranch Branch @relation(fields: [targetBranchId], references: [id])
+  entityType String @map("entity_type")
+  entityId String @map("entity_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([tenantId, targetBranchId])
   @@map("cross_branch_access_log")
@@ -291,27 +292,27 @@ enum StudentStatus {
 }
 
 model Student {
-  id              String        @id @default(uuid())
-  tenantId        String        @map("tenant_id")
-  studentCode     String        @map("student_code") // permanent, institute-wide, never reissued
-  firstName       String        @map("first_name")
-  middleName      String?       @map("middle_name")
-  lastName        String        @map("last_name")
-  gender          String?
-  dateOfBirth     DateTime?     @map("date_of_birth")
-  email           String?
-  mobile          String?
-  status          StudentStatus @default(LEAD)
-  primaryBranchId String        @map("primary_branch_id")
-  primaryBranch   Branch        @relation("StudentPrimaryBranch", fields: [primaryBranchId], references: [id])
-  currentBranchId String        @map("current_branch_id")
-  currentBranch   Branch        @relation("StudentCurrentBranch", fields: [currentBranchId], references: [id])
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  studentCode String @map("student_code") // permanent, institute-wide, never reissued
+  firstName String @map("first_name")
+  middleName String? @map("middle_name")
+  lastName String @map("last_name")
+  gender String?
+  dateOfBirth DateTime? @map("date_of_birth")
+  email String?
+  mobile String?
+  status StudentStatus @default(LEAD)
+  primaryBranchId String @map("primary_branch_id")
+  primaryBranch Branch @relation("StudentPrimaryBranch", fields: [primaryBranchId], references: [id])
+  currentBranchId String @map("current_branch_id")
+  currentBranch Branch @relation("StudentCurrentBranch", fields: [currentBranchId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  branchHistory    StudentBranchHistory[]
+  branchHistory StudentBranchHistory[]
   transferRequests StudentTransferRequest[]
-  transferHistory  StudentTransferHistory[]
+  transferHistory StudentTransferHistory[]
 
   @@unique([tenantId, studentCode])
   @@index([tenantId, currentBranchId])
@@ -320,13 +321,13 @@ model Student {
 
 /// Append-only — derived automatically as transfers complete (Section 5.1).
 model StudentBranchHistory {
-  id        String    @id @default(uuid())
-  studentId String    @map("student_id")
-  student   Student   @relation(fields: [studentId], references: [id])
-  branchId  String    @map("branch_id")
-  branch    Branch    @relation(fields: [branchId], references: [id])
-  startDate DateTime  @map("start_date")
-  endDate   DateTime? @map("end_date")
+  id String @id @default(uuid())
+  studentId String @map("student_id")
+  student Student @relation(fields: [studentId], references: [id])
+  branchId String @map("branch_id")
+  branch Branch @relation(fields: [branchId], references: [id])
+  startDate DateTime @map("start_date")
+  endDate DateTime? @map("end_date")
 
   @@index([studentId])
   @@map("student_branch_history")
@@ -350,29 +351,29 @@ enum FinancialTransferPolicy {
 
 /// In-flight, mutable workflow record (Multi-Branch doc, Section 6.1).
 model StudentTransferRequest {
-  id        String  @id @default(uuid())
-  tenantId  String  @map("tenant_id")
-  studentId String  @map("student_id")
-  student   Student @relation(fields: [studentId], references: [id])
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  studentId String @map("student_id")
+  student Student @relation(fields: [studentId], references: [id])
 
   fromBranchId String @map("from_branch_id")
-  fromBranch   Branch @relation("TransferFromBranch", fields: [fromBranchId], references: [id])
-  toBranchId   String @map("to_branch_id")
-  toBranch     Branch @relation("TransferToBranch", fields: [toBranchId], references: [id])
+  fromBranch Branch @relation("TransferFromBranch", fields: [fromBranchId], references: [id])
+  toBranchId String @map("to_branch_id")
+  toBranch Branch @relation("TransferToBranch", fields: [toBranchId], references: [id])
 
   reason String
-  notes  String?
+  notes String?
   status TransferStatus @default(REQUESTED)
 
   // Section 6.2 — which record categories are in scope for this transfer.
-  transferProfile           Boolean @default(true) @map("transfer_profile")
-  transferDocuments         Boolean @default(true) @map("transfer_documents")
-  transferAcademicHistory   Boolean @default(true) @map("transfer_academic_history")
+  transferProfile Boolean @default(true) @map("transfer_profile")
+  transferDocuments Boolean @default(true) @map("transfer_documents")
+  transferAcademicHistory Boolean @default(true) @map("transfer_academic_history")
   transferAttendanceHistory Boolean @default(true) @map("transfer_attendance_history")
-  transferCourseHistory     Boolean @default(true) @map("transfer_course_history")
+  transferCourseHistory Boolean @default(true) @map("transfer_course_history")
   transferAssessmentResults Boolean @default(true) @map("transfer_assessment_results")
-  transferCertificates      Boolean @default(true) @map("transfer_certificates")
-  transferFinancialHistory  Boolean @default(true) @map("transfer_financial_history")
+  transferCertificates Boolean @default(true) @map("transfer_certificates")
+  transferFinancialHistory Boolean @default(true) @map("transfer_financial_history")
 
   // Section 6.3
   financialPolicy FinancialTransferPolicy? @map("financial_policy")
@@ -380,18 +381,18 @@ model StudentTransferRequest {
   // Section 6.4 — pre-approval academic validation checklist result.
   academicValidation Json? @map("academic_validation")
 
-  requestedById String   @map("requested_by")
-  requestedAt   DateTime @default(now()) @map("requested_at")
+  requestedById String @map("requested_by")
+  requestedAt DateTime @default(now()) @map("requested_at")
 
-  currentBranchReviewedById String?   @map("current_branch_reviewed_by")
-  currentBranchReviewedAt   DateTime? @map("current_branch_reviewed_at")
+  currentBranchReviewedById String? @map("current_branch_reviewed_by")
+  currentBranchReviewedAt DateTime? @map("current_branch_reviewed_at")
 
-  receivingBranchReviewedById String?   @map("receiving_branch_reviewed_by")
-  receivingBranchReviewedAt   DateTime? @map("receiving_branch_reviewed_at")
+  receivingBranchReviewedById String? @map("receiving_branch_reviewed_by")
+  receivingBranchReviewedAt DateTime? @map("receiving_branch_reviewed_at")
 
-  approvedById String?   @map("approved_by")
-  approvedAt   DateTime? @map("approved_at")
-  completedAt  DateTime? @map("completed_at")
+  approvedById String? @map("approved_by")
+  approvedAt DateTime? @map("approved_at")
+  completedAt DateTime? @map("completed_at")
 
   @@index([tenantId, studentId])
   @@map("student_transfer_requests")
@@ -399,25 +400,25 @@ model StudentTransferRequest {
 
 /// Immutable on completion — never edited afterward (Section 6.5).
 model StudentTransferHistory {
-  id        String  @id @default(uuid())
-  tenantId  String  @map("tenant_id")
-  studentId String  @map("student_id")
-  student   Student @relation(fields: [studentId], references: [id])
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  studentId String @map("student_id")
+  student Student @relation(fields: [studentId], references: [id])
 
   previousBranchId String @map("previous_branch_id")
-  previousBranch   Branch @relation("TransferHistoryPrevBranch", fields: [previousBranchId], references: [id])
-  newBranchId      String @map("new_branch_id")
-  newBranch        Branch @relation("TransferHistoryNewBranch", fields: [newBranchId], references: [id])
+  previousBranch Branch @relation("TransferHistoryPrevBranch", fields: [previousBranchId], references: [id])
+  newBranchId String @map("new_branch_id")
+  newBranch Branch @relation("TransferHistoryNewBranch", fields: [newBranchId], references: [id])
 
-  transferDate          DateTime @map("transfer_date")
-  requestedById         String   @map("requested_by")
-  approvedById          String   @map("approved_by")
-  reason                String
-  notes                 String?
-  academicStatus        String?  @map("academic_status")
-  financialStatus       String?  @map("financial_status")
-  categoriesTransferred Json     @map("categories_transferred")
-  createdAt             DateTime @default(now()) @map("created_at")
+  transferDate DateTime @map("transfer_date")
+  requestedById String @map("requested_by")
+  approvedById String @map("approved_by")
+  reason String
+  notes String?
+  academicStatus String? @map("academic_status")
+  financialStatus String? @map("financial_status")
+  categoriesTransferred Json @map("categories_transferred")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([tenantId, studentId])
   @@map("student_transfer_history")
@@ -434,19 +435,19 @@ enum EmployeeStatus {
 }
 
 model Employee {
-  id              String         @id @default(uuid())
-  tenantId        String         @map("tenant_id")
-  employeeCode    String         @map("employee_code")
-  firstName       String         @map("first_name")
-  lastName        String         @map("last_name")
-  position        String?
-  email           String?
-  mobile          String?
-  status          EmployeeStatus @default(ACTIVE)
-  primaryBranchId String         @map("primary_branch_id")
-  primaryBranch   Branch         @relation("EmployeePrimaryBranch", fields: [primaryBranchId], references: [id])
-  createdAt       DateTime       @default(now()) @map("created_at")
-  updatedAt       DateTime       @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  employeeCode String @map("employee_code")
+  firstName String @map("first_name")
+  lastName String @map("last_name")
+  position String?
+  email String?
+  mobile String?
+  status EmployeeStatus @default(ACTIVE)
+  primaryBranchId String @map("primary_branch_id")
+  primaryBranch Branch @relation("EmployeePrimaryBranch", fields: [primaryBranchId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   branchAssignments EmployeeBranchAssignment[]
 
@@ -464,34 +465,34 @@ enum TrainerStatus {
 }
 
 model Trainer {
-  id              String        @id @default(uuid())
-  tenantId        String        @map("tenant_id")
-  trainerCode     String        @map("trainer_code")
-  fullName        String        @map("full_name")
-  specialization  String?
-  email           String?
-  mobile          String?
-  teachingHours   Int           @default(0) @map("teaching_hours")
-  status          TrainerStatus @default(ACTIVE)
-  primaryBranchId String        @map("primary_branch_id")
-  primaryBranch   Branch        @relation("TrainerPrimaryBranch", fields: [primaryBranchId], references: [id])
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  trainerCode String @map("trainer_code")
+  fullName String @map("full_name")
+  specialization String?
+  email String?
+  mobile String?
+  teachingHours Int @default(0) @map("teaching_hours")
+  status TrainerStatus @default(ACTIVE)
+  primaryBranchId String @map("primary_branch_id")
+  primaryBranch Branch @relation("TrainerPrimaryBranch", fields: [primaryBranchId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@unique([tenantId, trainerCode])
   @@map("trainers")
 }
 
 model EmployeeBranchAssignment {
-  id           String    @id @default(uuid())
-  employeeId   String    @map("employee_id")
-  employee     Employee  @relation(fields: [employeeId], references: [id])
-  branchId     String    @map("branch_id")
-  branch       Branch    @relation(fields: [branchId], references: [id])
-  isPrimary    Boolean   @default(false) @map("is_primary")
-  roleAtBranch String?   @map("role_at_branch")
-  startDate    DateTime  @map("start_date")
-  endDate      DateTime? @map("end_date")
+  id String @id @default(uuid())
+  employeeId String @map("employee_id")
+  employee Employee @relation(fields: [employeeId], references: [id])
+  branchId String @map("branch_id")
+  branch Branch @relation(fields: [branchId], references: [id])
+  isPrimary Boolean @default(false) @map("is_primary")
+  roleAtBranch String? @map("role_at_branch")
+  startDate DateTime @map("start_date")
+  endDate DateTime? @map("end_date")
 
   @@index([employeeId])
   @@index([branchId])
@@ -503,17 +504,17 @@ model EmployeeBranchAssignment {
 // ---------------------------------------------------------------------------
 
 model InventoryItem {
-  id              String   @id @default(uuid())
-  tenantId        String   @map("tenant_id")
-  branchId        String   @map("branch_id")
-  branch          Branch   @relation(fields: [branchId], references: [id])
-  itemCode        String   @map("item_code")
-  name            String
-  category        String?
-  quantityOnHand  Int      @default(0) @map("quantity_on_hand")
-  minQuantity     Int      @default(0) @map("min_quantity")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  branchId String @map("branch_id")
+  branch Branch @relation(fields: [branchId], references: [id])
+  itemCode String @map("item_code")
+  name String
+  category String?
+  quantityOnHand Int @default(0) @map("quantity_on_hand")
+  minQuantity Int @default(0) @map("min_quantity")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   transferLines InventoryTransferItem[]
 
@@ -532,19 +533,19 @@ enum InventoryTransferStatus {
 }
 
 model InventoryTransfer {
-  id                  String                   @id @default(uuid())
-  tenantId            String                   @map("tenant_id")
-  sourceBranchId      String                   @map("source_branch_id")
-  sourceBranch        Branch                   @relation("InventoryTransferSource", fields: [sourceBranchId], references: [id])
-  destinationBranchId String                   @map("destination_branch_id")
-  destinationBranch   Branch                   @relation("InventoryTransferDestination", fields: [destinationBranchId], references: [id])
-  status              InventoryTransferStatus  @default(REQUESTED)
-  requestedById       String                   @map("requested_by")
-  approvedById        String?                  @map("approved_by")
-  receivedById        String?                  @map("received_by")
-  requestedAt         DateTime                 @default(now()) @map("requested_at")
-  dispatchedAt        DateTime?                @map("dispatched_at")
-  receivedAt          DateTime?                @map("received_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  sourceBranchId String @map("source_branch_id")
+  sourceBranch Branch @relation("InventoryTransferSource", fields: [sourceBranchId], references: [id])
+  destinationBranchId String @map("destination_branch_id")
+  destinationBranch Branch @relation("InventoryTransferDestination", fields: [destinationBranchId], references: [id])
+  status InventoryTransferStatus @default(REQUESTED)
+  requestedById String @map("requested_by")
+  approvedById String? @map("approved_by")
+  receivedById String? @map("received_by")
+  requestedAt DateTime @default(now()) @map("requested_at")
+  dispatchedAt DateTime? @map("dispatched_at")
+  receivedAt DateTime? @map("received_at")
 
   items InventoryTransferItem[]
 
@@ -552,12 +553,12 @@ model InventoryTransfer {
 }
 
 model InventoryTransferItem {
-  id         String             @id @default(uuid())
-  transferId String             @map("transfer_id")
-  transfer   InventoryTransfer  @relation(fields: [transferId], references: [id])
-  itemId     String             @map("item_id")
-  item       InventoryItem      @relation(fields: [itemId], references: [id])
-  quantity   Int
+  id String @id @default(uuid())
+  transferId String @map("transfer_id")
+  transfer InventoryTransfer @relation(fields: [transferId], references: [id])
+  itemId String @map("item_id")
+  item InventoryItem @relation(fields: [itemId], references: [id])
+  quantity Int
 
   @@map("inventory_transfer_items")
 }
@@ -578,20 +579,20 @@ enum PageStatus {
 /// relies on structurally (e.g. Home) so the admin UI can warn before
 /// deleting them, without hard-coding the page itself in application code.
 model Page {
-  id          String     @id @default(uuid())
-  tenantId    String     @map("tenant_id")
-  tenant      Tenant     @relation(fields: [tenantId], references: [id])
-  slug        String // "" (empty) reserved for the home page
-  arTitle     String     @map("ar_title")
-  enTitle     String     @map("en_title")
-  status      PageStatus @default(DRAFT)
-  isSystem    Boolean    @default(false) @map("is_system")
-  createdById String?    @map("created_by")
-  createdBy   User?      @relation(fields: [createdById], references: [id])
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  slug String // "" (empty) reserved for the home page
+  arTitle String @map("ar_title")
+  enTitle String @map("en_title")
+  status PageStatus @default(DRAFT)
+  isSystem Boolean @default(false) @map("is_system")
+  createdById String? @map("created_by")
+  createdBy User? @relation(fields: [createdById], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  sections        PageSection[]
+  sections PageSection[]
   navigationLinks NavigationItem[]
 
   @@unique([tenantId, slug])
@@ -622,21 +623,21 @@ enum PageSectionType {
 }
 
 model PageSection {
-  id          String          @id @default(uuid())
-  tenantId    String          @map("tenant_id")
-  pageId      String          @map("page_id")
-  page        Page            @relation(fields: [pageId], references: [id])
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  pageId String @map("page_id")
+  page Page @relation(fields: [pageId], references: [id])
   sectionType PageSectionType @map("section_type")
-  position    Int             @default(0)
-  isVisible   Boolean         @default(true) @map("is_visible")
+  position Int @default(0)
+  isVisible Boolean @default(true) @map("is_visible")
   // Shape depends on sectionType, e.g. HERO: {headline, subheadline, imageUrl,
   // ctaLabel, ctaHref}; PRODUCTS/COURSES/PROJECTS: {ids: string[]} — validated
   // in the API layer per type rather than with a rigid DB schema, so new
   // block types (Section 30's "Add New Block Types") don't need a migration.
-  arContent   Json            @default("{}") @map("ar_content")
-  enContent   Json            @default("{}") @map("en_content")
-  createdAt   DateTime        @default(now()) @map("created_at")
-  updatedAt   DateTime        @updatedAt @map("updated_at")
+  arContent Json @default("{}") @map("ar_content")
+  enContent Json @default("{}") @map("en_content")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([pageId, position])
   @@map("page_sections")
@@ -652,26 +653,26 @@ enum NavigationLinkType {
 }
 
 model NavigationItem {
-  id           String             @id @default(uuid())
-  tenantId     String             @map("tenant_id")
-  tenant       Tenant             @relation(fields: [tenantId], references: [id])
-  arLabel      String             @map("ar_label")
-  enLabel      String             @map("en_label")
-  linkType     NavigationLinkType @map("link_type")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  arLabel String @map("ar_label")
+  enLabel String @map("en_label")
+  linkType NavigationLinkType @map("link_type")
   // Exactly one of targetPageId / externalUrl is set today; courseId /
   // projectId / productId (Section 31) are reserved for when those modules
   // exist and resolve the same way targetPageId does.
-  targetPageId String?            @map("target_page_id")
-  targetPage   Page?              @relation(fields: [targetPageId], references: [id])
-  externalUrl  String?            @map("external_url")
-  openInNewTab Boolean            @default(false) @map("open_in_new_tab")
-  parentId     String?            @map("parent_id")
-  parent       NavigationItem?    @relation("NavigationHierarchy", fields: [parentId], references: [id])
-  children     NavigationItem[]   @relation("NavigationHierarchy")
-  position     Int                @default(0)
-  isVisible    Boolean            @default(true) @map("is_visible")
-  createdAt    DateTime           @default(now()) @map("created_at")
-  updatedAt    DateTime           @updatedAt @map("updated_at")
+  targetPageId String? @map("target_page_id")
+  targetPage Page? @relation(fields: [targetPageId], references: [id])
+  externalUrl String? @map("external_url")
+  openInNewTab Boolean @default(false) @map("open_in_new_tab")
+  parentId String? @map("parent_id")
+  parent NavigationItem? @relation("NavigationHierarchy", fields: [parentId], references: [id])
+  children NavigationItem[] @relation("NavigationHierarchy")
+  position Int @default(0)
+  isVisible Boolean @default(true) @map("is_visible")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([tenantId, parentId, position])
   @@map("navigation_items")
@@ -690,30 +691,55 @@ enum ProgramStatus {
 }
 
 model Program {
-  id            String        @id @default(uuid())
-  tenantId      String        @map("tenant_id")
-  tenant        Tenant        @relation(fields: [tenantId], references: [id])
-  slug          String
-  arDomain      String        @map("ar_domain")
-  enDomain      String        @map("en_domain")
-  arName        String        @map("ar_name")
-  enName        String        @map("en_name")
-  arDescription String        @map("ar_description")
-  enDescription String        @map("en_description")
-  arDuration    String        @map("ar_duration")
-  enDuration    String        @map("en_duration")
-  arFormat      String        @map("ar_format")
-  enFormat      String        @map("en_format")
-  status        ProgramStatus @default(COMING_SOON)
-  hrefOverride  String?       @map("href_override")
-  position      Int           @default(0)
-  isVisible     Boolean       @default(true) @map("is_visible")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  slug String
+  arDomain String @map("ar_domain")
+  enDomain String @map("en_domain")
+  arName String @map("ar_name")
+  enName String @map("en_name")
+  arDescription String @map("ar_description")
+  enDescription String @map("en_description")
+  arDuration String @map("ar_duration")
+  enDuration String @map("en_duration")
+  arFormat String @map("ar_format")
+  enFormat String @map("en_format")
+  status ProgramStatus @default(COMING_SOON)
+  hrefOverride String? @map("href_override")
+  position Int @default(0)
+  isVisible Boolean @default(true) @map("is_visible")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@unique([tenantId, slug])
   @@index([tenantId, position])
   @@map("programs")
+}
+
+// ---------------------------------------------------------------------------
+// Partners (bxbii Ecosystem brief — Partners module) — logos shown on the
+// PARTNERS page-builder block. Platform-wide like Page/NavigationItem/
+// Program above, not branch-scoped: the partner roster is one shared list
+// for the whole tenant. Modeled directly on Program's admin shape (position
+// + isVisible, same ordering/visibility semantics) since a partner has no
+// bilingual content of its own — just a name, a logo, and an optional link.
+// ---------------------------------------------------------------------------
+
+model Partner {
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  name String
+  logoUrl String @map("logo_url")
+  websiteUrl String? @map("website_url")
+  position Int @default(0)
+  isVisible Boolean @default(true) @map("is_visible")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([tenantId, position])
+  @@map("partners")
 }
 
 // ---------------------------------------------------------------------------
@@ -733,17 +759,17 @@ enum ContactSubmissionStatus {
 }
 
 model ContactSubmission {
-  id        String                  @id @default(uuid())
-  tenantId  String                  @map("tenant_id")
-  tenant    Tenant                  @relation(fields: [tenantId], references: [id])
-  name      String
-  email     String
-  phone     String?
-  subject   String?
-  message   String
-  status    ContactSubmissionStatus @default(NEW)
-  createdAt DateTime                @default(now()) @map("created_at")
-  updatedAt DateTime                @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  name String
+  email String
+  phone String?
+  subject String?
+  message String
+  status ContactSubmissionStatus @default(NEW)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([tenantId, status])
   @@index([tenantId, createdAt])
