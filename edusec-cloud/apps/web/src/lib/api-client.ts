@@ -173,6 +173,15 @@ export interface AdminContactSubmission {
   createdAt: string;
 }
 
+export interface AdminPartner {
+  id: string;
+  name: string;
+  logoUrl: string;
+  websiteUrl: string | null;
+  position: number;
+  isVisible: boolean;
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/login", {
@@ -268,4 +277,16 @@ export const api = {
     }),
   deleteContactSubmission: (submissionId: string) =>
     request<{ id: string; deleted: boolean }>(`/cms/contact/${submissionId}`, { method: "DELETE" }),
+
+  // --- CMS: Partners roster (Partners module, backs the PARTNERS
+  // page-builder block) -----------------------------------------------------
+  listPartners: () => request<AdminPartner[]>("/cms/partners"),
+  createPartner: (dto: Omit<AdminPartner, "id" | "position" | "isVisible"> & { isVisible?: boolean }) =>
+    request<AdminPartner>("/cms/partners", { method: "POST", body: JSON.stringify(dto) }),
+  updatePartner: (partnerId: string, dto: Partial<Omit<AdminPartner, "id">>) =>
+    request<AdminPartner>(`/cms/partners/${partnerId}`, { method: "PATCH", body: JSON.stringify(dto) }),
+  deletePartner: (partnerId: string) =>
+    request<{ id: string; deleted: boolean }>(`/cms/partners/${partnerId}`, { method: "DELETE" }),
+  reorderPartners: (orderedPartnerIds: string[]) =>
+    request<AdminPartner[]>("/cms/partners/reorder", { method: "POST", body: JSON.stringify({ orderedPartnerIds }) }),
 };
