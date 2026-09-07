@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { PublicSection } from "@/lib/public-api";
+import type { PublicSection, PublicPartner } from "@/lib/public-api";
 import { publicApi } from "@/lib/public-api";
 import { pickContent, type Lang } from "@/lib/i18n";
 import { useLanguage } from "./language-provider";
@@ -160,27 +160,8 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
       );
     }
 
-    case "PARTNERS": {
-      const logos: any[] = Array.isArray(c.logos) ? c.logos : [];
-      return (
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-          {c.title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{c.title}</h2>}
-          <div className="flex flex-wrap items-center justify-center gap-8">
-            {logos.map((logo, i) =>
-              logo.url ? (
-                <a key={i} href={logo.url} target="_blank" rel="noreferrer" className={`rounded ${FOCUS_RING}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={logo.logoUrl} alt={logo.name ?? ""} className="h-10 grayscale hover:grayscale-0" />
-                </a>
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={i} src={logo.logoUrl} alt={logo.name ?? ""} className="h-10 grayscale hover:grayscale-0" />
-              ),
-            )}
-          </div>
-        </div>
-      );
-    }
+    case "PARTNERS":
+      return <PartnersBlock title={c.title} />;
 
     case "FILES": {
       const files: any[] = Array.isArray(c.files) ? c.files : [];
@@ -229,6 +210,55 @@ function Block({ section, lang }: { section: PublicSection; lang: Lang }) {
     default:
       return null;
   }
+}
+
+/**
+ * Partners module: fetches the real partner roster from GET /public/partners
+ * instead of the previous per-page static c.logos JSON, mirroring how
+ * ContactFormBlock was upgraded from a fake success message to the real
+ * POST /public/contact endpoint. Renders nothing while empty/loading so an
+ * editor who hasn't added any partners yet doesn't get a broken-looking
+ * empty block on the live site.
+ */
+function PartnersBlock({ title }: { title?: string }) {
+  const [partners, setPartners] = useState<PublicPartner[] | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    publicApi.getPartners().then((result) => {
+      if (active) setPartners(result ?? []);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!partners || partners.length === 0) return null;
+
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {title && <h2 className="mb-6 text-center text-2xl font-bold text-brand">{title}</h2>}
+      <div className="flex flex-wrap items-center justify-center gap-8">
+        {partners.map((partner) =>
+          partner.websiteUrl ? (
+            <a
+              key={partner.id}
+              href={partner.websiteUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={`rounded ${FOCUS_RING}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={partner.logoUrl} alt={partner.name} className="h-10 grayscale hover:grayscale-0" />
+            </a>
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={partner.id} src={partner.logoUrl} alt={partner.name} className="h-10 grayscale hover:grayscale-0" />
+          ),
+        )}
+      </div>
+    </div>
+  );
 }
 
 const FORM_FIELD = `w-full rounded border border-surface-border px-3 py-2 text-sm ${FOCUS_RING} focus-visible:ring-offset-0 focus-visible:border-accent`;
