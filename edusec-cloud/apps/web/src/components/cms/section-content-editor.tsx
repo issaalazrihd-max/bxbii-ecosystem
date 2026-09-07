@@ -17,8 +17,8 @@ interface FieldDef {
 /**
  * Field layout per Page Builder block type (brief Section 30). The simple,
  * flat blocks (Hero, Heading, Text, Image, Video, Button, PDF, Contact
- * Form, and the placeholder Products/Courses/Projects titles) get real
- * per-field inputs. List-shaped blocks (Gallery, Team, Partners, Files)
+ * Form, and the placeholder Products/Programs/Courses/Projects titles) get
+ * real per-field inputs. List-shaped blocks (Gallery, Team, Partners, Files)
  * are edited as raw JSON below instead of hand-built repeaters — the
  * pragmatic Phase 2 tradeoff; a proper array editor is follow-up work.
  */
@@ -58,6 +58,7 @@ const SECTION_FIELDS: Record<string, FieldDef[]> = {
     { key: "submitLabel", label: "Submit button label", kind: "text", bilingual: true },
   ],
   PRODUCTS: [{ key: "title", label: "Section title", kind: "text", bilingual: true }],
+  PROGRAMS: [{ key: "title", label: "Section title", kind: "text", bilingual: true }],
   COURSES: [{ key: "title", label: "Section title", kind: "text", bilingual: true }],
   PROJECTS: [{ key: "title", label: "Section title", kind: "text", bilingual: true }],
   CUSTOM: [{ key: "html", label: "Custom HTML", kind: "textarea", bilingual: true }],
