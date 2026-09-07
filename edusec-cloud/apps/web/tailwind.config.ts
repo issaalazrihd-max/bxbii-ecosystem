@@ -5,6 +5,12 @@ import type { Config } from "tailwindcss";
  * Kept intentionally small for this foundation scaffold — extend as more
  * screens land, but resist growing this into an unmanaged pile of one-off
  * colors; every new token should earn its place.
+ *
+ * Palette refreshed to a Tuwaiq-inspired identity (purple/coral, pastel
+ * surfaces) — values sampled directly from tuwaiq.edu.sa's live computed
+ * styles. Token *names* (brand/accent/surface/status) are unchanged so
+ * every existing `bg-brand`, `text-accent`, `bg-status-success`, etc.
+ * class across the app re-themes automatically from this single file.
  */
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
@@ -12,21 +18,21 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: "#1F3864", // navy — primary actions, headers
-          light: "#2E4E86",
-          dark: "#152847",
+          DEFAULT: "#4F29B7", // purple — primary actions, headers (Tuwaiq primary)
+          light: "#6635D7",
+          dark: "#2C2062",
         },
         accent: {
-          DEFAULT: "#0E7C7B", // teal — secondary actions, active nav
-          light: "#14A3A1",
+          DEFAULT: "#FF536D", // coral — secondary actions, active nav (Tuwaiq secondary CTA)
+          light: "#FD807F",
         },
         surface: {
           DEFAULT: "#FFFFFF",
-          subtle: "#F5F7FA",
-          border: "#E2E8F0",
+          subtle: "#F9F7FF",
+          border: "#EAECF0",
         },
         status: {
-          success: "#1E8E5A",
+          success: "#10A400",
           warning: "#B7791F",
           danger: "#C53030",
           info: "#2B6CB0",
