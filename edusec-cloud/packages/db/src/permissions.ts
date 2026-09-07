@@ -39,6 +39,12 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   { module: "cms", action: "programs.view", code: "cms.programs.view" },
   { module: "cms", action: "programs.manage", code: "cms.programs.manage" },
 
+  // Courses catalog (bxbii Ecosystem brief — Courses module), backing the
+  // COURSES page-builder block. Same view/manage split as Programs — a
+  // Course has no nested sub-resource either.
+  { module: "cms", action: "courses.view", code: "cms.courses.view" },
+  { module: "cms", action: "courses.manage", code: "cms.courses.manage" },
+
   // Contact submissions inbox (bxbii Ecosystem brief — Contact module),
   // fed by the public /contact-us page's form. Same view/manage split as
   // Programs/Navigation — a submission has no nested sub-resource either.
