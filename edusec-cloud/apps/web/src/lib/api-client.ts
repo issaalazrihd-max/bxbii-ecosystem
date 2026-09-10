@@ -199,13 +199,83 @@ export interface AdminCourse {
   isVisible: boolean;
 }
 
+export interface AdminBranch {
+  id: string;
+  branchCode: string;
+  branchName: string;
+  branchType: "HEAD_OFFICE" | "BRANCH";
+  status: "ACTIVE" | "INACTIVE";
+}
+
+export interface AdminTrainer {
+  id: string;
+  trainerCode: string;
+  fullName: string;
+  specialization: string | null;
+  email: string | null;
+  mobile: string | null;
+  teachingHours: number;
+  status: "ACTIVE" | "INACTIVE";
+  primaryBranchId: string;
+  primaryBranch?: AdminBranch;
+}
+
+export interface AdminBatch {
+  id: string;
+  branchId: string;
+  branch?: AdminBranch;
+  programId: string | null;
+  program?: AdminProgram | null;
+  courseId: string | null;
+  course?: AdminCourse | null;
+  trainerId: string | null;
+  trainer?: AdminTrainer | null;
+  batchCode: string;
+  arLabel: string | null;
+  enLabel: string | null;
+  startDate: string;
+  endDate: string | null;
+  schedule: string | null;
+  capacity: number;
+  status: "PLANNED" | "OPEN" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  _count?: { enrollments: number };
+}
+
+export interface AdminEnrollment {
+  id: string;
+  studentId: string;
+  student?: { id: string; studentCode: string; firstName: string; lastName: string };
+  batchId: string;
+  batch?: AdminBatch;
+  status: "ENROLLED" | "WAITLISTED" | "COMPLETED" | "WITHDRAWN" | "CANCELLED";
+  enrollmentDate: string;
+  notes: string | null;
+}
+
+export interface CreateBatchDto {
+  batchCode: string;
+  branchId: string;
+  programId?: string;
+  courseId?: string;
+  trainerId?: string;
+  arLabel?: string;
+  enLabel?: string;
+  startDate: string;
+  endDate?: string;
+  schedule?: string;
+  capacity?: number;
+  status?: AdminBatch["status"];
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
-  listBranches: () => request<unknown[]>("/branches"),
+  listBranches: () => request<AdminBranch[]>("/branches"),
+  createBranch: (dto: { branchCode: string; branchName: string; branchType?: "HEAD_OFFICE" | "BRANCH"; city?: string; country?: string }) =>
+    request<AdminBranch>("/branches", { method: "POST", body: JSON.stringify(dto) }),
   getDashboardSummary: () =>
     request<{
       totalStudents: number;
@@ -223,6 +293,40 @@ export const api = {
     if (branchId) params.set("branchId", branchId);
     return request<unknown[]>(`/students?${params.toString()}`);
   },
+  createStudent: (dto: { studentCode: string; firstName: string; middleName?: string; lastName: string; email?: string; mobile?: string; branchId: string }) =>
+    request<unknown>("/students", { method: "POST", body: JSON.stringify(dto) }),
+
+  // --- Trainers (Phase 1 demo scope) --------------------------------------
+  listTrainers: () => request<AdminTrainer[]>("/trainers"),
+  createTrainer: (dto: { trainerCode: string; fullName: string; specialization?: string; email?: string; mobile?: string; branchId: string }) =>
+    request<AdminTrainer>("/trainers", { method: "POST", body: JSON.stringify(dto) }),
+
+  // --- ERP Phase 1: Batches & Enrollments (Institute Management System) ---
+  listBatches: (branchId?: string) => {
+    const params = new URLSearchParams();
+    if (branchId) params.set("branchId", branchId);
+    const qs = params.toString();
+    return request<AdminBatch[]>(`/erp/batches${qs ? `?${qs}` : ""}`);
+  },
+  createBatch: (dto: CreateBatchDto) => request<AdminBatch>("/erp/batches", { method: "POST", body: JSON.stringify(dto) }),
+  updateBatch: (batchId: string, dto: Partial<CreateBatchDto>) =>
+    request<AdminBatch>(`/erp/batches/${batchId}`, { method: "PATCH", body: JSON.stringify(dto) }),
+  deleteBatch: (batchId: string) =>
+    request<{ id: string; deleted: boolean }>(`/erp/batches/${batchId}`, { method: "DELETE" }),
+
+  listEnrollments: (filters?: { batchId?: string; studentId?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.batchId) params.set("batchId", filters.batchId);
+    if (filters?.studentId) params.set("studentId", filters.studentId);
+    const qs = params.toString();
+    return request<AdminEnrollment[]>(`/erp/enrollments${qs ? `?${qs}` : ""}`);
+  },
+  createEnrollment: (dto: { studentId: string; batchId: string; status?: AdminEnrollment["status"]; notes?: string }) =>
+    request<AdminEnrollment>("/erp/enrollments", { method: "POST", body: JSON.stringify(dto) }),
+  updateEnrollment: (enrollmentId: string, dto: { status?: AdminEnrollment["status"]; notes?: string }) =>
+    request<AdminEnrollment>(`/erp/enrollments/${enrollmentId}`, { method: "PATCH", body: JSON.stringify(dto) }),
+  deleteEnrollment: (enrollmentId: string) =>
+    request<{ id: string; deleted: boolean }>(`/erp/enrollments/${enrollmentId}`, { method: "DELETE" }),
 
   // --- CMS: Pages & Page Builder (brief Sections 29-30) --------------------
   listPages: () => request<AdminPage[]>("/cms/pages"),
