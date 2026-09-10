@@ -24,6 +24,13 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   { module: "students", action: "transfer.review", code: "students.transfer.review" },
   { module: "students", action: "transfer.approve", code: "students.transfer.approve" },
 
+  // Trainers (Phase 1 demo scope, expanded alongside the ERP Batch model so
+  // a batch can actually be assigned a real trainer) — list/create only,
+  // same minimal shape as Branches, since a full Trainer Management module
+  // is a later phase.
+  { module: "trainers", action: "list", code: "trainers.list" },
+  { module: "trainers", action: "create", code: "trainers.create" },
+
   // CMS & Page Builder (bxbii Ecosystem brief, Sections 29-31) — platform-
   // wide, not branch-scoped.
   { module: "cms", action: "pages.view", code: "cms.pages.view" },
@@ -56,4 +63,15 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   // Navigation/Contact — a partner has no nested sub-resource either.
   { module: "cms", action: "partners.view", code: "cms.partners.view" },
   { module: "cms", action: "partners.manage", code: "cms.partners.manage" },
+
+  // ERP — Institute Management, Phase 1 (financial & operational management
+  // module the user asked for first): Batches (scheduled runs of a Program
+  // or Course at a branch) and Enrollments (Student <-> Batch). Both are
+  // branch-scoped via the same BranchScopeService already used by Students,
+  // so "view"/"manage" here gate the route, and branch access is checked
+  // per-record on top, same defense-in-depth split as everywhere else.
+  { module: "erp", action: "batches.view", code: "erp.batches.view" },
+  { module: "erp", action: "batches.manage", code: "erp.batches.manage" },
+  { module: "erp", action: "enrollments.view", code: "erp.enrollments.view" },
+  { module: "erp", action: "enrollments.manage", code: "erp.enrollments.manage" },
 ];
