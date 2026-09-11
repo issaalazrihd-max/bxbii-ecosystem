@@ -109,6 +109,32 @@ if (res.status === 204) return undefined as T;
 return res.json();
 }
 
+/**
+ * Downloads a binary file (the invoice PDF) and triggers a browser save —
+ * can't reuse request<T>() since the response isn't JSON, but still needs
+ * the same bearer-token auth as every other admin call (the endpoint is
+ * behind erp.invoices.view like the rest of the Invoices API).
+ */
+async function downloadBlob(path: string, filename: string): Promise<void> {
+  await ensureAccessToken();
+  const res = await fetch(`${API_URL}/api/v1${path}`, {
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message ?? `Request to ${path} failed with ${res.status}`);
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 export interface AdminPage {
 id: string;
 slug: string;
@@ -313,6 +339,7 @@ status: "DRAFT" | "SENT" | "PARTIALLY_PAID" | "PAID" | "OVERDUE" | "CANCELLED";
 issueDate: string;
 dueDate: string | null;
 notes: string | null;
+sentAt: string | null;
 payments?: AdminPayment[];
 }
 
@@ -428,6 +455,10 @@ request<{ redirectUrl: string }>(`/erp/invoices/${invoiceId}/checkout`, {
 method: "POST",
 body: JSON.stringify({ gateway }),
 }),
+downloadInvoicePdf: (invoiceId: string, invoiceNumber: string) =>
+downloadBlob(`/erp/invoices/${invoiceId}/pdf`, `${invoiceNumber}.pdf`),
+sendInvoiceEmail: (invoiceId: string) =>
+request<AdminInvoice>(`/erp/invoices/${invoiceId}/send-email`, { method: "POST" }),
 
 listPayments: (invoiceId?: string) => {
 const params = new URLSearchParams();
