@@ -302,7 +302,7 @@ quantity: number;
 unitPrice: number;
 }
 
-export type PaymentGateway = "MANUAL" | "PAYTABS" | "THAWANI";
+export type PaymentGateway = "MANUAL" | "PAYTABS" | "THAWANI" | "PADDLE";
 export type PaymentStatus = "PENDING" | "SUCCEEDED" | "FAILED" | "REFUNDED";
 
 export interface AdminPayment {
