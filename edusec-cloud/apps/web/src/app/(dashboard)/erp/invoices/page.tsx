@@ -191,7 +191,7 @@ return (
 
 {gateways.length > 0 && gateways.every((g) => !g.configured) && (
 <p className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
-No online payment gateway is configured yet (PayTabs / Thawani). Invoices can still be created and
+No online payment gateway is configured yet (PayTabs / Thawani / Paddle). Invoices can still be created and
 settled with manually recorded payments from the Payments page.
 </p>
 )}
@@ -252,7 +252,7 @@ disabled={checkoutBusy === inv.id || inv.status === "PAID" || inv.status === "CA
 onClick={() => payNow(inv, g.gateway)}
 className="rounded px-2 py-1 text-sm font-medium text-accent hover:underline disabled:opacity-40"
 >
-Pay via {g.gateway === "PAYTABS" ? "PayTabs" : "Thawani"}
+Pay via {g.gateway === "PAYTABS" ? "PayTabs" : g.gateway === "THAWANI" ? "Thawani" : "Paddle"}
 </button>
 ))}
 <Link
