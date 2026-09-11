@@ -65,13 +65,14 @@ export class InvoiceEmailService {
       ? ` Payment is due by ${new Date(invoice.dueDate).toLocaleDateString()}.`
       : "";
 
+    const totalAmount = Number(invoice.totalAmount);
     const transport = this.buildTransport();
     await transport.sendMail({
       from: process.env.EMAIL_FROM,
       to: invoice.student.email,
-      subject: `Invoice ${invoice.invoiceNumber} — ${money(invoice.totalAmount)} due`,
+      subject: `Invoice ${invoice.invoiceNumber} — ${money(totalAmount)} due`,
       text: `Dear ${invoice.student.firstName},\n\nPlease find attached invoice ${invoice.invoiceNumber} for ${money(
-        invoice.totalAmount,
+        totalAmount,
       )}, issued by ${invoice.branch.branchName}.${dueLine}\n\nThank you.`,
       attachments: [
         {

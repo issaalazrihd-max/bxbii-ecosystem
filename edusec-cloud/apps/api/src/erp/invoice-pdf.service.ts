@@ -88,22 +88,22 @@ export class InvoicePdfService {
 
       doc.fontSize(10).fillColor("#333");
       doc.text("Subtotal", 360, y);
-      doc.text(money(invoice.subtotal), col.amount, y);
+      doc.text(money(Number(invoice.subtotal)), col.amount, y);
       y += 18;
 
       if (Number(invoice.discountAmount) > 0) {
         doc.text("Discount", 360, y);
-        doc.text(`-${money(invoice.discountAmount)}`, col.amount, y);
+        doc.text(`-${money(Number(invoice.discountAmount))}`, col.amount, y);
         y += 18;
       }
       if (Number(invoice.taxAmount) > 0) {
         doc.text("Tax", 360, y);
-        doc.text(money(invoice.taxAmount), col.amount, y);
+        doc.text(money(Number(invoice.taxAmount)), col.amount, y);
         y += 18;
       }
 
       doc.fontSize(12).fillColor("#111").text("Total", 360, y);
-      doc.text(money(invoice.totalAmount), col.amount, y);
+      doc.text(money(Number(invoice.totalAmount)), col.amount, y);
       y += 34;
 
       if (invoice.notes) {
