@@ -88,6 +88,8 @@ const [createDraft, setCreateDraft] = useState<Draft>(EMPTY_DRAFT);
 const [saving, setSaving] = useState(false);
 const [balances, setBalances] = useState<Record<string, { totalAmount: number; paidAmount: number; balanceDue: number }>>({});
 const [checkoutBusy, setCheckoutBusy] = useState<string | null>(null);
+const [pdfBusy, setPdfBusy] = useState<string | null>(null);
+const [emailBusy, setEmailBusy] = useState<string | null>(null);
 
 const load = () => {
 api.listInvoices().then(setInvoices).catch((err) => setError(err.message));
@@ -153,6 +155,31 @@ const s = students.find((x) => x.id === id);
 return s ? `${s.firstName} ${s.lastName} (${s.studentCode})` : "—";
 };
 
+const downloadPdf = async (inv: AdminInvoice) => {
+setPdfBusy(inv.id);
+setError(null);
+try {
+await api.downloadInvoicePdf(inv.id, inv.invoiceNumber);
+} catch (err) {
+setError((err as Error).message);
+} finally {
+setPdfBusy(null);
+}
+};
+
+const sendEmail = async (inv: AdminInvoice) => {
+setEmailBusy(inv.id);
+setError(null);
+try {
+await api.sendInvoiceEmail(inv.id);
+load();
+} catch (err) {
+setError((err as Error).message);
+} finally {
+setEmailBusy(null);
+}
+};
+
 return (
 <div className="space-y-4">
 <div className="flex items-center justify-between">
@@ -198,8 +225,26 @@ return (
 {inv.currency} {Number(inv.totalAmount).toFixed(2)}
 {bal ? ` · balance ${bal.balanceDue.toFixed(2)}` : ""}
 </span>
+{inv.sentAt && (
+<span className="text-xs text-slate-400">Emailed {new Date(inv.sentAt).toLocaleString()}</span>
+)}
 </div>
 <div className="flex items-center gap-1">
+<button
+onClick={() => downloadPdf(inv)}
+disabled={pdfBusy === inv.id}
+className="rounded px-2 py-1 text-sm font-medium text-accent hover:underline disabled:opacity-40"
+>
+{pdfBusy === inv.id ? "Preparing…" : "Download PDF"}
+</button>
+<button
+onClick={() => sendEmail(inv)}
+disabled={emailBusy === inv.id}
+className="rounded px-2 py-1 text-sm font-medium text-accent hover:underline disabled:opacity-40"
+title="Emails this invoice to the student as a payment notice with the PDF attached"
+>
+{emailBusy === inv.id ? "Sending…" : "Send Email"}
+</button>
 {availableGateways.map((g) => (
 <button
 key={g.gateway}
