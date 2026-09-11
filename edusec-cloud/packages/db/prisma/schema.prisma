@@ -1007,11 +1007,14 @@ model Invoice {
 /// even before any real gateway is configured. PAYTABS/THAWANI are the two
 /// gateways confirmed to support Oman merchants (Stripe does not); Stripe
 /// was evaluated and intentionally left out of this enum since it cannot
-/// currently be used for an Oman-based merchant account.
+/// currently be used for an Oman-based merchant account. PADDLE was added
+/// afterward at the user's request — he created his own Paddle account and
+/// supplied a live API key directly (no account was created on his behalf).
 enum PaymentGateway {
   MANUAL
   PAYTABS
   THAWANI
+  PADDLE
 }
 
 enum PaymentStatus {
