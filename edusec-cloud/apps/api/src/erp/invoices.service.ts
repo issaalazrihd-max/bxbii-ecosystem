@@ -27,7 +27,9 @@ function computeTotals(lineItems: LineItemDto[], discountAmount: number, taxAmou
  * directly by the user). Branch-scoped directly like Batch (not
  * transitively through Enrollment), since a finance officer issues an
  * invoice from one specific branch and an invoice can exist with no
- * enrollment at all (a one-off charge) — same BranchScopeService,
+ * enrollment at all (a one-off charge). enrollmentId is optional so an
+ * invoice can still be linked back to the class/program it bills for when
+ * there is one. Branch-scoped directly like Batch, same BranchScopeService,
  * same view/edit split already proven on Batches/Students.
  */
 @Injectable()
@@ -205,6 +207,39 @@ export class InvoicesService {
     const paidAmount = Number(paid._sum.amount ?? 0);
     const totalAmount = Number(invoice.totalAmount);
     return { totalAmount, paidAmount, balanceDue: round2(totalAmount - paidAmount) };
+  }
+
+  /**
+   * Records that this invoice was just emailed to the student as a payment
+   * notice (the user's direct request), stamping sentAt and, for a DRAFT
+   * invoice, flipping status to SENT — the InvoiceStatus enum already
+   * models exactly this ("SENT"), so no new state was introduced for it.
+   * Called by InvoicesController only after InvoiceEmailService has
+   * actually delivered the message.
+   */
+  async markSent(user: AccessTokenPayload, invoiceId: string) {
+    const invoice = await this.getOrThrow(user.tenantId, invoiceId);
+    await this.branchScope.assertCanAccessBranch(user, invoice.branchId, "edit", MODULE);
+
+    const updated = await this.prisma.invoice.update({
+      where: { id: invoiceId },
+      data: {
+        sentAt: new Date(),
+        status: invoice.status === "DRAFT" ? "SENT" : undefined,
+      },
+      include: { branch: true, student: true, enrollment: true, payments: true },
+    });
+
+    await this.audit.record({
+      tenantId: user.tenantId,
+      actorId: user.sub,
+      action: "erp.invoice.email_sent",
+      entityType: "Invoice",
+      entityId: invoice.id,
+      after: { sentAt: updated.sentAt, status: updated.status },
+    });
+
+    return updated;
   }
 
   private async getOrThrow(tenantId: string, invoiceId: string) {

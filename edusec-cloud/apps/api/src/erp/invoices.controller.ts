@@ -1,4 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Res } from "@nestjs/common";
+import type { Response } from "express";
 import { IsEnum } from "class-validator";
 import { PaymentGateway } from "@edusec/db";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
@@ -9,6 +10,8 @@ import { InvoicesService } from "./invoices.service";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
 import { UpdateInvoiceDto } from "./dto/update-invoice.dto";
 import { PaymentGatewayService } from "./payment-gateway/payment-gateway.service";
+import { InvoicePdfService } from "./invoice-pdf.service";
+import { InvoiceEmailService } from "./invoice-email.service";
 
 type OnlineGateway = Exclude<PaymentGateway, "MANUAL">;
 
@@ -28,6 +31,8 @@ export class InvoicesController {
     private readonly invoices: InvoicesService,
     private readonly gateways: PaymentGatewayService,
     private readonly prisma: PrismaService,
+    private readonly pdf: InvoicePdfService,
+    private readonly email: InvoiceEmailService,
   ) {}
 
   @Get()
@@ -61,6 +66,28 @@ export class InvoicesController {
     return this.invoices.getBalance(user, invoiceId);
   }
 
+  /**
+   * On-demand PDF download — the user's direct request: "I want to be able
+   * to pull it as a PDF whenever I want." Always available regardless of
+   * whether SMTP email is configured, since this never leaves the server.
+   */
+  @Get(":invoiceId/pdf")
+  @RequirePermissions("erp.invoices.view")
+  async downloadPdf(
+    @CurrentUser() user: AccessTokenPayload,
+    @Param("invoiceId") invoiceId: string,
+    @Res() res: Response,
+  ) {
+    const invoice = await this.invoices.get(user, invoiceId);
+    const buffer = await this.pdf.generate(invoice as any);
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="${invoice.invoiceNumber}.pdf"`,
+      "Content-Length": String(buffer.length),
+    });
+    res.send(buffer);
+  }
+
   @Post()
   @RequirePermissions("erp.invoices.manage")
   create(@CurrentUser() user: AccessTokenPayload, @Body() dto: CreateInvoiceDto) {
@@ -81,6 +108,28 @@ export class InvoicesController {
   @RequirePermissions("erp.invoices.manage")
   remove(@CurrentUser() user: AccessTokenPayload, @Param("invoiceId") invoiceId: string) {
     return this.invoices.remove(user, invoiceId);
+  }
+
+  /**
+   * Emails the invoice to its student as a payment notice with the PDF
+   * attached (the user's direct request) and records sentAt. Fails with a
+   * clear "not configured" message — never a fake success — when no SMTP
+   * credentials have been set, the same pattern used for PayTabs/Thawani
+   * below: the ERP still works via manual payment recording / on-demand PDF
+   * download in the meantime.
+   */
+  @Post(":invoiceId/send-email")
+  @RequirePermissions("erp.invoices.manage")
+  async sendEmail(@CurrentUser() user: AccessTokenPayload, @Param("invoiceId") invoiceId: string) {
+    if (!this.email.isConfigured()) {
+      throw new BadRequestException(
+        "Email is not configured yet — set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS and EMAIL_FROM to enable sending invoices by email. The PDF can still be downloaded manually in the meantime.",
+      );
+    }
+    const invoice = await this.invoices.get(user, invoiceId);
+    const buffer = await this.pdf.generate(invoice as any);
+    await this.email.sendInvoiceEmail(invoice as any, buffer);
+    return this.invoices.markSent(user, invoiceId);
   }
 
   /**
