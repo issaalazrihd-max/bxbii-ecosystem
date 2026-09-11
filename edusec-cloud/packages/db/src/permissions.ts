@@ -74,4 +74,13 @@ export const PERMISSIONS: Array<{ module: string; action: string; code: string }
   { module: "erp", action: "batches.manage", code: "erp.batches.manage" },
   { module: "erp", action: "enrollments.view", code: "erp.enrollments.view" },
   { module: "erp", action: "enrollments.manage", code: "erp.enrollments.manage" },
+
+  // ERP Phase 2 — Invoices & Payments (financial and operational
+  // management, requested directly by the user). Branch-scoped like
+  // Batches/Enrollments via the same BranchScopeService — view/manage
+  // gates the route, branch access is checked per-record on top.
+  { module: "erp", action: "invoices.view", code: "erp.invoices.view" },
+  { module: "erp", action: "invoices.manage", code: "erp.invoices.manage" },
+  { module: "erp", action: "payments.view", code: "erp.payments.view" },
+  { module: "erp", action: "payments.manage", code: "erp.payments.manage" },
 ];

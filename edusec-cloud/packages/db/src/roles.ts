@@ -8,10 +8,10 @@
  *
  * Permission lists here only cover what this foundation scaffold actually
  * implements (Branches, Students + transfer workflow, Trainers, ERP
- * Batches/Enrollments, CMS/Navigation/Programs/Courses/Contact/Partners).
- * As Phase 4+ modules land (Admissions/CRM, Finance, HR, Inventory,
- * Facilities, ...), extend each role's permission list — the role and its
- * code/name never need to change, just what it's allowed to do.
+ * Batches/Enrollments/Invoices/Payments, CMS/Navigation/Programs/Courses/
+ * Contact/Partners). As Phase 4+ modules land (Admissions/CRM, HR,
+ * Inventory, Facilities, ...), extend each role's permission list — the
+ * role and its code/name never need to change, just what it's allowed to do.
  */
 export const ROLE_TEMPLATES: Array<{
   code: string;
@@ -23,7 +23,7 @@ export const ROLE_TEMPLATES: Array<{
     code: "SUPER_ADMIN",
     name: "Super Administrator",
     description: "Full system access across every module, branch, and the platform website/CMS.",
-    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "trainers.list", "trainers.create", "erp.batches.view", "erp.batches.manage", "erp.enrollments.view", "erp.enrollments.manage", "cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage", "cms.programs.view", "cms.programs.manage", "cms.courses.view", "cms.courses.manage", "cms.contact.view", "cms.contact.manage", "cms.partners.view", "cms.partners.manage"],
+    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "trainers.list", "trainers.create", "erp.batches.view", "erp.batches.manage", "erp.enrollments.view", "erp.enrollments.manage", "erp.invoices.view", "erp.invoices.manage", "erp.payments.view", "erp.payments.manage", "cms.pages.view", "cms.pages.create", "cms.pages.update", "cms.pages.delete", "cms.navigation.view", "cms.navigation.manage", "cms.programs.view", "cms.programs.manage", "cms.courses.view", "cms.courses.manage", "cms.contact.view", "cms.contact.manage", "cms.partners.view", "cms.partners.manage"],
   },
   {
     code: "PLATFORM_ADMIN",
@@ -35,13 +35,13 @@ export const ROLE_TEMPLATES: Array<{
     code: "INSTITUTE_ADMIN",
     name: "Institute Administrator",
     description: "Institute-wide management across all branches.",
-    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "trainers.list", "trainers.create", "erp.batches.view", "erp.batches.manage", "erp.enrollments.view", "erp.enrollments.manage", "cms.pages.view", "cms.navigation.view"],
+    permissions: ["dashboard.view", "branches.list", "branches.create", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "students.transfer.approve", "trainers.list", "trainers.create", "erp.batches.view", "erp.batches.manage", "erp.enrollments.view", "erp.enrollments.manage", "erp.invoices.view", "erp.invoices.manage", "erp.payments.view", "erp.payments.manage", "cms.pages.view", "cms.navigation.view"],
   },
   {
     code: "BRANCH_MANAGER",
     name: "Branch Manager",
     description: "Manages their assigned branch's day-to-day operations.",
-    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "trainers.list", "erp.batches.view", "erp.batches.manage", "erp.enrollments.view", "erp.enrollments.manage"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "students.transfer.review", "trainers.list", "erp.batches.view", "erp.batches.manage", "erp.enrollments.view", "erp.enrollments.manage", "erp.invoices.view", "erp.invoices.manage", "erp.payments.view", "erp.payments.manage"],
   },
   {
     code: "ACADEMIC_MANAGER",
@@ -53,19 +53,19 @@ export const ROLE_TEMPLATES: Array<{
     code: "ADMISSIONS_OFFICER",
     name: "Admissions Officer",
     description: "Manages leads and admissions (full CRM lands in Phase 4).",
-    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "erp.batches.view", "erp.enrollments.view", "erp.enrollments.manage", "cms.contact.view"],
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "students.create", "students.transfer.request", "erp.batches.view", "erp.enrollments.view", "erp.enrollments.manage", "erp.invoices.view", "cms.contact.view"],
   },
   {
     code: "FINANCE_OFFICER",
     name: "Finance Officer",
-    description: "Manages invoices and student finance (Phase 5).",
-    permissions: ["dashboard.view", "branches.list", "students.list", "students.view"],
+    description: "Manages invoices and student finance (ERP Phase 2).",
+    permissions: ["dashboard.view", "branches.list", "students.list", "students.view", "erp.batches.view", "erp.enrollments.view", "erp.invoices.view", "erp.invoices.manage", "erp.payments.view", "erp.payments.manage"],
   },
   {
     code: "ACCOUNTANT",
     name: "Accountant",
-    description: "Manages the general ledger and accounting (Phase 5).",
-    permissions: ["branches.list", "students.view"],
+    description: "Manages the general ledger and student invoicing/payments (ERP Phase 2 — full GL accounting lands in a later phase).",
+    permissions: ["branches.list", "students.view", "erp.invoices.view", "erp.invoices.manage", "erp.payments.view", "erp.payments.manage"],
   },
   {
     code: "HR_MANAGER",
