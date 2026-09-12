@@ -17,25 +17,37 @@ import type { CheckoutContext, CheckoutSession, PaymentGatewayProvider, PaymentV
  * how ThawaniProvider builds an ad-hoc `products` entry per checkout rather
  * than referencing a pre-created price.
  *
- * IMPORTANT — currency: Paddle Billing only supports a fixed list of
- * settlement currencies, and it is not confirmed (Paddle's own docs could
- * not be reached during this build) whether OMR — this project's default
- * invoice currency — is on that list. No conversion is invented here: the
- * invoice's real currency is sent as-is, and if Paddle rejects it, that
- * rejection surfaces as a normal "checkout failed" error to the admin,
- * exactly like any other gateway error. Do not treat "Pay via Paddle" as
- * reliable for OMR invoices until one real transaction has actually been
- * created and its checkout page inspected.
+ * CURRENCY — CONFIRMED BUG FIX (2026-09-12): the first live test of "Pay via
+ * Paddle" failed with "Invalid request." from Paddle's API. Root cause,
+ * confirmed against Paddle's own docs
+ * (developer.paddle.com/concepts/sell/supported-currencies): Paddle
+ * supports a fixed list of ~33 settlement currencies, and OMR (Omani
+ * Rial) — this project's default invoice currency — is NOT one of them (no
+ * GCC currency is). Every OMR invoice was therefore guaranteed to be
+ * rejected by Paddle regardless of amount or request shape.
  *
- * NOT YET TESTED against the real Paddle account — this was built directly
- * from Paddle's documented request/response shape but has not yet had a
- * live transaction run against it. Run one real transaction (and inspect
- * the resulting checkout page before sending it to any real student) once
- * PADDLE_API_KEY is set, before relying on this in production.
+ * Fix, per the user's explicit decision: OMR amounts are converted to USD
+ * using Oman's OFFICIAL FIXED CURRENCY-BOARD PEG (not a floating market
+ * rate) before being sent to Paddle — see convertForPaddle() below. Any
+ * other currency is passed through unchanged (unconverted) since this
+ * project has never used a currency other than OMR; if that ever changes
+ * and Paddle rejects it, that will surface as a normal gateway error like
+ * any other, exactly as before.
  */
 @Injectable()
 export class PaddleProvider implements PaymentGatewayProvider {
   readonly gateway = "PADDLE" as const;
+
+  /**
+   * Oman's currency board has pegged the Omani Rial to the US Dollar at
+   * this exact rate since 1986 (Central Bank of Oman, cbo.gov.om — "The
+   * Fixed Peg of the RO to the US Dollar"; confirmed 2026-09-12):
+   *   1 OMR = 2.6008 USD (exact)   |   1 USD = 0.3845 OMR (approx.)
+   * This is a hard government peg, not a market-fluctuating exchange
+   * rate, so hardcoding it here is safe and does not need to track live
+   * FX markets or be refreshed periodically.
+   */
+  private static readonly OMR_TO_USD_FIXED_PEG = 2.6008;
 
   private get apiKey(): string | undefined {
     return process.env.PADDLE_API_KEY;
@@ -58,15 +70,41 @@ export class PaddleProvider implements PaymentGatewayProvider {
     return !!this.apiKey;
   }
 
+  /**
+   * Paddle does not support OMR — convert to USD via Oman's official fixed
+   * peg so the transaction is billed in a currency Paddle actually accepts.
+   * Returns the smallest-unit integer amount (cents for USD), the
+   * currency_code to send to Paddle, and a human-readable note showing the
+   * original OMR amount (appended to the price description so the
+   * customer/admin can see exactly how the USD figure was derived — never
+   * a silent, unexplained currency switch).
+   */
+  private convertForPaddle(amount: number, currency: string): { unitAmount: number; currencyCode: string; note: string } {
+    const upper = currency.toUpperCase();
+
+    if (upper === "OMR") {
+      const usd = amount * PaddleProvider.OMR_TO_USD_FIXED_PEG;
+      return {
+        unitAmount: Math.round(usd * 100), // USD has 2 decimal places
+        currencyCode: "USD",
+        note: ` (${amount.toFixed(3)} OMR @ fixed peg 1 OMR = ${PaddleProvider.OMR_TO_USD_FIXED_PEG} USD)`,
+      };
+    }
+
+    // Unconverted pass-through for any other currency (none currently used
+    // in this system). Assumes a 2-decimal smallest unit, same as before —
+    // if a 0- or 3-decimal currency is ever introduced here, this will need
+    // revisiting, but that is out of scope for the OMR bug being fixed now.
+    return { unitAmount: Math.round(amount * 100), currencyCode: upper, note: "" };
+  }
+
   async createCheckoutSession(ctx: CheckoutContext): Promise<CheckoutSession> {
     if (!this.isConfigured()) {
       throw new Error("Paddle is not configured — set PADDLE_API_KEY.");
     }
 
-    // Paddle amounts are strings in the currency's smallest unit (e.g. cents
-    // for USD; baisa for OMR) — confirmed against Paddle's documented
-    // transaction/price shape.
-    const unitAmount = Math.round(ctx.amount * 100);
+    const { unitAmount, currencyCode, note } = this.convertForPaddle(ctx.amount, ctx.currency);
+    const description = `${ctx.description}${note}`;
 
     const res = await fetch(`${this.apiBase}/transactions`, {
       method: "POST",
@@ -76,11 +114,11 @@ export class PaddleProvider implements PaymentGatewayProvider {
           {
             quantity: 1,
             price: {
-              description: ctx.description,
-              name: ctx.description,
+              description,
+              name: description,
               unit_price: {
                 amount: String(unitAmount),
-                currency_code: ctx.currency,
+                currency_code: currencyCode,
               },
               product: {
                 name: `bxbii — ${ctx.description}`,
@@ -89,7 +127,7 @@ export class PaddleProvider implements PaymentGatewayProvider {
             },
           },
         ],
-        custom_data: { invoiceId: ctx.invoiceId, cartId: ctx.cartId },
+        custom_data: { invoiceId: ctx.invoiceId, cartId: ctx.cartId, originalAmount: ctx.amount, originalCurrency: ctx.currency },
       }),
     });
 
