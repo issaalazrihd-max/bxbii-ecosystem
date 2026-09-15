@@ -6,160 +6,68 @@ import type { PublicNavItem } from "@/lib/public-api";
 import { pickText } from "@/lib/i18n";
 import { useLanguage, LanguageToggle } from "./language-provider";
 
-/**
- * Fully dynamic top navigation (brief Section 31) — every item, including
- * submenus, comes from the CMS Navigation API. Nothing here is hard-coded;
- * an editor can add, reorder, or hide menu items without a code change.
- *
- * The "Login to Application" button is the one intentional exception: it
- * always points at the dedicated app.bxbii.com subdomain (the Institute
- * Management System / staff dashboard), kept separate from the public
- * marketing site served on bxbii.com / www.bxbii.com.
- */
 const APP_LOGIN_URL = "https://app.bxbii.com/login";
-
-// Interface pass (Task #41): a shared focus-visible ring so every keyboard
-// user gets a visible indicator of the focused control — nothing in this
-// header had one before. Two variants because the header sits on the dark
-// brand background while dropdown submenus sit on the light surface.
-const FOCUS_ON_BRAND =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand";
-const FOCUS_ON_SURFACE =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface";
+const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2";
 
 export function PublicNav({ items }: { items: PublicNavItem[] }) {
   const { lang } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const visible = items.filter((item) => item.isVisible);
+  const ar = lang === "ar";
+  const core = [
+    ["/", "Home", "الرئيسية"],
+    ["/programs", "Programs", "البرامج"],
+    ["/programs", "Bootcamps", "المعسكرات"],
+    ["/courses", "Courses", "الدورات"],
+    ["/training", "Miran Studio", "مران ستوديو"],
+    ["/about-us", "About", "عن bxbii"],
+    ["/contact-us", "Contact", "تواصل معنا"],
+  ] as const;
+  const cmsExtras = items.filter((item) => item.isVisible && item.href && !core.some((x) => x[0] === item.href));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-brand text-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className={`rounded text-lg font-semibold tracking-tight ${FOCUS_ON_BRAND}`}>
-          bxbii
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 text-slate-900 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 lg:px-10">
+        <Link href="/" className={`shrink-0 rounded text-2xl font-black tracking-[-.06em] text-brand ${FOCUS}`}>
+          bxbii<span className="ms-1 text-accent">.</span><span className="sr-only"> Build Beyond</span>
         </Link>
-
-        <nav className="hidden items-center gap-1 md:flex">
-          {visible.map((item) => (
-            <NavEntry key={item.id} item={item} lang={lang} />
+        <nav className="hidden items-center gap-1 xl:flex">
+          {core.map(([href, en, arLabel]) => (
+            <Link key={href + en} href={href} className={`rounded-lg px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 hover:text-brand ${FOCUS}`}>
+              {ar ? arLabel : en}
+            </Link>
+          ))}
+          {cmsExtras.slice(0, 1).map((item) => (
+            <Link key={item.id} href={item.href!} className={`rounded-lg px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 hover:text-brand ${FOCUS}`}>
+              {pickText(item.enLabel, item.arLabel, lang)}
+            </Link>
           ))}
         </nav>
-
         <div className="hidden items-center gap-3 md:flex">
           <LanguageToggle />
-          <a
-            href={APP_LOGIN_URL}
-            className={`rounded bg-accent px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-accent-light ${FOCUS_ON_BRAND}`}
-          >
-            {lang === "ar" ? "الدخول إلى التطبيق" : "Login to Application"}
-          </a>
+          <Link href="/programs" className="rounded-full bg-brand px-5 py-2.5 text-xs font-black text-white transition hover:bg-accent">
+            {ar ? "ابدأ الآن" : "Start now"}
+          </Link>
+          <a href={APP_LOGIN_URL} aria-label={ar ? "بوابة الإدارة" : "Administration portal"} title={ar ? "بوابة الإدارة" : "Administration portal"} className={`rounded px-1 text-[10px] text-slate-300 hover:text-slate-500 ${FOCUS}`}>•</a>
         </div>
-
-        <button
-          className={`rounded p-2 text-white/90 hover:bg-white/10 md:hidden ${FOCUS_ON_BRAND}`}
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-label="Toggle menu"
-        >
+        <button className={`rounded-lg border border-slate-200 p-2 xl:hidden ${FOCUS}`} onClick={() => setMobileOpen((v) => !v)} aria-label="Toggle menu">
           {mobileOpen ? "✕" : "☰"}
         </button>
       </div>
-
       {mobileOpen && (
-        <div className="border-t border-white/10 px-4 pb-4 md:hidden">
-          <nav className="flex flex-col gap-1 pt-2">
-            {visible.map((item) => (
-              <NavEntry key={item.id} item={item} lang={lang} mobile />
+        <div className="border-t border-slate-200 bg-white px-5 pb-5 xl:hidden">
+          <nav className="flex flex-col pt-2">
+            {core.map(([href, en, arLabel]) => (
+              <Link key={href + en} href={href} onClick={() => setMobileOpen(false)} className="rounded-lg px-3 py-3 font-bold text-slate-700 hover:bg-slate-50">
+                {ar ? arLabel : en}
+              </Link>
             ))}
           </nav>
-          <div className="mt-3 flex items-center gap-3">
+          <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
             <LanguageToggle />
-            <a
-              href={APP_LOGIN_URL}
-              className={`rounded bg-accent px-3 py-1.5 text-sm font-medium text-white ${FOCUS_ON_BRAND}`}
-            >
-              {lang === "ar" ? "الدخول إلى التطبيق" : "Login to Application"}
-            </a>
+            <a href={APP_LOGIN_URL} className="text-xs text-slate-400">{ar ? "بوابة الإدارة" : "Admin"}</a>
           </div>
         </div>
       )}
     </header>
-  );
-}
-
-function NavEntry({
-  item,
-  lang,
-  mobile,
-}: {
-  item: PublicNavItem;
-  lang: "en" | "ar";
-  mobile?: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const label = pickText(item.enLabel, item.arLabel, lang);
-  const children = item.children.filter((c) => c.isVisible);
-  const hasChildren = children.length > 0;
-
-  const linkClasses = mobile
-    ? `block rounded px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10 ${FOCUS_ON_BRAND}`
-    : `rounded px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10 ${FOCUS_ON_BRAND}`;
-
-  if (!hasChildren) {
-    if (!item.href) return null;
-    return item.openInNewTab ? (
-      <a href={item.href} target="_blank" rel="noreferrer" className={linkClasses}>
-        {label}
-      </a>
-    ) : (
-      <Link href={item.href} className={linkClasses}>
-        {label}
-      </Link>
-    );
-  }
-
-  return (
-    <div
-      className={mobile ? "" : "relative"}
-      onMouseEnter={() => !mobile && setOpen(true)}
-      onMouseLeave={() => !mobile && setOpen(false)}
-    >
-      <button
-        className={`${linkClasses} flex w-full items-center gap-1`}
-        onClick={() => mobile && setOpen((v) => !v)}
-      >
-        {label} <span className="text-xs">▾</span>
-      </button>
-      {open && (
-        <div
-          // Logical (start/end) properties instead of physical left/right so
-          // the dropdown opens on the correct side, and the mobile submenu's
-          // indent rail sits on the correct side, in both LTR and RTL (brief
-          // Section 33 — the Arabic experience must not just be a mirrored
-          // English layout with the wrong-side artifacts that implies).
-          className={
-            mobile
-              ? "ms-3 flex flex-col gap-1 border-s border-white/10 ps-2"
-              : "absolute start-0 top-full min-w-[12rem] rounded border border-surface-border bg-surface py-1 shadow-lg"
-          }
-        >
-          {children.map((child) =>
-            child.href ? (
-              <Link
-                key={child.id}
-                href={child.href}
-                target={child.openInNewTab ? "_blank" : undefined}
-                className={
-                  mobile
-                    ? `block rounded px-3 py-2 text-sm text-white/80 hover:bg-white/10 ${FOCUS_ON_BRAND}`
-                    : `block px-4 py-2 text-sm text-slate-700 hover:bg-surface-subtle ${FOCUS_ON_SURFACE} focus-visible:ring-inset`
-                }
-              >
-                {pickText(child.enLabel, child.arLabel, lang)}
-              </Link>
-            ) : null,
-          )}
-        </div>
-      )}
-    </div>
   );
 }
