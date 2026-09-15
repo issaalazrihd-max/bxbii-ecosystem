@@ -1,0 +1,24 @@
+"use client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api, type AdminBatch, type AdminEnrollment, type AdminInvoice } from "@/lib/api-client";
+
+const STEPS = [
+  ["01", "Lead", "Capture and follow up prospects", "/operations/admissions"],
+  ["02", "Student", "Register the learner profile", "/students"],
+  ["03", "Enrollment", "Place the learner in a batch", "/erp/enrollments"],
+  ["04", "Invoice", "Create and track tuition invoices", "/erp/invoices"],
+  ["05", "Delivery", "Run sessions and timetable", "/operations/timetable"],
+  ["06", "Attendance", "Record attendance and excuses", "/operations/attendance"],
+  ["07", "Assessment", "Record exams and results", "/operations/exams"],
+  ["08", "Certificate", "Issue and verify completion", "/operations/certificates"],
+];
+
+export default function WorkflowPage(){
+ const [batches,setBatches]=useState<AdminBatch[]>([]); const [enrollments,setEnrollments]=useState<AdminEnrollment[]>([]); const [invoices,setInvoices]=useState<AdminInvoice[]>([]); const [error,setError]=useState("");
+ useEffect(()=>{Promise.all([api.listBatches(),api.listEnrollments(),api.listInvoices()]).then(([b,e,i])=>{setBatches(b);setEnrollments(e);setInvoices(i)}).catch(e=>setError(e.message))},[]);
+ const openBatches=batches.filter(b=>b.status==="OPEN").length; const activeEnrollments=enrollments.filter(e=>e.status==="ENROLLED").length; const outstanding=invoices.filter(i=>["SENT","PARTIALLY_PAID","OVERDUE"].includes(i.status)).length;
+ return <div className="space-y-8" dir="ltr"><header><div className="text-xs font-bold uppercase tracking-[.18em] text-brand">bxbii Cloud</div><h1 className="mt-1 text-3xl font-black tracking-tight text-slate-950">Institute workflow</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">A single operating path from first enquiry to certified completion. Each step opens the live workspace that owns that part of the learner journey.</p></header>{error&&<div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}<section className="grid gap-4 sm:grid-cols-3"><Metric label="Open batches" value={openBatches}/><Metric label="Active enrollments" value={activeEnrollments}/><Metric label="Outstanding invoices" value={outstanding}/></section><section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><div className="mb-6 flex items-end justify-between"><div><h2 className="text-xl font-black text-slate-950">Learner journey</h2><p className="mt-1 text-sm text-slate-500">Recommended sequence for day-to-day institute operations.</p></div><Link href="/operations" className="text-xs font-bold text-brand">Operations center →</Link></div><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">{STEPS.map(([number,title,desc,href])=><Link key={href} href={href} className="group rounded-2xl border border-slate-200 p-5 transition hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md"><div className="flex items-center justify-between"><span className="text-xs font-black text-brand">{number}</span><span className="text-slate-300 transition group-hover:text-brand">↗</span></div><h3 className="mt-5 font-black text-slate-900">{title}</h3><p className="mt-1 text-xs leading-5 text-slate-500">{desc}</p></Link>)}</div></section><section className="grid gap-4 lg:grid-cols-2"><Quick title="Academic delivery" items={[["Timetable","Schedule rooms, trainers and sessions","/operations/timetable"],["Attendance","Mark presence, absence and excuses","/operations/attendance"],["Assessments","Manage tests, scores and grades","/operations/exams"]]}/><Quick title="Commercial & records" items={[["Admissions & CRM","Track leads and follow-ups","/operations/admissions"],["Enrollments","Connect learners to batches","/erp/enrollments"],["Invoices","Manage billing and payments","/erp/invoices"],["Certificates","Issue and verify certificates","/operations/certificates"]]}/></section></div>
+}
+function Metric({label,value}:{label:string;value:number}){return <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</div><div className="mt-2 text-3xl font-black text-slate-950">{value}</div></div>}
+function Quick({title,items}:{title:string;items:string[][]}){return <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"><h2 className="font-black text-slate-950">{title}</h2><div className="mt-4 divide-y divide-slate-100">{items.map(([name,desc,href])=><Link key={href} href={href} className="flex items-center justify-between gap-4 py-4"><div><div className="text-sm font-bold text-slate-800">{name}</div><div className="mt-1 text-xs text-slate-500">{desc}</div></div><span className="text-slate-300">→</span></Link>)}</div></div>}
