@@ -1,16 +1,16 @@
 "use client";
 import Link from "next/link";
-import { FormEvent, ReactNode, useEffect, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { operationsApi, OperationsData } from "@/lib/operations-api";
 
 const MODULES = [
- {slug:"admissions",title:"Admissions & CRM",ar:"القبول وCRM",desc:"Leads, applications and follow-up pipeline.",icon:"◎",key:"crm"},
- {slug:"timetable",title:"Timetable",ar:"الجدول الدراسي",desc:"Sessions, rooms, trainers and weekly delivery.",icon:"▦",key:"sessions"},
- {slug:"attendance",title:"Attendance",ar:"الحضور والانصراف",desc:"Attendance, absences and excuse workflow.",icon:"✓",key:"attendance"},
- {slug:"exams",title:"Exams & Assessments",ar:"الاختبارات والتقييم",desc:"Assessments, scores, grades and progression.",icon:"▤",key:"assessments"},
- {slug:"certificates",title:"Certificates",ar:"الشهادات",desc:"Issuance, verification and certificate archive.",icon:"◇",key:"certificates"},
- {slug:"reports",title:"Reports & Analytics",ar:"التقارير والتحليلات",desc:"Executive KPIs across academic operations.",icon:"◫",key:"overview"},
- {slug:"settings",title:"System Settings",ar:"إعدادات النظام",desc:"Configuration, roles, numbering and integrations.",icon:"⚙",key:"overview"},
+ {slug:"admissions",title:"Admissions & CRM",ar:"القبول وCRM",desc:"Leads, applications and follow-up pipeline.",key:"crm"},
+ {slug:"timetable",title:"Timetable",ar:"الجدول الدراسي",desc:"Sessions, rooms, trainers and weekly delivery.",key:"sessions"},
+ {slug:"attendance",title:"Attendance",ar:"الحضور والانصراف",desc:"Attendance, absences and excuse workflow.",key:"attendance"},
+ {slug:"exams",title:"Exams & Assessments",ar:"الاختبارات والتقييم",desc:"Assessments, scores, grades and progression.",key:"assessments"},
+ {slug:"certificates",title:"Certificates",ar:"الشهادات",desc:"Issuance, verification and certificate archive.",key:"certificates"},
+ {slug:"reports",title:"Reports & Analytics",ar:"التقارير والتحليلات",desc:"Executive KPIs across academic operations.",key:"overview"},
+ {slug:"settings",title:"System Settings",ar:"إعدادات النظام",desc:"Configuration, roles, numbering and integrations.",key:"overview"},
 ] as const;
 type Module = typeof MODULES[number];
 
@@ -20,6 +20,8 @@ export function OperationsCenter({active}:{active?:string}){
  const reload=()=>{setLoading(true);setError("");operationsApi.overview().then(setData).catch(e=>setError(e.message)).finally(()=>setLoading(false));};
  useEffect(reload,[]);
  const current=MODULES.find(x=>x.slug===active);
+ if(current?.slug==="reports") return <Reports data={data} loading={loading} error={error} reload={reload}/>;
+ if(current?.slug==="settings") return <Settings/>;
  if(current) return <ModuleView module={current} data={data} loading={loading} error={error} reload={reload}/>;
  return <Home data={data} loading={loading} error={error}/>;
 }
@@ -27,6 +29,13 @@ function Home({data,loading,error}:{data:OperationsData;loading:boolean;error:st
  const cards=[["Learners","Students module","/students"],["Admissions & CRM",`${data.crm.length} activities`,"/operations/admissions"],["Timetable",`${data.sessions.length} sessions`,"/operations/timetable"],["Attendance",`${data.attendance.length} records`,"/operations/attendance"],["Assessments",`${data.assessments.length} records`,"/operations/exams"],["Certificates",`${data.certificates.length} issued`,"/operations/certificates"]];
  return <div className="space-y-7" dir="ltr"><Header title="Institute Operations" sub="One workspace for admissions, academic delivery, attendance, assessment and certification."/><div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{cards.map(([title,meta,href])=><Link key={href} href={href} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-lg"><div className="text-lg font-black text-slate-950">{title}</div><div className="mt-2 text-sm text-slate-500">{meta}</div><div className="mt-5 text-xs font-bold text-brand">Open workspace →</div></Link>)}</div>{loading&&<Notice>Loading live operational data…</Notice>}{error&&<Notice>{error}</Notice>}<div className="grid gap-4 sm:grid-cols-3"><Kpi label="Rooms" value={data.rooms.length}/><Kpi label="Sessions" value={data.sessions.length}/><Kpi label="Certificates" value={data.certificates.length}/></div></div>
 }
+function Reports({data,loading,error,reload}:{data:OperationsData;loading:boolean;error:string;reload:()=>void}){
+ const attendance={present:data.attendance.filter(x=>x.status==="PRESENT").length,late:data.attendance.filter(x=>x.status==="LATE").length,absent:data.attendance.filter(x=>x.status==="ABSENT").length,excused:data.attendance.filter(x=>x.status==="EXCUSED").length};
+ const assessed=data.assessments.filter(x=>x.score!=null); const average=assessed.length?Math.round(assessed.reduce((s,x)=>s+Number(x.score),0)/assessed.length*10)/10:0;
+ const exportCsv=()=>{const rows=[...data.sessions.map(x=>({module:"Timetable",id:x.id,date:x.session_date,status:x.status})),...data.attendance.map(x=>({module:"Attendance",id:x.id,date:x.created_at,status:x.status})),...data.assessments.map(x=>({module:"Assessment",id:x.id,date:x.assessed_at,status:x.status,score:x.score})),...data.certificates.map(x=>({module:"Certificate",id:x.id,date:x.issue_date,status:x.status}))];const headers=Object.keys(rows[0]||{module:"",id:"",date:"",status:""});const csv=[headers.join(","),...rows.map(r=>headers.map(h=>`"${String((r as any)[h]??"").replace(/"/g,'""')}"`).join(","))].join("\n");const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`bxbii-operations-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href)};
+ return <div className="space-y-7" dir="ltr"><Header title="Reports & Analytics" sub="A live executive view of the academic operation."/><div className="flex gap-2"><button onClick={reload} className="rounded-xl border bg-white px-4 py-2 text-sm font-bold">↻ Refresh</button><button onClick={exportCsv} className="rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white">Export CSV</button></div>{loading?<Notice>Loading…</Notice>:error?<Notice>{error}</Notice>:<><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Kpi label="CRM activities" value={data.crm.length}/><Kpi label="Sessions" value={data.sessions.length}/><Kpi label="Attendance" value={data.attendance.length}/><Kpi label="Certificates" value={data.certificates.length}/></div><div className="grid gap-4 lg:grid-cols-2"><Panel title="Attendance mix"><div className="grid grid-cols-4 gap-2">{Object.entries(attendance).map(([k,v])=><div key={k} className="rounded-xl bg-slate-50 p-4 text-center"><div className="text-xs font-bold uppercase text-slate-400">{k}</div><div className="mt-1 text-2xl font-black">{v}</div></div>)}</div></Panel><Panel title="Assessment performance"><div className="text-4xl font-black text-slate-950">{average}</div><p className="mt-1 text-sm text-slate-500">Average score across assessed records · {assessed.length} graded</p></Panel></div></>}</div>
+}
+function Settings(){return <div className="space-y-7" dir="ltr"><Header title="System Settings" sub="Operational configuration for your institute."/><div className="grid gap-4 md:grid-cols-2"><Panel title="Academic operations"><Setting label="Attendance tracking" value="Enabled"/><Setting label="Assessment records" value="Enabled"/><Setting label="Certificate verification" value="Public verification page"/><Setting label="Multi-branch scope" value="Tenant ready"/></Panel><Panel title="Security & governance"><Setting label="Authentication" value="Access token + refresh token"/><Setting label="Permissions" value="RBAC protected API"/><Setting label="Audit readiness" value="API permission layer"/><Setting label="Public portal" value="bxbii.com"/></Panel></div><Link href="/operations" className="inline-flex rounded-xl border bg-white px-4 py-2 text-sm font-bold">← Back to operations</Link></div>}
 function ModuleView({module,data,loading,error,reload}:{module:Module;data:OperationsData;loading:boolean;error:string;reload:()=>void}){
  const [open,setOpen]=useState(false); const rows=(data[module.key as keyof OperationsData]||[]) as any[];
  const columns=module.slug==="timetable"?["Date","Time","Topic","Status"]:module.slug==="attendance"?["Student","Session","Status","Excuse"]:module.slug==="exams"?["Assessment","Type","Score","Grade"]:module.slug==="certificates"?["Certificate","Title","Issue date","Status"]:["Reference","Type","Details","Status"];
@@ -34,10 +43,8 @@ function ModuleView({module,data,loading,error,reload}:{module:Module;data:Opera
 }
 function RecordModal({module,data,onClose,onSaved}:{module:Module;data:OperationsData;onClose:()=>void;onSaved:()=>void}){
  const [busy,setBusy]=useState(false); const [error,setError]=useState(""); const [directory,setDirectory]=useState<any>({students:[],batches:[],trainers:[],branches:[]}); const [form,setForm]=useState<Record<string,string>>({});
- useEffect(()=>{operationsApi.directory().then(setDirectory).catch(e=>setError(e.message))},[]);
- const set=(key:string,value:string)=>setForm(f=>({...f,[key]:value}));
+ useEffect(()=>{operationsApi.directory().then(setDirectory).catch(e=>setError(e.message))},[]); const set=(key:string,value:string)=>setForm(f=>({...f,[key]:value}));
  const students=directory.students||[], batches=directory.batches||[], trainers=directory.trainers||[], rooms=data.rooms||[], sessions=data.sessions||[];
- const studentName=(s:any)=>s.studentCode?`${s.studentCode} — ${[s.firstName,s.lastName].filter(Boolean).join(" ")}`:s.id;
  const submit=async(e:FormEvent)=>{e.preventDefault();setBusy(true);setError("");try{
   if(module.slug==="admissions") await operationsApi.createCrm({studentId:form.studentId||undefined,activityType:form.activityType||"LEAD",subject:form.subject,details:form.details,nextActionAt:form.nextActionAt||undefined,status:form.status||"OPEN"});
   else if(module.slug==="timetable") await operationsApi.createSession({batchId:form.batchId,trainerId:form.trainerId||undefined,roomId:form.roomId||undefined,sessionDate:form.sessionDate,startTime:form.startTime,endTime:form.endTime,topic:form.topic,status:form.status||"SCHEDULED",notes:form.notes});
@@ -58,4 +65,6 @@ function Field({keyName,label,type,required,value,set,students,batches,trainers,
 function cell(slug:string,x:any,j:number){if(slug==="timetable")return [String(x.session_date).slice(0,10),`${x.start_time||""} – ${x.end_time||""}`,x.topic||"General session",x.status][j];if(slug==="attendance")return [x.student_id,x.session_id,x.status,x.excuse_status][j];if(slug==="exams")return [x.title,x.assessment_type,x.score==null?"Pending":`${x.score}/${x.max_score}`,x.grade||"—"][j];if(slug==="certificates")return [x.certificate_no,x.title_en,String(x.issue_date).slice(0,10),x.status][j];return [x.id,x.activity_type||"—",x.subject||x.details||"—",x.status||"—"][j]}
 function Header({title,sub,ar}:{title:string;sub:string;ar?:string}){return <div><div className="text-xs font-bold uppercase tracking-[.18em] text-brand">bxbii Cloud</div><h1 className="mt-1 text-3xl font-black tracking-tight text-slate-950">{title}</h1><p className="mt-2 max-w-2xl text-sm text-slate-500">{sub}</p>{ar&&<p className="mt-1 text-sm font-semibold text-slate-700" dir="rtl">{ar}</p>}</div>}
 function Kpi({label,value}:{label:string;value:number}){return <div className="rounded-2xl border bg-white p-5 shadow-sm"><div className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</div><div className="mt-2 text-3xl font-black text-slate-950">{value}</div></div>}
+function Panel({title,children}:{title:string;children:ReactNode}){return <section className="rounded-2xl border bg-white p-5 shadow-sm"><h2 className="font-black text-slate-950">{title}</h2><div className="mt-4">{children}</div></section>}
+function Setting({label,value}:{label:string;value:string}){return <div className="flex items-center justify-between border-b py-3 last:border-0"><span className="text-sm text-slate-500">{label}</span><span className="text-sm font-bold text-slate-800">{value}</span></div>}
 function Notice({children}:{children:ReactNode}){return <div className="rounded-2xl border bg-white p-5 text-sm text-slate-500">{children}</div>}
