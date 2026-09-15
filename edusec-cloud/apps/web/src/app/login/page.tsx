@@ -1,10 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api, setTokens } from "@/lib/api-client";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,80 +14,43 @@ export default function LoginPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
       const result = await api.login(email, password);
       setTokens(result);
       router.push("/dashboard");
     } catch (err) {
       setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface-subtle px-4">
-      <div className="w-full max-w-sm">
-        <Card className="w-full">
-          <div className="mb-6 flex flex-col items-center text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand text-lg font-bold text-white">
-              b
-            </div>
-            <h1 className="text-lg font-semibold text-slate-900">bxbii cloud</h1>
-            <p className="text-xs text-slate-500">Digital Business Ecosystem</p>
+    <main className="min-h-screen bg-[#F6F5FA] lg:grid lg:grid-cols-2">
+      <section className="relative hidden overflow-hidden bg-[#24135F] p-10 text-white lg:flex lg:flex-col lg:justify-between">
+        <div className="absolute -start-24 top-24 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
+        <div className="absolute -end-24 bottom-10 h-96 w-96 rounded-full bg-brand-light/30 blur-3xl" />
+        <div className="relative"><div className="text-3xl font-black tracking-[-.06em]">bxbii<span className="text-accent">.</span></div><p className="mt-2 text-xs uppercase tracking-[.2em] text-white/40">Cloud platform</p></div>
+        <div className="relative max-w-lg"><p className="text-xs font-bold uppercase tracking-[.18em] text-white/45">Institute operations</p><h1 className="mt-4 text-5xl font-black leading-tight">One workspace for your learning operation.</h1><p className="mt-5 text-lg leading-8 text-white/60">Manage people, academic delivery, branches and finance from a single operational layer.</p></div>
+        <div className="relative flex gap-8 text-xs font-semibold text-white/40"><span>People</span><span>Academic</span><span>Finance</span><span>Content</span></div>
+      </section>
+
+      <section className="flex min-h-screen items-center justify-center px-5 py-12">
+        <div className="w-full max-w-md">
+          <div className="mb-8 lg:hidden"><div className="text-3xl font-black tracking-[-.06em] text-brand">bxbii<span className="text-accent">.</span></div><p className="mt-1 text-[10px] uppercase tracking-[.2em] text-slate-400">Cloud platform</p></div>
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/5 sm:p-9">
+            <p className="text-xs font-bold uppercase tracking-[.16em] text-accent">Secure access</p>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Welcome back.</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">Sign in to manage your bxbii learning operation.</p>
+            <form onSubmit={onSubmit} className="mt-8 space-y-4">
+              <div><label className="mb-1.5 block text-xs font-bold text-slate-600">Email</label><input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-brand/40 focus:bg-white focus:ring-4 focus:ring-brand/5" /></div>
+              <div><div className="mb-1.5 flex items-center justify-between"><label className="text-xs font-bold text-slate-600">Password</label><a href="mailto:admin@bxbii.local?subject=Password%20reset" className="text-xs font-bold text-accent hover:underline">Forgot password?</a></div><input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-brand/40 focus:bg-white focus:ring-4 focus:ring-brand/5" /></div>
+              {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-status-danger">{error}</div>}
+              <button type="submit" disabled={loading} className="h-12 w-full rounded-xl bg-brand text-sm font-black text-white shadow-lg shadow-brand/20 transition hover:bg-brand-light disabled:opacity-50">{loading ? "Signing in…" : "Sign in to bxbii"}</button>
+            </form>
           </div>
-
-          <h2 className="mb-1 text-center text-base font-semibold text-slate-900">
-            Sign in to your account
-          </h2>
-          <p className="mb-6 text-center text-sm text-slate-500">
-            Enter your details below to access your institute dashboard.
-          </p>
-
-          <form onSubmit={onSubmit} className="space-y-3">
-            <div>
-              <input
-                type="email"
-                required
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded border border-surface-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                required
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded border border-surface-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
-              />
-            </div>
-
-            <div className="flex justify-end">
-              <a
-                href="mailto:admin@bxbii.local?subject=Password%20reset"
-                className="text-xs font-medium text-accent hover:underline"
-              >
-                Forgot your password?
-              </a>
-            </div>
-
-            {error && <p className="text-sm text-status-danger">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        </Card>
-
-        <p className="mt-6 text-center text-xs text-slate-400">
-          © {new Date().getFullYear()} bxbii. All rights reserved.
-        </p>
-      </div>
-    </div>
+          <div className="mt-6 flex items-center justify-between text-xs text-slate-400"><span>© {new Date().getFullYear()} bxbii</span><Link href="/" className="font-bold hover:text-brand">← Public website</Link></div>
+        </div>
+      </section>
+    </main>
   );
 }
