@@ -1,39 +1,9 @@
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
 import type { PublicNavItem } from "@/lib/public-api";
 import { pickText } from "@/lib/i18n";
 import { useLanguage, LanguageToggle } from "./language-provider";
-
-const APP_LOGIN_URL = "https://app.bxbii.com/login";
-const FOCUS = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2";
-
-export function PublicNav({ items }: { items: PublicNavItem[] }) {
-  const { lang } = useLanguage();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const ar = lang === "ar";
-  const core = [
-    ["/", "Home", "الرئيسية"],
-    ["/about-us", "Technology", "التقنية"],
-    ["/about-us", "Solutions", "الحلول"],
-    ["/about-us", "Industries", "القطاعات"],
-    ["/about-us", "R&D", "البحث والتطوير"],
-    ["/about-us", "About", "عن bxbii"],
-    ["/contact-us", "Contact", "تواصل معنا"],
-  ] as const;
-  const cmsExtras = items.filter((item) => item.isVisible && item.href && !core.some((x) => x[0] === item.href));
-
-  return <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050b13]/95 text-white backdrop-blur-xl">
-    <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 lg:px-10">
-      <Link href="/" className={`shrink-0 rounded text-2xl font-black tracking-[-.06em] text-white ${FOCUS}`}>bxbii<span className="ms-1 text-red-400">••</span><span className="sr-only"> Industrial Deep Technology</span></Link>
-      <nav className="hidden items-center gap-1 xl:flex">
-        {core.map(([href, en, arLabel]) => <Link key={en} href={href} className={`rounded-lg px-3 py-2 text-sm font-bold text-white/65 transition hover:bg-white/5 hover:text-white ${FOCUS}`}>{ar ? arLabel : en}</Link>)}
-        {cmsExtras.slice(0, 1).map((item) => <Link key={item.id} href={item.href!} className={`rounded-lg px-3 py-2 text-sm font-bold text-white/65 transition hover:bg-white/5 hover:text-white ${FOCUS}`}>{pickText(item.enLabel, item.arLabel, lang)}</Link>)}
-      </nav>
-      <div className="hidden items-center gap-3 md:flex"><LanguageToggle /><Link href="/contact-us" className="rounded-full border border-red-400/60 bg-red-500/10 px-5 py-2.5 text-xs font-black text-white transition hover:bg-red-500/20">{ar ? "لنبنِ معًا" : "Let's build"}</Link><a href={APP_LOGIN_URL} aria-label={ar ? "بوابة الإدارة" : "Administration portal"} title={ar ? "بوابة الإدارة" : "Administration portal"} className={`rounded px-1 text-[10px] text-white/20 hover:text-white/50 ${FOCUS}`}>•</a></div>
-      <button className={`rounded-lg border border-white/10 p-2 xl:hidden ${FOCUS}`} onClick={() => setMobileOpen((v) => !v)} aria-label="Toggle menu">{mobileOpen ? "✕" : "☰"}</button>
-    </div>
-    {mobileOpen && <div className="border-t border-white/10 bg-[#050b13] px-5 pb-5 xl:hidden"><nav className="flex flex-col pt-2">{core.map(([href,en,arLabel])=><Link key={en} href={href} onClick={()=>setMobileOpen(false)} className="rounded-lg px-3 py-3 font-bold text-white/70 hover:bg-white/5">{ar?arLabel:en}</Link>)}</nav><div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3"><LanguageToggle /><a href={APP_LOGIN_URL} className="text-xs text-white/35">{ar?"بوابة الإدارة":"Admin"}</a></div></div>}
-  </header>;
-}
+const APP_LOGIN_URL="https://app.bxbii.com/login";
+const FOCUS="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2";
+export function PublicNav({items}:{items:PublicNavItem[]}){const{lang}=useLanguage();const[mobileOpen,setMobileOpen]=useState(false);const ar=lang==="ar";const core=[["/","Home","الرئيسية"],["/technology","Technology","التقنية"],["/solutions","Solutions","الحلول"],["/industries","Industries","القطاعات"],["/rd","R&D","البحث والتطوير"],["/about-us","About","عن bxbii"],["/contact-us","Contact","تواصل معنا"]] as const;const cmsExtras=items.filter(i=>i.isVisible&&i.href&&!core.some(x=>x[0]===i.href));return <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050b13]/95 text-white backdrop-blur-xl"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 sm:px-8 lg:px-10"><Link href="/" className={`shrink-0 rounded text-2xl font-black tracking-[-.06em] text-white ${FOCUS}`}>bxbii<span className="ms-1 text-red-400">••</span></Link><nav className="hidden items-center gap-1 xl:flex">{core.map(([href,en,a])=><Link key={en} href={href} className={`rounded-lg px-3 py-2 text-sm font-bold text-white/65 transition hover:bg-white/5 hover:text-white ${FOCUS}`}>{ar?a:en}</Link>)}{cmsExtras.slice(0,1).map(item=><Link key={item.id} href={item.href!} className={`rounded-lg px-3 py-2 text-sm font-bold text-white/65 ${FOCUS}`}>{pickText(item.enLabel,item.arLabel,lang)}</Link>)}</nav><div className="hidden items-center gap-3 md:flex"><LanguageToggle/><Link href="/contact-us" className="rounded-full border border-red-400/60 bg-red-500/10 px-5 py-2.5 text-xs font-black text-white hover:bg-red-500/20">{ar?"لنبنِ معًا":"Let's build"}</Link><a href={APP_LOGIN_URL} aria-label={ar?"بوابة الإدارة":"Administration portal"} className={`rounded px-1 text-[10px] text-white/20 hover:text-white/50 ${FOCUS}`}>•</a></div><button className={`rounded-lg border border-white/10 p-2 xl:hidden ${FOCUS}`} onClick={()=>setMobileOpen(v=>!v)} aria-label="Toggle menu">{mobileOpen?"✕":"☰"}</button></div>{mobileOpen&&<div className="border-t border-white/10 bg-[#050b13] px-5 pb-5 xl:hidden"><nav className="flex flex-col pt-2">{core.map(([href,en,a])=><Link key={en} href={href} onClick={()=>setMobileOpen(false)} className="rounded-lg px-3 py-3 font-bold text-white/70 hover:bg-white/5">{ar?a:en}</Link>)}</nav><div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3"><LanguageToggle/><a href={APP_LOGIN_URL} className="text-xs text-white/35">{ar?"بوابة الإدارة":"Admin"}</a></div></div>}</header>}
