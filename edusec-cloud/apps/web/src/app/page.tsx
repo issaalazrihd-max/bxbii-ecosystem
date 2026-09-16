@@ -1,21 +1,15 @@
-import { publicApi } from "@/lib/public-api";
 import { PublicPageShell } from "@/components/public/public-page-shell";
-import { HomePage } from "@/components/public/home-page";
+import { TechnologyHomePage } from "@/components/public/technology-home-page";
 
 export const metadata = {
-  title: "bxbii — Learning, Technology & Impact",
-  description: "Practical learning, technology and industry-led experiences.",
+  title: "bxbii — Deep Technology & Product Innovation",
+  description: "Semiconductor design, robotics, IoT, embedded systems and technology innovation from Oman.",
 };
 
-export default async function RootPage() {
-  const [programs, partners] = await Promise.all([
-    publicApi.getPrograms(),
-    publicApi.getPartners(),
-  ]);
-
+export default function RootPage() {
   return (
     <PublicPageShell>
-      <HomePage programs={programs ?? []} partners={partners ?? []} />
+      <TechnologyHomePage />
     </PublicPageShell>
   );
 }
