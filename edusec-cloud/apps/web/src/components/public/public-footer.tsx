@@ -1,26 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { useLanguage } from "./language-provider";
-
-/** Minimal public footer. Staff Sign In is deliberately understated — the
- * public nav's "Sign in" already covers the common case; this is the same
- * link kept reachable if that ever gets restyled out of the header. */
-export function PublicFooter() {
-  const { lang } = useLanguage();
-  return (
-    <footer className="border-t border-surface-border bg-surface-subtle py-8 text-sm text-slate-500">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 sm:flex-row sm:justify-between sm:px-6">
-        <span>© {new Date().getFullYear()} bxbii. {lang === "ar" ? "جميع الحقوق محفوظة" : "All rights reserved."}</span>
-        <Link
-          href="/login"
-          // Interface pass (Task #41): added a visible focus-visible ring —
-          // this link had no keyboard-focus indicator before.
-          className="rounded hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface-subtle"
-        >
-          {lang === "ar" ? "دخول الموظفين" : "Staff sign in"}
-        </Link>
-      </div>
-    </footer>
-  );
-}
+export function PublicFooter(){const{lang}=useLanguage();const ar=lang==="ar";return <footer className="border-t border-white/10 bg-[#030810] py-12 text-sm text-white/45"><div className="mx-auto grid max-w-7xl gap-8 px-5 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr] lg:px-10"><div><Link href="/" className="text-3xl font-black tracking-[-.06em] text-white">bxbii<span className="ms-1 text-red-400">••</span></Link><p className="mt-2 max-w-sm text-xs leading-6">{ar?"تكنولوجيا عميقة وحلول صناعية من عُمان للعالم.":"Deep technology and industrial solutions from Oman to the world."}</p></div><div><strong className="text-xs tracking-[.15em] text-white/75">{ar?"TECHNOLOGY":"TECHNOLOGY"}</strong><div className="mt-4 grid gap-2 text-xs"><Link href="/technology" className="hover:text-white">{ar?"التقنية":"Technology"}</Link><Link href="/solutions" className="hover:text-white">{ar?"الحلول":"Solutions"}</Link><Link href="/industries" className="hover:text-white">{ar?"القطاعات":"Industries"}</Link><Link href="/rd" className="hover:text-white">R&D</Link></div></div><div><strong className="text-xs tracking-[.15em] text-white/75">{ar?"COMPANY":"COMPANY"}</strong><div className="mt-4 grid gap-2 text-xs"><Link href="/about-us" className="hover:text-white">{ar?"عن bxbii":"About bxbii"}</Link><Link href="/contact-us" className="hover:text-white">{ar?"تواصل معنا":"Contact"}</Link><a href="https://app.bxbii.com/login" className="hover:text-white">{ar?"بوابة الإدارة":"Admin portal"}</a></div></div></div><div className="mx-auto mt-10 max-w-7xl border-t border-white/10 px-5 pt-6 text-xs sm:px-8 lg:px-10">© {new Date().getFullYear()} bxbii. {ar?"جميع الحقوق محفوظة":"All rights reserved."}</div></footer>}
