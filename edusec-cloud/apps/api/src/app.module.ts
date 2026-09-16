@@ -11,14 +11,14 @@ import { ErpModule } from "./erp/erp.module";
 import { CmsModule } from "./cms/cms.module";
 import { DashboardModule } from "./dashboard/dashboard.module";
 import { AcademicOperationsModule } from "./academic-operations/academic-operations.module";
-import { VheTMModule } from "./vhetm/vhetm.module";
+import { BxbiiCloudModule } from "./bxbii-cloud/bxbii-cloud.module";
 import { HealthController } from "./common/health.controller";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuditModule, BranchScopeModule,
     AuthModule, BranchesModule, StudentsModule, TrainersModule, ErpModule, CmsModule,
-    DashboardModule, AcademicOperationsModule, VheTMModule,
+    DashboardModule, AcademicOperationsModule, BxbiiCloudModule,
   ],
   controllers: [HealthController],
 })
