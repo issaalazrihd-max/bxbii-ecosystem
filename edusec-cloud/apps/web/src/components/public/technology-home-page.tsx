@@ -4,99 +4,47 @@ import Link from "next/link";
 import { useLanguage } from "./language-provider";
 
 const domains = [
-  { en: "Semiconductor Design", ar: "تصميم أشباه الموصلات", code: "01", href: "/programs" },
-  { en: "Robotics & Automation", ar: "الروبوتات والأتمتة", code: "02", href: "/programs" },
-  { en: "IoT & Connected Devices", ar: "إنترنت الأشياء والأجهزة المتصلة", code: "03", href: "/programs" },
-  { en: "Embedded Systems", ar: "الأنظمة المدمجة", code: "04", href: "/programs" },
+  { en: "Semiconductor Design", ar: "تصميم أشباه الموصلات", descEn: "Chip, electronics and embedded-system design for advanced industrial applications.", descAr: "تصميم الشرائح والإلكترونيات والأنظمة المدمجة للتطبيقات الصناعية المتقدمة.", image: "/images/semiconductor-hero.svg" },
+  { en: "Robotics & Autonomous Systems", ar: "الروبوتات والأنظمة الذاتية", descEn: "Robotic and autonomous systems for inspection, monitoring and field operations.", descAr: "أنظمة روبوتية وذاتية للتفتيش والمراقبة والعمليات الميدانية.", image: "/images/robotics-industrial.svg" },
+  { en: "IoT & Connected Devices", ar: "إنترنت الأشياء والأجهزة المتصلة", descEn: "Sensors, connected devices and digital twins that turn field data into operational intelligence.", descAr: "حساسات وأجهزة متصلة وتوائم رقمية تحول البيانات الميدانية إلى ذكاء تشغيلي.", image: "/images/iot-connected.svg" },
+  { en: "Industrial & Physical AI", ar: "الذكاء الاصطناعي الصناعي والفيزيائي", descEn: "Computer vision and physical intelligence connecting perception, decisions and action.", descAr: "رؤية حاسوبية وذكاء فيزيائي يربط الإدراك بالقرار والتنفيذ.", image: "/images/robotics-industrial.svg" },
+];
+
+const sectors = [
+  ["Oil & Gas", "النفط والغاز", "Asset inspection, leak detection, safety and operational visibility."],
+  ["Mining & Manufacturing", "التعدين والتصنيع", "Equipment inspection, defect detection and industrial performance."],
+  ["Energy & Utilities", "الطاقة والمرافق", "Monitoring, predictive maintenance and connected infrastructure."],
+  ["Ports, Airports & Infrastructure", "الموانئ والمطارات والبنية الأساسية", "Inspection, safety and decision support for critical assets."],
 ];
 
 export function TechnologyHomePage() {
   const { lang } = useLanguage();
   const ar = lang === "ar";
-  const t = (en: string, arText: string) => ar ? arText : en;
-
-  return (
-    <main className="overflow-hidden bg-white text-slate-950">
-      <section className="relative min-h-[760px] overflow-hidden bg-[#050b18] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_35%,rgba(67,104,255,.32),transparent_28%),radial-gradient(circle_at_55%_85%,rgba(30,210,190,.12),transparent_30%)]" />
-        <div className="absolute inset-0 opacity-25 hero-grid" />
-        <div className="absolute right-[-8%] top-[12%] h-[620px] w-[620px] rounded-full border border-blue-400/15" />
-        <div className="absolute right-[4%] top-[24%] h-[430px] w-[430px] rounded-full border border-cyan-300/10" />
-        <div className="relative mx-auto flex min-h-[760px] max-w-7xl items-center px-5 py-24 sm:px-8 lg:px-10">
-          <div className={`max-w-4xl ${ar ? "text-right" : ""}`}>
-            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[.05] px-4 py-2 text-xs font-black tracking-[.16em] text-blue-200 backdrop-blur">
-              <span className="h-2 w-2 rounded-full bg-cyan-300" /> {t("DEEP TECHNOLOGY • OMAN", "التقنيات العميقة • عُمان")}
-            </div>
-            <h1 className="max-w-4xl text-5xl font-black leading-[.96] tracking-tight sm:text-6xl lg:text-8xl">
-              {t("Engineering the technologies behind tomorrow.", "نهندس تقنيات المستقبل.")}
-            </h1>
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-white/65 sm:text-xl">
-              {t("bxbii develops technology across semiconductor design, robotics, connected devices and embedded systems — turning advanced ideas into practical products.", "تعمل bxbii على تطوير تقنيات في تصميم أشباه الموصلات والروبوتات والأجهزة المتصلة والأنظمة المدمجة، وتحويل الأفكار المتقدمة إلى منتجات عملية.")}
-            </p>
-            <div className={`mt-10 flex flex-wrap gap-3 ${ar ? "justify-end" : ""}`}>
-              <Link href="/about-us" className="rounded-full bg-blue-600 px-7 py-4 text-sm font-black shadow-xl shadow-blue-950/40 transition hover:-translate-y-1 hover:bg-blue-500">{t("Explore bxbii", "اكتشف bxbii")} →</Link>
-              <Link href="/programs" className="rounded-full border border-white/15 bg-white/[.06] px-7 py-4 text-sm font-black backdrop-blur transition hover:bg-white/10">{t("Technology programs", "البرامج التقنية")}</Link>
-            </div>
-            <div className="mt-16 flex flex-wrap gap-x-10 gap-y-5 text-xs font-bold uppercase tracking-[.14em] text-white/35">
-              <span>{t("Semiconductors", "أشباه الموصلات")}</span><span>{t("Robotics", "الروبوتات")}</span><span>IoT</span><span>{t("Embedded", "الأنظمة المدمجة")}</span>
-            </div>
-          </div>
+  const t = (en: string, a: string) => ar ? a : en;
+  return <main className="overflow-hidden bg-[#050b13] text-white">
+    <section className="relative min-h-[760px] overflow-hidden border-b border-white/10">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_25%,rgba(50,190,255,.18),transparent_28%),radial-gradient(circle_at_90%_72%,rgba(255,70,55,.15),transparent_24%),linear-gradient(115deg,#040a12,#071525_58%,#02070d)]" />
+      <div className="absolute inset-0 opacity-20 hero-grid" />
+      <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-5 py-24 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
+        <div className={ar ? "text-right" : ""}>
+          <span className="inline-flex rounded-full border border-white/15 bg-white/[.04] px-4 py-2 text-[11px] font-black tracking-[.2em] text-cyan-200/80">{t("OMAN • DEEP TECH • INDUSTRIAL INNOVATION", "عُمان • تكنولوجيا عميقة • ابتكار صناعي")}</span>
+          <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[.95] tracking-[-.04em] sm:text-6xl lg:text-[76px]">{t("Engineering the intelligence of the physical world.", "نهندس ذكاء العالم المادي.")}</h1>
+          <p className="mt-7 max-w-2xl text-lg leading-8 text-white/60 sm:text-xl">{t("bxbii develops industrial technologies across semiconductor design, robotics, connected devices and physical AI — turning intelligence into systems that can sense, understand, decide and act.", "تطوّر bxbii تقنيات صناعية في تصميم أشباه الموصلات والروبوتات والأجهزة المتصلة والذكاء الاصطناعي الفيزيائي — لتحويل الذكاء إلى أنظمة تستشعر وتفهم وتقرر وتنفذ.")}</p>
+          <div className={`mt-9 flex flex-wrap gap-3 ${ar ? "justify-end" : ""}`}><Link href="/about-us" className="rounded-full bg-gradient-to-r from-red-500 to-orange-400 px-7 py-4 text-sm font-black shadow-xl shadow-red-950/30">{t("Explore our technologies", "استكشف تقنياتنا")} →</Link><Link href="/contact-us" className="rounded-full border border-white/20 bg-white/[.04] px-7 py-4 text-sm font-black">{t("Build with us", "لنبنِ معًا")}</Link></div>
+          <div className="mt-14 grid max-w-3xl grid-cols-2 gap-y-5 sm:grid-cols-4">{[["04",t("Technology domains","مجالات تقنية")],["INDUSTRIAL",t("Core focus","النشاط الأساسي")],["OMAN",t("Home base","القاعدة")],["GLOBAL",t("Expansion","التوسع")]].map(([n,l])=><div key={n} className="border-s border-white/10 ps-4"><strong className="block text-sm font-black text-cyan-200">{n}</strong><span className="mt-1 block text-[11px] text-white/45">{l}</span></div>)}</div>
         </div>
-      </section>
+        <div className="relative hidden min-h-[540px] lg:block"><div className="absolute inset-4 rounded-[2rem] border border-white/10 bg-white/[.025] p-5 shadow-2xl shadow-black/50"><img src="/images/semiconductor-hero.svg" alt="Original semiconductor illustration" className="h-full w-full rounded-[1.5rem] object-cover" /></div><div className="absolute -bottom-2 -left-5 rounded-2xl border border-cyan-300/20 bg-[#07111d]/95 px-5 py-4"><span className="block text-[10px] tracking-[.2em] text-cyan-200/70">CORE TECHNOLOGY</span><strong className="mt-1 block text-sm">Semiconductor • Robotics • IoT</strong></div></div>
+      </div>
+    </section>
 
-      <section className="border-b border-slate-200 bg-white py-8">
-        <div className="mx-auto grid max-w-7xl gap-4 px-5 sm:px-8 md:grid-cols-4 lg:px-10">
-          {domains.map((d) => <Link href={d.href} key={d.code} className={`group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl ${ar ? "text-right" : ""}`}><span className="text-xs font-black text-blue-600">{d.code}</span><h3 className="mt-5 text-lg font-black">{ar ? d.ar : d.en}</h3><span className="mt-4 block text-xs font-bold text-slate-400 group-hover:text-blue-600">{t("Explore capability", "استكشف المجال")} →</span></Link>)}
-        </div>
-      </section>
+    <section className="border-b border-white/10 bg-[#07111c] py-24"><div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`max-w-3xl ${ar?"ms-auto text-right":""}`}><span className="text-[11px] font-black tracking-[.2em] text-red-400">{t("TECHNOLOGY DOMAINS","مجالات التقنية")}</span><h2 className="mt-4 text-4xl font-black sm:text-5xl">{t("From silicon to intelligent machines.","من السيليكون إلى الآلات الذكية.")}</h2><p className="mt-4 text-lg leading-8 text-white/50">{t("An integrated technology stack built around hardware, sensing, intelligence and real-world execution.","منظومة تقنية متكاملة تجمع الأجهزة والاستشعار والذكاء والتنفيذ في العالم الحقيقي.")}</p></div><div className="mt-12 grid gap-5 md:grid-cols-2">{domains.map((d,i)=><Link href="/about-us" key={d.en} className="group overflow-hidden rounded-[1.7rem] border border-white/10 bg-[#091624] transition hover:-translate-y-1 hover:border-cyan-300/25"><div className="h-64 overflow-hidden"><img src={d.image} alt="" className="h-full w-full object-cover opacity-80 transition duration-700 group-hover:scale-105" /></div><div className={`p-7 ${ar?"text-right":""}`}><span className="text-[10px] font-black tracking-[.18em] text-red-400">0{i+1}</span><h3 className="mt-2 text-2xl font-black">{ar?d.ar:d.en}</h3><p className="mt-3 text-sm leading-6 text-white/45">{ar?d.descAr:d.descEn}</p><span className="mt-5 inline-block text-sm font-black text-cyan-200">{t("Explore technology →","استكشف التقنية ←")}</span></div></Link>)}</div></div></section>
 
-      <section className="bg-slate-50 py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className={`grid items-end gap-8 lg:grid-cols-[1.2fr_.8fr] ${ar ? "lg:grid-flow-col-dense" : ""}`}>
-            <div className={ar ? "text-right" : ""}>
-              <span className="text-xs font-black tracking-[.18em] text-blue-600">{t("WHAT WE BUILD", "ماذا نطوّر")}</span>
-              <h2 className="mt-4 text-4xl font-black tracking-tight sm:text-6xl">{t("From silicon to intelligent systems.", "من السيليكون إلى الأنظمة الذكية.")}</h2>
-            </div>
-            <p className={`text-lg leading-8 text-slate-500 ${ar ? "text-right" : ""}`}>{t("Our work sits at the intersection of hardware, software and intelligent systems — creating foundations for industrial and connected applications.", "يقع عملنا عند تقاطع العتاد والبرمجيات والأنظمة الذكية، لبناء أساس لتطبيقات صناعية ومتصلة.")}</p>
-          </div>
-          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["01", "Chip Design", "تصميم الشرائح", "Digital design, architecture and technology development."],
-              ["02", "Robotics", "الروبوتات", "Autonomous machines, control systems and industrial automation."],
-              ["03", "IoT", "إنترنت الأشياء", "Connected devices, sensors and intelligent edge solutions."],
-              ["04", "Embedded", "الأنظمة المدمجة", "Hardware-software systems built for real-world environments."],
-            ].map(([n,en,arTitle,desc]) => <article key={n} className={`rounded-[1.5rem] border border-slate-200 bg-white p-7 shadow-sm ${ar ? "text-right" : ""}`}><span className="text-xs font-black text-blue-600">{n}</span><h3 className="mt-8 text-2xl font-black">{ar ? arTitle : en}</h3><p className="mt-4 text-sm leading-7 text-slate-500">{t(desc, ["التصميم الرقمي وبنية الشرائح وتطوير التقنيات.", "الآلات المستقلة وأنظمة التحكم والأتمتة الصناعية.", "الأجهزة المتصلة والمستشعرات وحلول الحافة الذكية.", "أنظمة تجمع العتاد والبرمجيات للبيئات الواقعية."][Number(n)-1])}</p></article>)}
-          </div>
-        </div>
-      </section>
+    <section className="bg-[#050b13] py-24"><div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[.9fr_1.1fr] lg:px-10"><div className={`flex flex-col justify-center ${ar?"text-right":""}`}><span className="text-[11px] font-black tracking-[.2em] text-cyan-200">{t("FROM DATA TO ACTION","من البيانات إلى الفعل")}</span><h2 className="mt-4 text-4xl font-black sm:text-5xl">{t("Sense. Understand. Decide. Act.","استشعر. افهم. قرر. نفّذ.")}</h2><p className="mt-5 text-lg leading-8 text-white/50">{t("We connect sensors and cameras to intelligence, robotics and operational systems, with human oversight where required.","نربط الحساسات والكاميرات بالذكاء والروبوتات والأنظمة التشغيلية، مع إبقاء الإنسان ضمن دائرة القرار عند الحاجة.")}</p><span className="mt-8 inline-flex w-fit rounded-full border border-white/10 px-5 py-3 text-xs font-bold text-white/55">Physical AI • Human oversight • Industrial intelligence</span></div><div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#081624] p-8"><div className="absolute inset-0 opacity-20 hero-grid"/><div className="relative grid gap-4 sm:grid-cols-4">{[["01","SENSE","الاستشعار"],["02","UNDERSTAND","الإدراك والتحليل"],["03","DECIDE","القرار"],["04","ACT","التنفيذ"]].map(([n,e,a],i)=><div key={n} className="relative rounded-2xl border border-white/10 bg-white/[.035] p-5"><span className="text-xs font-black text-red-400">{n}</span><h3 className="mt-10 text-sm font-black">{ar?a:e}</h3>{i<3&&<span className="absolute -right-3 top-1/2 z-10 hidden text-cyan-200 sm:block">→</span>}</div>)}</div><div className="relative mt-6 h-32 overflow-hidden rounded-2xl border border-white/10"><img src="/images/iot-connected.svg" alt="Original connected systems illustration" className="h-full w-full object-cover opacity-60" /></div></div></div></section>
 
-      <section className="bg-white py-24">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:px-10">
-          <div className={`rounded-[2rem] bg-[#07172f] p-10 text-white sm:p-14 ${ar ? "text-right" : ""}`}>
-            <span className="text-xs font-black tracking-[.18em] text-cyan-300">{t("R&D MINDSET", "عقلية البحث والتطوير")}</span>
-            <h2 className="mt-5 text-4xl font-black sm:text-5xl">{t("Prototype. Validate. Industrialize.", "طوّر النموذج. اختبر. حوّل إلى منتج.")}</h2>
-            <p className="mt-6 text-lg leading-8 text-white/60">{t("We combine engineering, experimentation and product thinking to move technology from concept toward deployment.", "نجمع بين الهندسة والتجربة والتفكير بالمنتج لنقل التقنية من الفكرة إلى التطبيق.")}</p>
-            <div className="mt-10 grid grid-cols-3 gap-3">{[["01","Prototype","النموذج"],["02","Validate","الاختبار"],["03","Deploy","التطبيق"]].map(([n,e,a])=><div key={n} className="rounded-xl border border-white/10 bg-white/[.04] p-4"><span className="text-xs text-cyan-300">{n}</span><b className="mt-5 block">{ar ? a : e}</b></div>)}</div>
-          </div>
-          <div className={`flex flex-col justify-center ${ar ? "text-right" : ""}`}>
-            <span className="text-xs font-black tracking-[.18em] text-blue-600">{t("OMAN • GLOBAL", "عُمان • العالم")}</span>
-            <h2 className="mt-4 text-4xl font-black sm:text-5xl">{t("Building technology from Oman, for the region and beyond.", "نبني التقنية من عُمان للمنطقة والعالم.")}</h2>
-            <p className="mt-6 text-lg leading-8 text-slate-500">{t("Our ambition is to participate in the localization of advanced technology and the development of high-value technical capabilities.", "طموحنا هو المساهمة في توطين التقنيات المتقدمة وتطوير القدرات التقنية ذات القيمة العالية.")}</p>
-            <div className="mt-8 flex flex-wrap gap-3"><span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold">Oman</span><span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold">Semiconductors</span><span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold">Robotics</span><span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold">IoT</span></div>
-          </div>
-        </div>
-      </section>
+    <section className="border-y border-white/10 bg-[#07111c] py-24"><div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`max-w-3xl ${ar?"ms-auto text-right":""}`}><span className="text-[11px] font-black tracking-[.2em] text-red-400">{t("TARGET INDUSTRIES","القطاعات المستهدفة")}</span><h2 className="mt-4 text-4xl font-black sm:text-5xl">{t("Built for demanding environments.","تقنيات للبيئات الأكثر تحديًا.")}</h2><p className="mt-4 text-lg leading-8 text-white/50">{t("Solutions designed for industrial and infrastructure environments where access, safety, uptime and early detection matter.","حلول للبيئات الصناعية والبنية الأساسية حيث الوصول والسلامة ووقت التشغيل والكشف المبكر عوامل حاسمة.")}</p></div><div className="mt-12 grid gap-px overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/10 md:grid-cols-2">{sectors.map(([e,a,d],i)=><div key={e} className={`bg-[#07111c] p-8 ${ar?"text-right":""}`}><span className="text-xs font-black text-cyan-200">0{i+1}</span><h3 className="mt-7 text-xl font-black">{ar?a:e}</h3><p className="mt-3 text-sm leading-6 text-white/45">{d}</p></div>)}</div></div></section>
 
-      <section className="border-y border-slate-200 bg-slate-50 py-20">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className={`grid gap-8 lg:grid-cols-[1fr_2fr] ${ar ? "lg:grid-flow-col-dense" : ""}`}>
-            <div className={ar ? "text-right" : ""}><span className="text-xs font-black tracking-[.18em] text-blue-600">{t("SOCIAL IMPACT", "الأثر المجتمعي")}</span><h2 className="mt-4 text-3xl font-black sm:text-4xl">{t("Technology should create opportunity.", "التقنية يجب أن تصنع الفرص.")}</h2></div>
-            <div className={`rounded-[1.5rem] border border-slate-200 bg-white p-8 ${ar ? "text-right" : ""}`}><p className="text-lg leading-8 text-slate-600">{t("As part of our social responsibility, bxbii may support selected community initiatives, talent activities and knowledge programs. These initiatives complement our technology work; they are not the core business.", "ضمن مسؤوليتنا الاجتماعية، قد تدعم bxbii مبادرات مجتمعية مختارة وأنشطة للمواهب وبرامج معرفية. وتأتي هذه المبادرات مكملة لعملنا التقني وليست النشاط الرئيسي للشركة.")}</p><Link href="/contact" className="mt-6 inline-flex rounded-full bg-slate-950 px-6 py-3 text-sm font-black text-white">{t("Partner with us", "تواصل للشراكة")} →</Link></div>
-          </div>
-        </div>
-      </section>
+    <section className="bg-[#050b13] py-24"><div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-2 lg:px-10"><div className={`rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#0b1c2e] to-[#070d16] p-9 ${ar?"text-right":""}`}><span className="text-[11px] font-black tracking-[.2em] text-cyan-200">{t("BUSINESS MODEL","نموذج الأعمال")}</span><h2 className="mt-4 text-4xl font-black">{t("Technology that moves beyond the prototype.","تقنية تتجاوز النموذج الأولي.")}</h2><p className="mt-5 leading-8 text-white/50">{t("Engineering projects, systems integration, industrial software and technology partnerships — moving from use case to field deployment and scalable products.","مشاريع هندسية وتكامل أنظمة وبرمجيات صناعية وشراكات تقنية لنقل الحلول من حالة الاستخدام إلى التجارب الميدانية ثم المنتجات القابلة للتوسع.")}</p><div className="mt-8 grid grid-cols-2 gap-3">{[t("Engineering projects","مشاريع هندسية"),t("Systems integration","تكامل الأنظمة"),t("Industrial software","برمجيات صناعية"),t("Technology partnerships","شراكات تقنية")].map(x=><div key={x} className="rounded-xl border border-white/10 bg-white/[.035] p-4 text-sm font-bold text-white/75">{x}</div>)}</div></div><div className={`flex flex-col justify-center ${ar?"text-right":""}`}><span className="text-[11px] font-black tracking-[.2em] text-red-400">{t("SOCIAL IMPACT","الأثر المجتمعي")}</span><h2 className="mt-4 text-4xl font-black">{t("Technology with purpose.","تقنية تصنع أثرًا.")}</h2><p className="mt-5 text-lg leading-8 text-white/50">{t("Alongside our core technology business, bxbii can support selected community and talent initiatives through educational and capability-building programs. These initiatives complement our technology activities.","إلى جانب نشاطنا التقني الأساسي، يمكن لـ bxbii دعم مبادرات المجتمع وتنمية المواهب من خلال برامج تعليمية وبناء قدرات مختارة. وتأتي هذه المبادرات مكملة لنشاطنا التقني.")}</p><Link href="/training" className="mt-8 inline-flex w-fit rounded-full border border-white/15 px-6 py-3 text-sm font-black text-white/70">{t("Explore community initiatives","استكشف المبادرات المجتمعية")} →</Link></div></div></section>
 
-      <section className="bg-blue-600 px-5 py-20 text-white"><div className={`mx-auto flex max-w-7xl flex-col justify-between gap-8 sm:flex-row sm:items-center ${ar ? "sm:flex-row-reverse" : ""}`}><div className={ar ? "text-right" : ""}><h2 className="text-4xl font-black sm:text-5xl">{t("Let’s build what comes next.", "لنبنِ ما هو قادم.")}</h2><p className="mt-3 text-white/75">{t("Technology partnerships, product development and strategic collaboration.", "شراكات تقنية وتطوير منتجات وتعاون استراتيجي.")}</p></div><Link href="/contact" className="rounded-full bg-white px-7 py-4 font-black text-blue-700">{t("Start a conversation", "ابدأ الحوار")} →</Link></div></section>
-    </main>
-  );
+    <section className="border-t border-white/10 bg-gradient-to-r from-red-600 to-orange-500 px-5 py-20"><div className={`mx-auto flex max-w-7xl flex-col justify-between gap-8 sm:flex-row sm:items-center ${ar?"sm:flex-row-reverse":""}`}><div className={ar?"text-right":""}><span className="text-[11px] font-black tracking-[.2em] text-white/70">bxbii</span><h2 className="mt-3 text-4xl font-black">{t("Build what comes next.","لنبنِ ما هو قادم.")}</h2><p className="mt-3 max-w-2xl text-white/75">{t("Technology partnerships, product development, pilots and strategic collaboration.","شراكات تقنية وتطوير منتجات وتجارب ميدانية وتعاون استراتيجي.")}</p></div><Link href="/contact-us" className="rounded-full bg-white px-7 py-4 text-sm font-black text-red-600">{t("Start a conversation","ابدأ الحوار")} →</Link></div></section>
+  </main>;
 }
