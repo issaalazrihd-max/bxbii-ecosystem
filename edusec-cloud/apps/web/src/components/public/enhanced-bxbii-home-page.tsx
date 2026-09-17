@@ -4,46 +4,246 @@ import { useEffect, useState } from "react";
 import { publicApi, type PublicProgram } from "@/lib/public-api";
 import { useLanguage } from "./language-provider";
 
-const slides=[
- {en:"ENGINEERING INTELLIGENCE FOR THE PHYSICAL WORLD",ar:"نهندس الذكاء للعالم الحقيقي",descEn:"Deep technology, industrial systems and advanced capabilities built in Oman for critical industries.",descAr:"تكنولوجيا عميقة وأنظمة صناعية وقدرات متقدمة تُبنى في عُمان للقطاعات الحيوية.",href:"/technology"},
- {en:"FROM OMAN. BUILT FOR INDUSTRY.",ar:"من عُمان. صُممت للصناعة.",descEn:"Technology that connects hardware, software and real-world operations.",descAr:"تقنيات تربط العتاد والبرمجيات والعمليات في العالم الحقيقي.",href:"/solutions"},
- {en:"CAPABILITY THAT MOVES INDUSTRY FORWARD.",ar:"قدرات تدفع الصناعة إلى الأمام.",descEn:"From energy and mining to manufacturing, infrastructure and connected systems.",descAr:"من الطاقة والتعدين إلى التصنيع والبنية الأساسية والأنظمة المتصلة.",href:"/industries"}
+const heroSlides = [
+  {
+    en: "ADVANCED TECHNOLOGY. BUILT FOR THE REAL WORLD.",
+    ar: "تقنيات متقدمة. تُبنى للعالم الحقيقي.",
+    descEn: "Technology, engineering and training capabilities designed around the needs of industry.",
+    descAr: "تقنيات وهندسة وقدرات تدريبية تُبنى حول احتياجات الصناعة.",
+    href: "/technology",
+  },
+  {
+    en: "BUILD CAPABILITY. CREATE IMPACT.",
+    ar: "نبني القدرات. نصنع الأثر.",
+    descEn: "From advanced systems and industrial solutions to practical professional programs.",
+    descAr: "من الأنظمة المتقدمة والحلول الصناعية إلى البرامج المهنية التطبيقية.",
+    href: "/solutions",
+  },
+  {
+    en: "FROM OMAN. CONNECTED TO THE WORLD.",
+    ar: "من عُمان. متصلون بالعالم.",
+    descEn: "A technology company focused on building capabilities for Oman and beyond.",
+    descAr: "شركة تقنية تركز على بناء القدرات لعُمان والأسواق من حولها.",
+    href: "/about-us",
+  },
 ];
-const capabilities=[
- ["01","Semiconductors","أشباه الموصلات","Advanced chip and integrated hardware capabilities.","/technology"],
- ["02","Robotics & Automation","الروبوتات والأتمتة","Intelligent machines engineered for industrial environments.","/technology"],
- ["03","Connected Systems","الأنظمة المتصلة","IoT, embedded systems and intelligent edge capabilities.","/technology"],
- ["04","Industrial Solutions","الحلول الصناعية","Technology solutions designed around operational outcomes.","/solutions"]
+
+const capabilities = [
+  { n: "01", en: "Semiconductors", ar: "أشباه الموصلات", descEn: "Chip, electronics and advanced hardware capabilities.", descAr: "قدرات في الشرائح والإلكترونيات والعتاد المتقدم.", image: "/images/semiconductor-hero.svg", href: "/technology" },
+  { n: "02", en: "Robotics & Automation", ar: "الروبوتات والأتمتة", descEn: "Intelligent systems for modern industrial environments.", descAr: "أنظمة ذكية للبيئات الصناعية الحديثة.", image: "/images/robotics-industrial.svg", href: "/technology" },
+  { n: "03", en: "Connected Systems", ar: "الأنظمة المتصلة", descEn: "IoT, embedded systems and intelligent edge technologies.", descAr: "إنترنت الأشياء والأنظمة المدمجة وتقنيات الحافة الذكية.", image: "/images/iot-connected.svg", href: "/technology" },
+  { n: "04", en: "Industrial Solutions", ar: "الحلول الصناعية", descEn: "Technology solutions shaped around operational outcomes.", descAr: "حلول تقنية مصممة حول النتائج التشغيلية.", image: "/images/oman-hero.webp", href: "/solutions" },
 ];
-const industries=[["Oil & Gas","النفط والغاز"],["Mining & Manufacturing","التعدين والتصنيع"],["Energy & Utilities","الطاقة والمرافق"],["Ports & Infrastructure","الموانئ والبنية الأساسية"]];
 
-export function EnhancedBxbiiHomePage(){
- const {lang}=useLanguage(); const ar=lang==="ar"; const [active,setActive]=useState(0); const [programs,setPrograms]=useState<PublicProgram[]>([]); const t=(e:string,a:string)=>ar?a:e;
- useEffect(()=>{publicApi.getPrograms().then(r=>setPrograms(r??[])).catch(()=>setPrograms([]));const id=window.setInterval(()=>setActive(v=>(v+1)%slides.length),7000);return()=>window.clearInterval(id)},[]);
- const s=slides[active];
- return <main className="overflow-hidden bg-[#05080d] text-white">
-  <section className="relative min-h-[760px] overflow-hidden border-b border-white/10">
-   <div className="absolute inset-0 bg-[url('/images/oman-hero.webp')] bg-cover bg-center"/>
-   <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,7,13,.94)_0%,rgba(3,7,13,.72)_38%,rgba(3,7,13,.18)_75%,rgba(3,7,13,.38)_100%)]"/>
-   <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(3,7,13,.92)_0%,transparent_40%,rgba(3,7,13,.2)_100%)]"/>
-   <div className="relative mx-auto flex min-h-[760px] max-w-7xl items-end px-5 pb-20 pt-28 sm:px-8 lg:px-10">
-    <div className={`max-w-4xl ${ar?"mr-auto text-right":""}`}>
-     <div className="mb-6 flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-[.28em] text-white/70"><span>BXBII</span><span className="h-px w-10 bg-white/40"/><span>{t("MUSCAT · OMAN","مسقط · عُمان")}</span><span className="h-px w-10 bg-white/40"/><span>{t("DEEP TECHNOLOGY COMPANY","شركة تكنولوجيا عميقة")}</span></div>
-     <h1 key={active} className="max-w-4xl text-5xl font-black leading-[.9] tracking-[-.06em] sm:text-7xl lg:text-[92px]">{t(s.en,s.ar)}</h1>
-     <p className="mt-7 max-w-2xl text-base leading-7 text-white/78 sm:text-xl">{t(s.descEn,s.descAr)}</p>
-     <div className={`mt-9 flex flex-wrap gap-3 ${ar?"justify-end":""}`}><Link href={s.href} className="rounded-full bg-white px-7 py-4 text-sm font-black text-[#05080d] transition hover:-translate-y-1">{t("Explore","استكشف")} <span className={ar?"mr-2":"ml-2"}>{ar?"←":"→"}</span></Link><Link href="/contact-us" className="rounded-full border border-white/35 bg-black/15 px-7 py-4 text-sm font-black backdrop-blur">{t("Work with bxbii","تعاون مع bxbii")}</Link></div>
-     <div className={`mt-12 flex items-center gap-2 ${ar?"justify-end":""}`}>{slides.map((x,i)=><button key={x.en} onClick={()=>setActive(i)} className={`h-1 rounded-full transition-all ${i===active?"w-14 bg-white":"w-7 bg-white/35"}`} aria-label={`slide ${i+1}`}/>)}</div>
-    </div>
-   </div>
-   <div className="absolute bottom-7 right-5 hidden text-right text-[9px] font-black uppercase tracking-[.22em] text-white/55 sm:block">{t("FROM OMAN TO THE WORLD","من عُمان إلى العالم")}<br/><span className="text-white/30">{t("People · Technology · Industry","الإنسان · التقنية · الصناعة")}</span></div>
-  </section>
+const industries = [
+  ["Oil & Gas", "النفط والغاز"],
+  ["Mining & Manufacturing", "التعدين والتصنيع"],
+  ["Energy & Utilities", "الطاقة والمرافق"],
+  ["Ports & Infrastructure", "الموانئ والبنية الأساسية"],
+];
 
-  <section className="border-b border-white/10 bg-[#070b11] py-20 sm:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`max-w-3xl ${ar?"mr-auto text-right":""}`}><span className="text-[10px] font-black uppercase tracking-[.28em] text-cyan-200">01 / {t("WHAT WE BUILD","ماذا نبني")}</span><h2 className="mt-5 text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Technology with the weight of a real company.","تقنية بوزن شركة حقيقية.")}</h2><p className="mt-6 text-sm leading-7 text-white/45 sm:text-base">{t("bxbii combines deep technology, engineering and industry knowledge to build capabilities that can move from concept to deployment.","تجمع bxbii بين التكنولوجيا العميقة والهندسة والمعرفة الصناعية لبناء قدرات تنتقل من الفكرة إلى التطبيق.")}</p></div><div className="mt-14 grid gap-px overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 md:grid-cols-2 lg:grid-cols-4">{capabilities.map(([n,en,a,d,href])=><Link href={href} key={n} className="group bg-[#080d14] p-7 transition hover:bg-[#0d1722]"><span className="text-[10px] font-black text-red-400">{n}</span><div className="mt-16 text-4xl font-black text-white/15 transition group-hover:text-cyan-200/40">0{n}</div><h3 className={`mt-5 text-xl font-black ${ar?"text-right":""}`}>{t(en,a)}</h3><p className={`mt-3 text-xs leading-6 text-white/40 ${ar?"text-right":""}`}>{t(d,d)}</p><span className={`mt-7 inline-flex text-[10px] font-black uppercase tracking-[.18em] text-white/50 group-hover:text-white ${ar?"float-left":""}`}>{t("Explore →","استكشف ←")}</span></Link>)}</div></div></section>
+const pillars = [
+  ["Technology", "التكنولوجيا", "Explore our technology domains and engineering capabilities.", "استكشف مجالات التكنولوجيا وقدراتنا الهندسية.", "/technology"],
+  ["Solutions", "الحلول", "Apply technology to practical industrial and operational challenges.", "نوظف التقنية لمعالجة التحديات الصناعية والتشغيلية.", "/solutions"],
+  ["R&D", "البحث والتطوير", "Turn ideas, prototypes and emerging technologies into practical capabilities.", "نحوّل الأفكار والنماذج الأولية والتقنيات الناشئة إلى قدرات عملية.", "/rd"],
+  ["Training", "التدريب", "Professional programs that connect people with future-ready technology skills.", "برامج مهنية تربط الأفراد بالمهارات التقنية المطلوبة للمستقبل.", "/programs"],
+];
 
-  <section className="relative border-b border-white/10 py-20 sm:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between ${ar?"text-right":""}`}><div><span className="text-[10px] font-black uppercase tracking-[.28em] text-red-400">02 / {t("INDUSTRIES","القطاعات")}</span><h2 className="mt-5 text-4xl font-black sm:text-6xl">{t("Built around the industries that matter.","نبني حول القطاعات التي تصنع المستقبل.")}</h2></div><p className="max-w-xl text-sm leading-7 text-white/40">{t("Our focus is practical: critical operations, measurable performance and technology that works in demanding environments.","تركيزنا عملي: عمليات حيوية، أداء قابل للقياس، وتقنيات تعمل في البيئات الصعبة.")}</p></div><div className="mt-12 grid gap-3 sm:grid-cols-2">{industries.map(([en,a],i)=><Link href="/industries" key={en} className="group flex min-h-40 items-end justify-between border-t border-white/10 p-6 transition hover:bg-white/[.025]"><div><span className="text-[10px] font-black text-white/25">0{i+1}</span><h3 className="mt-8 text-2xl font-black">{t(en,a)}</h3></div><span className="text-2xl text-white/25 transition group-hover:translate-x-1 group-hover:text-cyan-200">↗</span></Link>)}</div></div></section>
+export function EnhancedBxbiiHomePage() {
+  const { lang } = useLanguage();
+  const ar = lang === "ar";
+  const [active, setActive] = useState(0);
+  const [programs, setPrograms] = useState<PublicProgram[]>([]);
+  const t = (en: string, arText: string) => (ar ? arText : en);
 
-  <section className="border-b border-white/10 bg-[#070b11] py-20 sm:py-28"><div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end ${ar?"text-right":""}`}><div><span className="text-[10px] font-black uppercase tracking-[.28em] text-cyan-200">03 / {t("TRAINING","التدريب")}</span><h2 className="mt-5 text-4xl font-black sm:text-6xl">{t("One training service. Serious programs.","خدمة تدريب واحدة. برامج جادة.")}</h2></div><div><p className="max-w-2xl text-sm leading-7 text-white/45">{t("Our training offering connects professional development with the technologies and capabilities needed by industry.","يربط التدريب لدينا التطوير المهني بالتقنيات والقدرات التي تحتاجها الصناعة.")}</p><Link href="/programs" className="mt-7 inline-flex rounded-full border border-white/20 px-6 py-3 text-xs font-black">{t("View training programs","استعرض البرامج التدريبية")} →</Link></div></div>{programs.length>0&&<div className="mt-12 grid gap-3 md:grid-cols-2 lg:grid-cols-3">{programs.slice(0,6).map(p=><Link href={`/programs/${p.slug}`} key={p.id} className="group border border-white/10 bg-[#0a1018] p-6 transition hover:-translate-y-1 hover:border-cyan-200/25"><span className="text-[9px] font-black uppercase tracking-[.18em] text-cyan-200">{lang==="ar"?p.arDomain:p.enDomain}</span><h3 className={`mt-4 text-xl font-black ${ar?"text-right":""}`}>{lang==="ar"?p.arName:p.enName}</h3><p className={`mt-3 line-clamp-3 text-xs leading-6 text-white/40 ${ar?"text-right":""}`}>{lang==="ar"?p.arDescription:p.enDescription}</p><div className={`mt-6 border-t border-white/10 pt-4 text-[10px] text-white/35 ${ar?"text-right":""}`}>{lang==="ar"?p.arDuration:p.enDuration} · {lang==="ar"?p.arFormat:p.enFormat}</div></Link>)}</div>}</div></section>
+  useEffect(() => {
+    publicApi.getPrograms().then((r) => setPrograms(r ?? [])).catch(() => setPrograms([]));
+    const id = window.setInterval(() => setActive((v) => (v + 1) % heroSlides.length), 6500);
+    return () => window.clearInterval(id);
+  }, []);
 
-  <section className="relative overflow-hidden py-24 sm:py-32"><div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(40,190,255,.14),transparent_35%)]"/><div className={`relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 ${ar?"text-right":""}`}><div className="border-y border-white/10 py-14 sm:py-20"><span className="text-[10px] font-black uppercase tracking-[.28em] text-red-400">04 / BXBII</span><h2 className="mt-5 max-w-5xl text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Built in Oman. Engineered for the world.","من عُمان. هندسة للعالم.")}</h2><div className="mt-9 flex flex-wrap gap-3"><Link href="/about-us" className="rounded-full bg-white px-7 py-4 text-sm font-black text-[#05080d]">{t("Discover bxbii","اكتشف bxbii")} →</Link><Link href="/contact-us" className="rounded-full border border-white/20 px-7 py-4 text-sm font-black">{t("Start a conversation","ابدأ محادثة")}</Link></div></div></div></section>
- </main>;
+  const slide = heroSlides[active];
+
+  return (
+    <main className="overflow-hidden bg-white text-[#111827]">
+      {/* Hero */}
+      <section className="relative min-h-[650px] overflow-hidden bg-[#111827] text-white lg:min-h-[720px]">
+        <div className="absolute inset-0 bg-[url('/images/oman-hero.webp')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#070b12]/95 via-[#111827]/80 to-[#111827]/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111827]/90 via-transparent to-[#111827]/20" />
+        <div className="relative mx-auto flex min-h-[650px] max-w-7xl items-end px-5 pb-14 pt-28 sm:px-8 lg:min-h-[720px] lg:px-10 lg:pb-20">
+          <div className={`max-w-4xl ${ar ? "mr-auto text-right" : ""}`}>
+            <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-[.2em] backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-[#e31b23]" />
+              {t("Technology · Industry · Training", "التكنولوجيا · الصناعة · التدريب")}
+            </div>
+            <h1 key={active} className="max-w-4xl text-5xl font-black leading-[.94] tracking-[-.055em] sm:text-7xl lg:text-[84px]">
+              {t(slide.en, slide.ar)}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
+              {t(slide.descEn, slide.descAr)}
+            </p>
+            <div className={`mt-8 flex flex-wrap gap-3 ${ar ? "justify-end" : ""}`}>
+              <Link href={slide.href} className="rounded-xl bg-[#e31b23] px-7 py-4 text-sm font-black transition hover:bg-[#c9141b]">
+                {t("Explore bxbii", "استكشف bxbii")} {ar ? "←" : "→"}
+              </Link>
+              <Link href="/programs" className="rounded-xl border border-white/30 bg-white/5 px-7 py-4 text-sm font-black backdrop-blur transition hover:bg-white/10">
+                {t("Training programs", "البرامج التدريبية")}
+              </Link>
+            </div>
+            <div className={`mt-10 flex gap-2 ${ar ? "justify-end" : ""}`}>
+              {heroSlides.map((item, i) => (
+                <button key={item.en} onClick={() => setActive(i)} aria-label={`slide ${i + 1}`} className={`h-1.5 rounded-full transition-all ${i === active ? "w-12 bg-white" : "w-6 bg-white/30"}`} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Brand / positioning strip */}
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-0 px-5 sm:px-8 lg:grid-cols-[1.1fr_2fr] lg:px-10">
+          <div className={`border-b border-slate-200 py-8 lg:border-b-0 lg:border-r ${ar ? "text-right lg:border-r-0 lg:border-l" : ""}`}>
+            <span className="text-[10px] font-black uppercase tracking-[.2em] text-[#e31b23]">BXBII</span>
+            <p className="mt-3 max-w-sm text-lg font-bold leading-7">
+              {t("A technology company building practical capabilities for industry.", "شركة تقنية تبني قدرات عملية للصناعة.")}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 divide-x divide-slate-200 sm:grid-cols-4 sm:divide-y-0">
+            {["Semiconductors", "Robotics", "Connected Systems", "Industrial Solutions"].map((item, i) => (
+              <div key={item} className={`flex min-h-28 items-center px-5 py-6 text-sm font-black ${ar ? "text-right" : ""}`}>
+                <span className="mr-3 text-[10px] text-[#e31b23]">0{i + 1}</span>{t(item, ["أشباه الموصلات", "الروبوتات", "الأنظمة المتصلة", "الحلول الصناعية"][i])}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Main pillars */}
+      <section className="bg-[#f6f7f9] py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className={`max-w-3xl ${ar ? "mr-auto text-right" : ""}`}>
+            <span className="text-[10px] font-black uppercase tracking-[.22em] text-[#e31b23]">01 / {t("What we do", "ماذا نقدم")}</span>
+            <h2 className="mt-4 text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Technology, solutions, research and training.", "التكنولوجيا والحلول والبحث والتطوير والتدريب.")}</h2>
+            <p className="mt-5 text-sm leading-7 text-slate-500 sm:text-base">{t("A focused ecosystem that connects advanced technology with industry needs and professional capability building.", "منظومة متكاملة تربط التكنولوجيا المتقدمة باحتياجات الصناعة وبناء القدرات المهنية.")}</p>
+          </div>
+
+          <div className="mt-12 grid gap-4 md:grid-cols-2">
+            {pillars.map(([en, a, descEn, descAr, href], i) => (
+              <Link key={en} href={href} className="group relative min-h-52 overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="flex items-start justify-between">
+                  <span className="text-[10px] font-black tracking-[.2em] text-[#e31b23]">0{i + 1}</span>
+                  <span className="text-xl text-slate-300 transition group-hover:text-[#e31b23]">↗</span>
+                </div>
+                <h3 className={`mt-12 text-2xl font-black ${ar ? "text-right" : ""}`}>{t(en, a)}</h3>
+                <p className={`mt-3 max-w-md text-sm leading-6 text-slate-500 ${ar ? "mr-auto text-right" : ""}`}>{t(descEn, descAr)}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Technology capabilities */}
+      <section className="bg-white py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className={`flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between ${ar ? "text-right" : ""}`}>
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[.22em] text-[#e31b23]">02 / {t("Technology domains", "مجالات التكنولوجيا")}</span>
+              <h2 className="mt-4 text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Explore our technology domains.", "استكشف مجالات التكنولوجيا لدينا.")}</h2>
+            </div>
+            <Link href="/technology" className="text-sm font-black text-[#e31b23]">{t("View all technology", "عرض كل مجالات التكنولوجيا")} {ar ? "←" : "→"}</Link>
+          </div>
+
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {capabilities.map((item) => (
+              <Link key={item.en} href={item.href} className="group overflow-hidden rounded-2xl border border-slate-200 bg-[#f6f7f9] transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div className="relative flex h-48 items-center justify-center overflow-hidden bg-[#111827] p-8">
+                  <div className="absolute inset-0 opacity-80 transition duration-500 group-hover:scale-105 group-hover:opacity-100" style={{ backgroundImage: `url(${item.image})`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundSize: "cover" }} />
+                  <div className="absolute inset-0 bg-[#111827]/45" />
+                  <span className="relative text-5xl font-black text-white/90">{item.n}</span>
+                </div>
+                <div className={`p-6 ${ar ? "text-right" : ""}`}>
+                  <h3 className="text-xl font-black">{t(item.en, item.ar)}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-500">{t(item.descEn, item.descAr)}</p>
+                  <div className="mt-5 text-[10px] font-black uppercase tracking-[.18em] text-[#e31b23]">{t("Explore", "استكشف")} {ar ? "←" : "→"}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Industries */}
+      <section className="bg-[#111827] py-20 text-white sm:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className={`max-w-3xl ${ar ? "mr-auto text-right" : ""}`}>
+            <span className="text-[10px] font-black uppercase tracking-[.22em] text-red-400">03 / {t("Industries", "القطاعات")}</span>
+            <h2 className="mt-4 text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Built around real industry needs.", "نبني حول احتياجات الصناعة الحقيقية.")}</h2>
+            <p className="mt-5 text-sm leading-7 text-white/55 sm:text-base">{t("We focus on sectors where technology, reliability and operational performance matter.", "نركز على القطاعات التي تتطلب التقنية والموثوقية والأداء التشغيلي." )}</p>
+          </div>
+          <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-2">
+            {industries.map(([en, a], i) => (
+              <Link href="/industries" key={en} className="group min-h-36 bg-[#111827] p-7 transition hover:bg-[#182232]">
+                <span className="text-[10px] font-black text-red-400">0{i + 1}</span>
+                <div className="mt-8 flex items-end justify-between gap-4">
+                  <h3 className="text-2xl font-black">{t(en, a)}</h3>
+                  <span className="text-xl text-white/30 transition group-hover:text-red-400">↗</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Training */}
+      <section className="bg-[#f6f7f9] py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className={`flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between ${ar ? "text-right" : ""}`}>
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[.22em] text-[#e31b23]">04 / {t("Training", "التدريب")}</span>
+              <h2 className="mt-4 text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Professional programs. Practical learning.", "برامج مهنية. تعلم تطبيقي.")}</h2>
+            </div>
+            <Link href="/programs" className="text-sm font-black text-[#e31b23]">{t("View all programs", "عرض كل البرامج")} {ar ? "←" : "→"}</Link>
+          </div>
+
+          {programs.length > 0 ? (
+            <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {programs.slice(0, 6).map((p) => (
+                <Link href={`/programs/${p.slug}`} key={p.id} className="group rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:shadow-xl">
+                  <div className={`flex items-center justify-between gap-4 ${ar ? "flex-row-reverse" : ""}`}>
+                    <span className="text-[9px] font-black uppercase tracking-[.18em] text-[#e31b23]">{lang === "ar" ? p.arDomain : p.enDomain}</span>
+                    <span className="text-slate-300 transition group-hover:text-[#e31b23]">↗</span>
+                  </div>
+                  <h3 className={`mt-5 text-xl font-black ${ar ? "text-right" : ""}`}>{lang === "ar" ? p.arName : p.enName}</h3>
+                  <p className={`mt-3 line-clamp-3 text-sm leading-6 text-slate-500 ${ar ? "text-right" : ""}`}>{lang === "ar" ? p.arDescription : p.enDescription}</p>
+                  <div className={`mt-6 border-t border-slate-100 pt-4 text-[10px] font-bold text-slate-400 ${ar ? "text-right" : ""}`}>
+                    {lang === "ar" ? p.arDuration : p.enDuration} · {lang === "ar" ? p.arFormat : p.enFormat}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-12 rounded-2xl border border-slate-200 bg-white p-10 text-center text-slate-500">
+              {t("New professional programs will be published here.", "سيتم نشر البرامج المهنية الجديدة هنا.")}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Closing CTA */}
+      <section className="bg-white py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className={`rounded-3xl bg-[#111827] p-8 text-white sm:p-14 lg:p-20 ${ar ? "text-right" : ""}`}>
+            <span className="text-[10px] font-black uppercase tracking-[.22em] text-red-400">05 / BXBII</span>
+            <h2 className="mt-5 max-w-4xl text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Let’s build what comes next.", "لنبنِ ما يأتي بعد ذلك.")}</h2>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">{t("Whether you need technology, an industrial solution, R&D support or professional training, start a conversation with bxbii.", "سواء كنت تبحث عن تقنية أو حل صناعي أو دعم للبحث والتطوير أو تدريب مهني، ابدأ الحوار مع bxbii.")}</p>
+            <div className={`mt-8 flex flex-wrap gap-3 ${ar ? "justify-end" : ""}`}>
+              <Link href="/contact-us" className="rounded-xl bg-[#e31b23] px-7 py-4 text-sm font-black">{t("Contact bxbii", "تواصل مع bxbii")} {ar ? "←" : "→"}</Link>
+              <Link href="/about-us" className="rounded-xl border border-white/20 px-7 py-4 text-sm font-black">{t("About us", "من نحن")}</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }
