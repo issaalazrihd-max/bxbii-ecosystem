@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString } from "class-validator";
+import { IsEmail, IsString } from "class-validator";
 
 /** Body accepted from the public /contact-us page's form — no auth, no status/id. */
 export class CreateContactSubmissionDto {
@@ -9,11 +9,9 @@ export class CreateContactSubmissionDto {
   email!: string;
 
   @IsString()
-  @IsOptional()
-  phone?: string;
+  phone!: string;
 
   @IsString()
-  @IsOptional()
   subject?: string;
 
   @IsString()
