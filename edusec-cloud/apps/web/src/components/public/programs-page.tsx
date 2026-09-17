@@ -14,6 +14,16 @@ const art = [
   "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1200&q=85",
 ];
 
+const semiconductorDesignImage = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85";
+const semiconductorPackagingImage = "https://www.izm.fraunhofer.de/en/abteilungen/wafer-level-system-integration/leistungsangebot/FO_WLP/jcr%3Acontent/contentPar/sectioncomponent_1746163358/sectionParsys/imagerow_copy/imageComponent1/image.img.jpg/1771944461096/punch.jpg";
+
+function getProgramImage(program: Program, index: number) {
+  const text = `${program.domain.en} ${program.domain.ar} ${program.name.en} ${program.name.ar}`.toLowerCase();
+  if (text.includes("packaging") || text.includes("تغليف") || text.includes("assembly") || text.includes("تجميع")) return semiconductorPackagingImage;
+  if (text.includes("semiconductor") || text.includes("أشباه الموصلات")) return semiconductorDesignImage;
+  return art[index % art.length];
+}
+
 export function ProgramsPage({ programs }: { programs: Program[] }) {
   const { lang } = useLanguage();
   const ar = lang === "ar";
@@ -85,7 +95,7 @@ export function ProgramsPage({ programs }: { programs: Program[] }) {
               {filtered.map((p, i) => (
                 <article key={p.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                   <div className="relative h-48 overflow-hidden bg-[#07111d]">
-                    <img src={art[i % art.length]} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <img src={getProgramImage(p, i)} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07111d] via-[#07111d]/35 to-transparent" />
                     <div className={`absolute left-5 top-5 ${ar ? "left-auto right-5" : ""}`}><span className={`rounded-full px-3 py-1.5 text-[10px] font-black ${p.status === "open" ? "bg-white text-slate-900" : "bg-black/30 text-white backdrop-blur"}`}>{p.status === "open" ? t("OPEN", "متاح للتسجيل") : t("COMING SOON", "قريبًا")}</span></div>
                     <div className={`absolute bottom-5 ${ar ? "right-5 text-right" : "left-5"} text-white`}><span className="text-[10px] font-bold uppercase tracking-[.16em] text-white/65">{p.domain[lang]}</span><h2 className="mt-1 text-2xl font-black leading-tight">{p.name[lang]}</h2></div>
