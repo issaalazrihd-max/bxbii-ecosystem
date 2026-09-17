@@ -3,9 +3,9 @@ import Link from "next/link";
 import {useLanguage} from "./language-provider";
 
 const domains=[
- ["01","Semiconductor Design","تصميم أشباه الموصلات","Designing next-generation chips and integrated hardware systems.","/images/semiconductor-hero.svg"],
- ["02","Robotics & Automation","الروبوتات والأتمتة","Robots and autonomous systems for real-world industrial applications.","/images/robotics-industrial.svg"],
- ["03","IoT & Connected Devices","إنترنت الأشياء والأجهزة المتصلة","Intelligent devices and sensor networks for industrial environments.","/images/iot-connected.svg"],
+ ["01","Semiconductor Design","تصميم أشباه الموصلات","Next-generation chip and integrated hardware design.","/images/semiconductor-hero.svg"],
+ ["02","Robotics & Automation","الروبوتات والأتمتة","Autonomous machines engineered for real industrial environments.","/images/robotics-industrial.svg"],
+ ["03","IoT & Connected Systems","إنترنت الأشياء والأنظمة المتصلة","Sensors, devices and intelligent networks that connect the physical world.","/images/iot-connected.svg"],
  ["04","Embedded Systems","الأنظمة المدمجة","Reliable hardware and software foundations for critical applications.","/images/semiconductor-hero.svg"]
 ];
 const industries=[["Oil & Gas","النفط والغاز"],["Mining & Manufacturing","التعدين والتصنيع"],["Energy & Utilities","الطاقة والمرافق"],["Ports & Infrastructure","الموانئ والبنية الأساسية"]];
@@ -14,69 +14,72 @@ export function BxbiiHomePage(){
  const{lang}=useLanguage();
  const ar=lang==="ar";
  const t=(e:string,a:string)=>ar?a:e;
- return <main className="overflow-hidden bg-[#050b13] text-white">
-  <section className="relative min-h-[760px] border-b border-white/10">
-   <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_35%,rgba(54,181,255,.20),transparent_29%),radial-gradient(circle_at_90%_80%,rgba(255,65,48,.15),transparent_24%),linear-gradient(118deg,#030812,#071525_55%,#02070d)]"/>
-   <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] [background-size:72px_72px]"/>
-   <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-8 px-5 pb-16 pt-24 sm:px-8 lg:grid-cols-[.98fr_1.02fr] lg:px-10">
-    <div className={ar?"text-right":""}>
-     <span className="text-xs font-black tracking-[.30em] text-cyan-200">{t("OMAN'S DEEP-TECH COMPANY","شركة عُمانية للتكنولوجيا العميقة")}</span>
-     <h1 className="mt-6 whitespace-pre-line text-[48px] font-black leading-[.88] tracking-[-.055em] sm:text-6xl lg:text-[72px]">{t("SEMICONDUCTORS\nROBOTICS\nAND IOT","أشباه الموصلات\nالروبوتات\nوإنترنت الأشياء")}</h1>
-     <h2 className="mt-7 whitespace-pre-line text-2xl font-black leading-[1.05] text-cyan-200/80 sm:text-3xl">{t("FROM INTELLIGENCE\nTO IMPACT IN THE REAL WORLD","من الذكاء\nإلى أثر في العالم الحقيقي")}</h2>
-     <p className="mt-6 max-w-xl text-[15px] leading-7 text-white/58">{t("We design, develop and integrate advanced technologies in semiconductors, robotics, IoT and embedded systems to solve real industrial challenges and build a smarter, more resilient future.","نصمم ونطوّر وندمج تقنيات متقدمة في أشباه الموصلات والروبوتات وإنترنت الأشياء والأنظمة المدمجة لحل تحديات صناعية حقيقية وبناء مستقبل أكثر ذكاءً ومرونة.")}</p>
-     <div className={`mt-8 flex flex-wrap gap-3 ${ar?"justify-end":""}`}>
-      <Link href="/solutions" className="rounded-lg bg-gradient-to-r from-red-500 to-orange-400 px-7 py-4 text-sm font-black shadow-lg shadow-red-950/20">{t("Explore Our Solutions","استكشف حلولنا")} →</Link>
-      <Link href="/about-us" className="rounded-lg border border-white/25 bg-white/[.02] px-7 py-4 text-sm font-black">{t("About bxbii","عن bxbii")} ▷</Link>
-     </div>
-     <div className={`mt-11 flex flex-wrap gap-6 text-xs font-bold text-white/55 ${ar?"justify-end":""}`}>
-      <span>▣ {t("Deep Technology","تكنولوجيا عميقة")}</span><span>◉ {t("Real-World Impact","أثر في العالم الحقيقي")}</span><span>♧ {t("Made in Oman","صناعة عُمانية")}</span>
-     </div>
+ return <main className="overflow-hidden bg-[#03070d] text-white">
+  <section className="relative min-h-[820px] border-b border-white/10">
+   <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_30%,rgba(36,185,255,.18),transparent_25%),radial-gradient(circle_at_18%_75%,rgba(255,72,48,.10),transparent_25%),linear-gradient(120deg,#02050a,#071321_55%,#02060b)]"/>
+   <div className="absolute inset-0 opacity-[.22] [background-image:linear-gradient(rgba(255,255,255,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.035)_1px,transparent_1px)] [background-size:64px_64px]"/>
+   <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-28 sm:px-8 lg:px-10">
+    <div className="mb-12 flex items-center justify-between border-y border-white/10 py-3 text-[9px] font-bold uppercase tracking-[.24em] text-white/40">
+     <span>{t("MUSCAT · OMAN","مسقط · عُمان")}</span><span>{t("DEEP TECH / INDUSTRIAL SYSTEMS","التكنولوجيا العميقة / الأنظمة الصناعية")}</span><span className="hidden sm:block">{t("BUILDING 2040","نبني للمستقبل 2040")}</span>
     </div>
-    <div className="relative hidden min-h-[610px] lg:block">
-     <div className="absolute right-0 top-2 z-10 flex flex-col gap-2 border-l border-white/10 pl-4 text-[10px] font-bold uppercase tracking-[.18em] text-white/40">
-      <span>{t("People","الأفراد")}</span><span className="text-white/65">{t("Technology","التقنية")}</span><span>{t("Industries","القطاعات")}</span><span className="text-cyan-200">{t("A Brighter Oman","عُمان أكثر إشراقًا")}</span><i className="mt-2 block h-0.5 w-5 bg-red-400"/>
+    <div className="grid items-center gap-14 lg:grid-cols-[.92fr_1.08fr]">
+     <div className={ar?"text-right":""}>
+      <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200/20 bg-cyan-200/[.04] px-4 py-2 text-[10px] font-black tracking-[.22em] text-cyan-200"><span className="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,.9)]"/>{t("OMAN'S DEEP-TECH COMPANY","شركة عُمانية للتكنولوجيا العميقة")}</div>
+      <h1 className="mt-7 max-w-3xl text-[54px] font-black leading-[.88] tracking-[-.06em] sm:text-7xl lg:text-[82px]">{t("ENGINEERING\nINTELLIGENCE\nFOR THE PHYSICAL WORLD","نهندس الذكاء\nللعالم\nالحقيقي")}</h1>
+      <p className="mt-7 max-w-xl text-base leading-7 text-white/55 sm:text-lg">{t("bxbii builds deep-technology systems where software meets hardware — from semiconductors and embedded systems to robotics, connected devices and industrial intelligence.","تبني bxbii أنظمة تكنولوجية عميقة تلتقي فيها البرمجيات مع العتاد — من أشباه الموصلات والأنظمة المدمجة إلى الروبوتات والأجهزة المتصلة والذكاء الصناعي الصناعي.")}</p>
+      <div className={`mt-9 flex flex-wrap gap-3 ${ar?"justify-end":""}`}>
+       <Link href="/solutions" className="rounded-lg bg-gradient-to-r from-red-500 to-orange-400 px-7 py-4 text-sm font-black shadow-xl shadow-red-950/30 transition hover:-translate-y-0.5">{t("Explore Solutions","استكشف الحلول")} <span className={ar?"mr-2":"ml-2"}>→</span></Link>
+       <Link href="/technology" className="rounded-lg border border-white/15 bg-white/[.03] px-7 py-4 text-sm font-black transition hover:border-cyan-200/30">{t("Our Technology","تقنياتنا")} <span className={ar?"mr-2":"ml-2"}>↗</span></Link>
+      </div>
+      <div className={`mt-10 grid max-w-xl grid-cols-3 border-y border-white/10 py-5 ${ar?"text-right":""}`}>
+       <div><strong className="text-2xl font-black">04</strong><span className="mt-1 block text-[9px] uppercase tracking-[.16em] text-white/35">{t("Core Domains","مجالات أساسية")}</span></div>
+       <div><strong className="text-2xl font-black">01</strong><span className="mt-1 block text-[9px] uppercase tracking-[.16em] text-white/35">{t("Oman Base","مقر عُمان")}</span></div>
+       <div><strong className="text-2xl font-black">∞</strong><span className="mt-1 block text-[9px] uppercase tracking-[.16em] text-white/35">{t("Industrial Use Cases","تطبيقات صناعية")}</span></div>
+      </div>
      </div>
-     <div className="absolute inset-x-0 bottom-4 top-14 overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#081522] shadow-2xl">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_62%_35%,rgba(105,211,255,.24),transparent_28%),linear-gradient(135deg,#10283c,#07111c_48%,#03070c)]"/>
-      <div className="absolute inset-x-8 bottom-0 h-44 bg-[radial-gradient(ellipse_at_center,rgba(255,105,54,.20),transparent_62%)]"/>
-      <div className="absolute left-[28%] top-[26%] h-56 w-56 rounded-full border border-cyan-200/15 bg-white/[.025] shadow-[0_0_90px_rgba(48,185,255,.10)]"/>
-      <div className="absolute left-[40%] top-[34%] h-24 w-24 rotate-45 rounded-[1.1rem] border border-orange-300/60 bg-[#0a1520] shadow-[0_0_45px_rgba(255,130,50,.25)]"><div className="m-5 h-12 w-12 rounded border border-orange-300/50 bg-[repeating-linear-gradient(0deg,transparent_0_4px,rgba(255,150,70,.24)_5px),repeating-linear-gradient(90deg,transparent_0_4px,rgba(255,150,70,.24)_5px)]"/></div>
-      <div className="absolute bottom-9 left-9 rounded-xl border border-cyan-200/15 bg-[#07111d]/90 px-5 py-4 backdrop-blur-md"><span className="text-[10px] tracking-[.2em] text-cyan-200">CORE TECHNOLOGY</span><strong className="mt-1 block text-sm">Semiconductor • Robotics • IoT</strong></div>
-      <div className="absolute bottom-0 right-0 h-2/3 w-1/2 bg-[linear-gradient(145deg,transparent_35%,rgba(255,255,255,.06)_36%,transparent_37%),linear-gradient(165deg,transparent_47%,rgba(255,255,255,.04)_48%,transparent_49%)]"/>
+     <div className="relative mx-auto h-[570px] w-full max-w-[650px] lg:h-[620px]">
+      <div className="absolute inset-0 rounded-[3rem] border border-white/10 bg-[#07121d]/70 shadow-2xl backdrop-blur-sm"/>
+      <div className="absolute inset-7 rounded-[2.4rem] border border-cyan-200/10 bg-[radial-gradient(circle_at_50%_42%,rgba(71,205,255,.20),transparent_27%),linear-gradient(145deg,#0b1d2c,#03080e)]"/>
+      <div className="absolute left-1/2 top-[41%] h-40 w-40 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-[2rem] border border-orange-300/60 bg-[#07111b] shadow-[0_0_90px_rgba(255,123,54,.18)] sm:h-48 sm:w-48">
+       <div className="absolute inset-7 rounded-xl border border-orange-300/40 bg-[repeating-linear-gradient(0deg,transparent_0_7px,rgba(255,160,85,.22)_8px),repeating-linear-gradient(90deg,transparent_0_7px,rgba(255,160,85,.22)_8px)]"/>
+       <div className="absolute -inset-8 rounded-[2.5rem] border border-cyan-200/10"/>
+      </div>
+      <div className="absolute left-[9%] top-[16%] h-16 w-16 rounded-xl border border-cyan-200/20 bg-[#0a1a29] p-3 shadow-[0_0_30px_rgba(50,190,255,.08)]"><img src="/images/iot-connected.svg" alt="" className="h-full w-full object-contain"/></div>
+      <div className="absolute right-[9%] top-[26%] h-16 w-16 rounded-xl border border-white/10 bg-[#0a1a29] p-3"><img src="/images/robotics-industrial.svg" alt="" className="h-full w-full object-contain"/></div>
+      <div className="absolute bottom-[21%] left-[13%] h-16 w-16 rounded-xl border border-white/10 bg-[#0a1a29] p-3"><img src="/images/semiconductor-hero.svg" alt="" className="h-full w-full object-contain"/></div>
+      <div className="absolute bottom-8 left-8 right-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+       {["SEMICONDUCTORS","ROBOTICS","CONNECTED SYSTEMS"].map((x,i)=><div key={x} className="rounded-xl border border-white/10 bg-[#050c14]/90 px-3 py-3 backdrop-blur"><span className="text-[8px] font-black tracking-[.14em] text-white/35">0{i+1}</span><strong className="mt-1 block text-[10px] font-black">{x}</strong></div>)}
+      </div>
+      <div className="absolute right-7 top-7 hidden text-right text-[8px] font-bold tracking-[.18em] text-white/30 sm:block">PHYSICAL<br/>INTELLIGENCE<br/><span className="text-cyan-200/60">ONLINE</span></div>
      </div>
     </div>
    </div>
   </section>
 
-  <section className="border-b border-white/10 bg-[#07111c] py-20">
+  <section className="border-b border-white/10 bg-[#060d15] py-24">
    <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-    <div className={`flex items-end justify-between gap-6 ${ar?"flex-row-reverse text-right":""}`}>
-     <div><span className="text-[11px] font-black tracking-[.2em] text-cyan-200">{t("OUR TECHNOLOGY DOMAINS","مجالاتنا التقنية")}</span><h2 className="mt-3 text-4xl font-black tracking-tight">{t("Our Technology Domains","مجالاتنا التقنية")}</h2><p className="mt-2 text-sm text-white/45">{t("Integrated technologies for a smarter, safer and more productive world.","تقنيات متكاملة لعالم أكثر ذكاءً وأمانًا وإنتاجية.")}</p></div>
-     <Link href="/technology" className="hidden rounded-lg border border-white/20 px-5 py-3 text-xs font-black sm:block">{t("View All Solutions →","عرض جميع الحلول ←")}</Link>
-    </div>
-    <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-     {domains.map(([n,en,a,d,img])=><Link href="/technology" key={n} className="group overflow-hidden rounded-2xl border border-white/10 bg-[#091624] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/30 hover:shadow-xl hover:shadow-cyan-950/20">
-      <div className="relative h-40 overflow-hidden bg-[#0b1a29]"><img src={img} alt="" className="h-full w-full object-cover opacity-75 transition duration-500 group-hover:scale-105"/><div className="absolute inset-0 bg-gradient-to-t from-[#091624] via-transparent to-transparent"/></div>
-      <div className={`p-5 ${ar?"text-right":""}`}><span className="text-[10px] font-black text-red-400">{n}</span><h3 className="mt-2 text-lg font-black">{ar?a:en}</h3><p className="mt-2 text-xs leading-5 text-white/45">{t(d,d)}</p><span className={`mt-5 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-cyan-200 ${ar?"rotate-180":""}`}>→</span></div>
+    <div className={`max-w-2xl ${ar?"mr-auto text-right":""}`}><span className="text-[10px] font-black tracking-[.25em] text-cyan-200">01 / {t("TECHNOLOGY","التقنية")}</span><h2 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">{t("Four technology domains. One integrated capability.","أربعة مجالات تقنية. منظومة قدرات متكاملة.")}</h2><p className="mt-5 text-sm leading-7 text-white/45">{t("We connect advanced hardware, intelligent software and industrial engineering to move ideas from the lab into the real world.","نربط العتاد المتقدم والبرمجيات الذكية والهندسة الصناعية لننقل الأفكار من المختبر إلى العالم الحقيقي.")}</p></div>
+    <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+     {domains.map(([n,en,a,d,img])=><Link href="/technology" key={n} className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#091521] transition duration-300 hover:-translate-y-1 hover:border-cyan-200/30">
+      <div className="relative h-44 overflow-hidden bg-[#0b1b29]"><img src={img} alt="" className="h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-110 group-hover:opacity-90"/><div className="absolute inset-0 bg-gradient-to-t from-[#091521] via-transparent to-transparent"/><span className="absolute left-5 top-5 text-[10px] font-black text-red-400">{n}</span></div>
+      <div className={`p-6 ${ar?"text-right":""}`}><h3 className="text-lg font-black">{ar?a:en}</h3><p className="mt-3 text-xs leading-6 text-white/40">{d}</p><span className={`mt-6 inline-flex text-xs font-black text-cyan-200 ${ar?"float-left":""}`}>{t("Explore →","استكشف ←")}</span></div>
      </Link>)}
     </div>
-    <div className="mt-7 grid grid-cols-2 overflow-hidden rounded-xl border border-white/10 md:grid-cols-4">
-     {[['4',t('Technology Domains','مجالات تقنية')],['∞',t('Real-World Possibilities','إمكانات العالم الحقيقي')],['100%',t("Commitment to Oman's Future",'التزام بمستقبل عُمان')],['OMAN',t('Innovation • Global Impact','ابتكار • أثر عالمي')]].map(([n,l])=><div key={n} className="border-white/10 bg-[#07111c] p-5 md:border-r last:border-r-0"><strong className="text-2xl font-black">{n}</strong><span className="mt-1 block text-[10px] text-white/45">{l}</span></div>)}
-    </div>
    </div>
   </section>
 
-  <section className="bg-[#050b13] py-20">
-   <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-    <div className={`grid gap-6 lg:grid-cols-[.8fr_1.2fr] ${ar?"text-right":""}`}>
-     <div className="flex flex-col justify-center"><span className="text-[11px] font-black tracking-[.2em] text-red-400">{t("BEYOND BUSINESS","ما بعد الأعمال")}</span><h2 className="mt-4 text-4xl font-black">{t("Technology with purpose.","تقنية تصنع أثرًا.")}</h2><p className="mt-5 text-sm leading-7 text-white/50">{t("We believe advanced technology should create real opportunities for people and communities. Our capability-building initiatives support long-term technology development in Oman.","نؤمن بأن التكنولوجيا المتقدمة يجب أن تصنع فرصًا حقيقية للأفراد والمجتمعات. وتدعم مبادراتنا لبناء القدرات تطوير التكنولوجيا على المدى الطويل في عُمان.")}</p><Link href="/impact" className="mt-7 w-fit rounded-lg border border-white/20 px-5 py-3 text-xs font-black">{t("Our Impact →","أثرنا ←")}</Link></div>
-     <div className="grid gap-5 sm:grid-cols-2"><div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#0d2032] to-[#08111b] p-8"><span className="text-4xl">⌁</span><h3 className="mt-12 text-xl font-black">{t("Building Local Talent","بناء المواهب المحلية")}</h3><p className="mt-3 text-sm text-white/45">{t("Technology and talent initiatives aligned with long-term capability building.","مبادرات تقنية ومواهب تدعم بناء القدرات على المدى الطويل.")}</p></div><div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#101d2d] to-[#08111b] p-8"><span className="text-4xl">◈</span><h3 className="mt-12 text-xl font-black">{t("Advanced Technology for Oman","تقنية متقدمة لعُمان")}</h3><p className="mt-3 text-sm text-white/45">{t("Turning deep technology into practical opportunities for industry and society.","تحويل التكنولوجيا العميقة إلى فرص عملية للصناعة والمجتمع.")}</p></div></div>
-    </div>
+  <section className="relative border-b border-white/10 py-24">
+   <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(255,70,48,.08),transparent_25%),radial-gradient(circle_at_80%_50%,rgba(38,187,255,.08),transparent_25%)]"/>
+   <div className="relative mx-auto grid max-w-7xl gap-14 px-5 sm:px-8 lg:grid-cols-[.7fr_1.3fr] lg:px-10">
+    <div className={ar?"text-right":""}><span className="text-[10px] font-black tracking-[.25em] text-red-400">02 / {t("INDUSTRIES","القطاعات")}</span><h2 className="mt-4 text-4xl font-black">{t("Built for environments that cannot fail.","مصممة لبيئات لا تحتمل الخطأ.")}</h2><p className="mt-5 text-sm leading-7 text-white/45">{t("From energy assets to critical infrastructure, our technology is designed around measurable operational outcomes.","من أصول الطاقة إلى البنية الأساسية الحيوية، تُصمم تقنياتنا حول نتائج تشغيلية قابلة للقياس.")}</p><Link href="/industries" className="mt-7 inline-flex rounded-lg border border-white/15 px-5 py-3 text-xs font-black">{t("Explore Industries →","استكشف القطاعات ←")}</Link></div>
+    <div className="grid gap-3 sm:grid-cols-2">{industries.map(([e,a],i)=><Link href="/industries" key={e} className="group rounded-2xl border border-white/10 bg-white/[.025] p-7 transition hover:border-cyan-200/25 hover:bg-white/[.04]"><div className="flex items-start justify-between"><span className="text-[10px] font-black text-white/25">0{i+1}</span><span className="text-cyan-200 transition group-hover:translate-x-1">↗</span></div><h3 className="mt-12 text-xl font-black">{ar?a:e}</h3><p className="mt-2 text-xs text-white/35">{t("Industrial technology and intelligent systems","تقنيات صناعية وأنظمة ذكية")}</p></Link>)}</div>
    </div>
   </section>
 
-  <section className="border-t border-white/10 bg-[#07111c] py-16">
-   <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`mb-8 ${ar?"text-right":""}`}><span className="text-[11px] font-black tracking-[.2em] text-cyan-200">{t("INDUSTRIES","القطاعات")}</span><h2 className="mt-3 text-3xl font-black">{t("Built for demanding environments.","مصممة للبيئات الأكثر تحديًا.")}</h2></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{industries.map(([e,a])=><Link key={e} href="/industries" className="rounded-xl border border-white/10 bg-white/[.025] p-5 text-sm font-black text-white/75 transition hover:border-cyan-300/25 hover:bg-white/[.04]">{ar?a:e} <span className="float-right text-cyan-200">→</span></Link>)}</div></div>
+  <section className="border-b border-white/10 bg-[#060d15] py-24">
+   <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10"><div className={`rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#0d1d2d] to-[#050b12] p-8 sm:p-12 lg:p-16 ${ar?"text-right":""}`}><div className="max-w-3xl"><span className="text-[10px] font-black tracking-[.25em] text-cyan-200">03 / {t("FROM OMAN, OUTWARD","من عُمان إلى العالم")}</span><h2 className="mt-5 text-4xl font-black sm:text-5xl">{t("Technology should move industry forward.","التكنولوجيا يجب أن تدفع الصناعة إلى الأمام.")}</h2><p className="mt-5 text-sm leading-7 text-white/45">{t("We are building an Oman-based technology company with the ambition to develop capability locally and deliver solutions across the region and beyond.","نبني شركة تكنولوجيا مقرها عُمان، بطموح تطوير القدرات محليًا وتقديم الحلول في المنطقة وخارجها.")}</p><div className={`mt-8 flex flex-wrap gap-3 ${ar?"justify-end":""}`}><Link href="/about-us" className="rounded-lg bg-white px-6 py-3 text-xs font-black text-[#03070d]">{t("Discover bxbii","اكتشف bxbii")} →</Link><Link href="/contact-us" className="rounded-lg border border-white/15 px-6 py-3 text-xs font-black">{t("Start a conversation","ابدأ محادثة")}</Link></div></div></div></div>
   </section>
+
+  <section className="py-14"><div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 text-xs text-white/35 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10"><span className="font-black tracking-[.2em]">bxbii</span><span>{t("Semiconductors · Robotics · Connected Systems · Embedded Intelligence","أشباه الموصلات · الروبوتات · الأنظمة المتصلة · الذكاء المدمج")}</span><Link href="/contact-us" className="font-black text-white/60 hover:text-white">{t("Build with us →","ابنِ معنا ←")}</Link></div></section>
  </main>
 }
