@@ -41,7 +41,6 @@ export default function CmsContactPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | AdminContactSubmission["status"]>("ALL");
   const [programFilter, setProgramFilter] = useState("ALL");
-  const [whatsappReady, setWhatsappReady] = useState(false);
   const [whatsappLead, setWhatsappLead] = useState<AdminContactSubmission | null>(null);
   const [whatsappText, setWhatsappText] = useState("");
   const [whatsappBusy, setWhatsappBusy] = useState(false);
@@ -51,10 +50,7 @@ export default function CmsContactPage() {
     api.listContactSubmissions().then(setSubmissions).catch((err) => setError(err.message));
   };
 
-  useEffect(() => {
-    load();
-    whatsappApi.status().then((result) => setWhatsappReady(result.configured)).catch(() => setWhatsappReady(false));
-  }, []);
+  useEffect(() => { load(); }, []);
 
   const programs = useMemo(
     () => Array.from(new Set(submissions.map((s) => programFromSubject(s.subject)).filter(Boolean))).sort(),
@@ -178,7 +174,7 @@ export default function CmsContactPage() {
                 <a href={`mailto:${s.email}?subject=${encodeURIComponent(s.subject || "Follow-up from BXBII")}`} className="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Email</a>
                 {s.phone && <a href={`tel:${s.phone}`} className="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Call</a>}
                 {s.phone && <a href={whatsappHref(s.phone)} target="_blank" rel="noreferrer" className="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">WhatsApp</a>}
-                {s.phone && whatsappReady && <Button variant="secondary" onClick={() => openWhatsApp(s)}>Reply in site</Button>}
+                {s.phone && <Button variant="secondary" onClick={() => openWhatsApp(s)}>Reply in site</Button>}
                 <Button variant="secondary" disabled={busyId === s.id || s.status === "READ"} onClick={() => setStatus(s, "READ")}>Mark read</Button>
                 <Button variant="secondary" disabled={busyId === s.id || s.status === "ARCHIVED"} onClick={() => setStatus(s, "ARCHIVED")}>Archive</Button>
                 <Button variant="ghost" disabled={busyId === s.id} onClick={() => remove(s)}>Delete</Button>
