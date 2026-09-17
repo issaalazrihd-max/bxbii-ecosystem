@@ -6,12 +6,12 @@ import { useLanguage } from "./language-provider";
 type Program = { id: string; domain: { en: string; ar: string }; name: { en: string; ar: string }; description: { en: string; ar: string }; duration: { en: string; ar: string }; format: { en: string; ar: string }; status: "open" | "comingSoon"; href?: string };
 
 const art = [
-  "from-[#101827] via-[#18324a] to-[#00b8d9]",
-  "from-[#20122f] via-[#35215c] to-[#ff536d]",
-  "from-[#071b1d] via-[#123e43] to-[#20c997]",
-  "from-[#111827] via-[#1e3a5f] to-[#38bdf8]",
-  "from-[#1c1328] via-[#40245d] to-[#fb7185]",
-  "from-[#0f172a] via-[#20334d] to-[#f59e0b]",
+  "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=85",
+  "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1200&q=85",
 ];
 
 export function ProgramsPage({ programs }: { programs: Program[] }) {
@@ -84,9 +84,10 @@ export function ProgramsPage({ programs }: { programs: Program[] }) {
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((p, i) => (
                 <article key={p.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-                  <div className={`relative h-48 bg-gradient-to-br ${art[i % art.length]}`}>
-                    <div className="absolute inset-0 opacity-20 bg-[linear-gradient(135deg,transparent_40%,rgba(255,255,255,.35)_41%,transparent_42%)]" />
-                    <div className={`absolute left-5 top-5 ${ar ? "left-auto right-5" : ""}`}><span className={`rounded-full px-3 py-1.5 text-[10px] font-black ${p.status === "open" ? "bg-white text-slate-900" : "bg-black/20 text-white"}`}>{p.status === "open" ? t("OPEN", "متاح للتسجيل") : t("COMING SOON", "قريبًا")}</span></div>
+                  <div className="relative h-48 overflow-hidden bg-[#07111d]">
+                    <img src={art[i % art.length]} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#07111d] via-[#07111d]/35 to-transparent" />
+                    <div className={`absolute left-5 top-5 ${ar ? "left-auto right-5" : ""}`}><span className={`rounded-full px-3 py-1.5 text-[10px] font-black ${p.status === "open" ? "bg-white text-slate-900" : "bg-black/30 text-white backdrop-blur"}`}>{p.status === "open" ? t("OPEN", "متاح للتسجيل") : t("COMING SOON", "قريبًا")}</span></div>
                     <div className={`absolute bottom-5 ${ar ? "right-5 text-right" : "left-5"} text-white`}><span className="text-[10px] font-bold uppercase tracking-[.16em] text-white/65">{p.domain[lang]}</span><h2 className="mt-1 text-2xl font-black leading-tight">{p.name[lang]}</h2></div>
                   </div>
                   <div className={`p-6 ${ar ? "text-right" : ""}`}>
