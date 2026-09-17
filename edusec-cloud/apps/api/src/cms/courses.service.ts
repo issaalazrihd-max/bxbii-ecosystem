@@ -12,7 +12,7 @@ export class CoursesService {
   list(user: AccessTokenPayload) { return this.prisma.course.findMany({ where: { tenantId: user.tenantId }, orderBy: { position: "asc" } }); }
   async create(user: AccessTokenPayload, dto: CreateCourseDto) {
     const maxPosition = await this.prisma.course.aggregate({ where: { tenantId: user.tenantId }, _max: { position: true } });
-    const course = await this.prisma.course.create({ data: { tenantId: user.tenantId, slug: dto.slug, arTitle: dto.arTitle, enTitle: dto.enTitle, arDescription: dto.arDescription, enDescription: dto.enDescription, arDuration: dto.arDuration, enDuration: dto.enDuration, arFormat: dto.enFormat, status: dto.status, hrefOverride: dto.hrefOverride, isVisible: dto.isVisible ?? true, position: (maxPosition._max.position ?? -1) + 1 } });
+    const course = await this.prisma.course.create({ data: { tenantId: user.tenantId, slug: dto.slug, arTitle: dto.arTitle, enTitle: dto.enTitle, arDescription: dto.arDescription, enDescription: dto.enDescription, arDuration: dto.arDuration, enDuration: dto.enDuration, arFormat: dto.arFormat, enFormat: dto.enFormat, status: dto.status, hrefOverride: dto.hrefOverride, isVisible: dto.isVisible ?? true, position: (maxPosition._max.position ?? -1) + 1 } });
     await this.audit.record({ tenantId: user.tenantId, actorId: user.sub, action: "cms.course.create", entityType: "Course", entityId: course.id, after: course });
     return course;
   }
