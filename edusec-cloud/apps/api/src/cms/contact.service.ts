@@ -68,13 +68,14 @@ export class ContactService {
   // --- Public write model (for the website itself, no auth) ---------------
 
   /**
-   * Unauthenticated create from the public contact form. No audit record
-   * here — audit.record() ties every entry to an actorId, and there is no
-   * actor: this is a citizen submission, not an admin action.
+   * Store every website enquiry in both the existing contact inbox and the
+   * existing bxbii Cloud sales-inquiry table. This keeps website leads
+   * filterable by interested course/program, source and sales status without
+   * changing the employee application.
    */
   async publicCreate(dto: CreateContactSubmissionDto) {
     const tenant = await this.prisma.tenant.findFirstOrThrow();
-    await this.prisma.contactSubmission.create({
+    const submission = await this.prisma.contactSubmission.create({
       data: {
         tenantId: tenant.id,
         name: dto.name,
@@ -85,6 +86,21 @@ export class ContactService {
         status: "NEW",
       },
     });
+
+    await this.prisma.$executeRawUnsafe(
+      `INSERT INTO bxbii_cloud_inquiries
+        (id, tenant_id, branch_id, full_name, mobile, email, source, interested_course, status, assigned_to, next_follow_up_at, notes)
+       VALUES ($1,$2,NULL,$3,$4,$5,$6,$7,'NEW',NULL,NULL,$8)`,
+      submission.id,
+      tenant.id,
+      dto.name,
+      dto.phone ?? null,
+      dto.email,
+      "website",
+      dto.subject ?? null,
+      dto.message,
+    );
+
     return { success: true };
   }
 }
