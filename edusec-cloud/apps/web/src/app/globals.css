@@ -10,3 +10,8 @@ body {
 body {
   @apply bg-surface-subtle text-slate-900 antialiased;
 }
+
+/* Homepage hero artwork: preserve the existing layout/content and only swap the visual. */
+main > section.min-h-\[760px\] > div:first-child {
+  background-image: url('/images/bxbii-future-hero.svg') !important;
+}
