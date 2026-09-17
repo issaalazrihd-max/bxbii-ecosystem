@@ -28,11 +28,16 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const domainAr = remoteProgram?.arDomain ?? localProgram!.domain.ar;
   const isOpen = remoteProgram ? remoteProgram.status === "OPEN" : true;
   const interestHref = `/contact-us?subject=${encodeURIComponent(`Program Interest — ${nameEn}`)}&program=${encodeURIComponent(params.slug)}#contact-form`;
-  const heroImage = domainEn.toLowerCase().includes("robot")
-    ? "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1800&q=85"
-    : domainEn.toLowerCase().includes("ai")
-      ? "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=85"
-      : "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=85";
+  const programText = `${domainEn} ${nameEn}`.toLowerCase();
+  const heroImage = programText.includes("packaging") || programText.includes("assembly") || programText.includes("تغليف") || programText.includes("تجميع")
+    ? "https://www.izm.fraunhofer.de/en/abteilungen/wafer-level-system-integration/leistungsangebot/FO_WLP/jcr%3Acontent/contentPar/sectioncomponent_1746163358/sectionParsys/imagerow_copy/imageComponent1/image.img.jpg/1771944461096/punch.jpg"
+    : programText.includes("semiconductor") || programText.includes("أشباه الموصلات") || programText.includes("chip") || programText.includes("شريحة")
+      ? "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=85"
+      : domainEn.toLowerCase().includes("robot")
+        ? "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1800&q=85"
+        : domainEn.toLowerCase().includes("ai")
+          ? "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=85"
+          : "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=85";
 
   return <main className="min-h-screen bg-[#f7f8fa] text-slate-900">
     <section className="relative overflow-hidden bg-[#07111d] py-24 text-white sm:py-32">
