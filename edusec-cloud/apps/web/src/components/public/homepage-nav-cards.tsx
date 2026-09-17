@@ -82,7 +82,7 @@ export function HomepageNavCards() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden border-y border-slate-200 bg-[#f6f7f9] py-14 sm:py-18">
+    <section className="relative overflow-hidden border-y border-slate-200 bg-[#f6f7f9] py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
         <div className={`mb-9 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between ${ar ? "sm:flex-row-reverse" : ""}`}>
           <div className={ar ? "text-right" : ""}>
@@ -131,7 +131,7 @@ export function HomepageNavCards() {
                     </div>
                     <div className={`mt-5 flex items-center gap-2 ${ar ? "justify-end" : ""}`}>
                       <span className="h-1 w-10 overflow-hidden rounded-full bg-white/15">
-                        <span className="block h-full w-2/3 rounded-full bg-[#e31b23] transition-all duration-700" style={{ width: `${((current + 1) / info.length) * 100}%` }} />
+                        <span className="block h-full rounded-full bg-[#e31b23] transition-all duration-700" style={{ width: `${((current + 1) / info.length) * 100}%` }} />
                       </span>
                       <span className="text-[9px] font-black uppercase tracking-[.18em] text-white/45">{ar ? "استكشف" : "Explore"}</span>
                     </div>
