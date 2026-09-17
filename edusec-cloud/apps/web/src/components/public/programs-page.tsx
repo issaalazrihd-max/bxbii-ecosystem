@@ -5,23 +5,27 @@ import { useLanguage } from "./language-provider";
 
 type Program = { id: string; domain: { en: string; ar: string }; name: { en: string; ar: string }; description: { en: string; ar: string }; duration: { en: string; ar: string }; format: { en: string; ar: string }; status: "open" | "comingSoon"; href?: string };
 
-const art = [
-  "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=85",
-  "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1200&q=85",
-];
+const art = {
+  semiconductor: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85",
+  packaging: "https://www.izm.fraunhofer.de/en/abteilungen/wafer-level-system-integration/leistungsangebot/FO_WLP/jcr%3Acontent/contentPar/sectioncomponent_1746163358/sectionParsys/imagerow_copy/imageComponent1/image.img.jpg/1771944461096/punch.jpg",
+  robotics: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=85",
+  ai: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=85",
+  finance: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=85",
+  manufacturing: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=85",
+  mining: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1200&q=85",
+  default: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=85",
+};
 
-const semiconductorDesignImage = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85";
-const semiconductorPackagingImage = "https://www.izm.fraunhofer.de/en/abteilungen/wafer-level-system-integration/leistungsangebot/FO_WLP/jcr%3Acontent/contentPar/sectioncomponent_1746163358/sectionParsys/imagerow_copy/imageComponent1/image.img.jpg/1771944461096/punch.jpg";
-
-function getProgramImage(program: Program, index: number) {
-  const text = `${program.domain.en} ${program.domain.ar} ${program.name.en} ${program.name.ar}`.toLowerCase();
-  if (text.includes("packaging") || text.includes("تغليف") || text.includes("assembly") || text.includes("تجميع")) return semiconductorPackagingImage;
-  if (text.includes("semiconductor") || text.includes("أشباه الموصلات")) return semiconductorDesignImage;
-  return art[index % art.length];
+function getProgramImage(program: Program) {
+  const text = `${program.domain.en} ${program.domain.ar} ${program.name.en} ${program.name.ar} ${program.description.en} ${program.description.ar}`.toLowerCase();
+  if (text.includes("packaging") || text.includes("assembly") || text.includes("تغليف") || text.includes("تجميع")) return art.packaging;
+  if (text.includes("semiconductor") || text.includes("chip") || text.includes("أشباه الموصلات") || text.includes("شريحة")) return art.semiconductor;
+  if (text.includes("finance") || text.includes("accounting") || text.includes("financial") || text.includes("business & finance") || text.includes("مالي") || text.includes("محاسبة") || text.includes("مالية")) return art.finance;
+  if (text.includes("robot") || text.includes("automation") || text.includes("روبوت") || text.includes("أتمتة")) return art.robotics;
+  if (text.includes("ai") || text.includes("artificial intelligence") || text.includes("ذكاء اصطناعي")) return art.ai;
+  if (text.includes("manufactur") || text.includes("factory") || text.includes("تصنيع") || text.includes("مصنع")) return art.manufacturing;
+  if (text.includes("mining") || text.includes("التعدين") || text.includes("mine")) return art.mining;
+  return art.default;
 }
 
 export function ProgramsPage({ programs }: { programs: Program[] }) {
@@ -92,10 +96,10 @@ export function ProgramsPage({ programs }: { programs: Program[] }) {
             <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-16 text-center text-slate-400">{t("No programs match your filters.", "لا توجد برامج تطابق خيارات البحث.")}</div>
           ) : (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((p, i) => (
+              {filtered.map((p) => (
                 <article key={p.id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                   <div className="relative h-48 overflow-hidden bg-[#07111d]">
-                    <img src={getProgramImage(p, i)} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <img src={getProgramImage(p)} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07111d] via-[#07111d]/35 to-transparent" />
                     <div className={`absolute left-5 top-5 ${ar ? "left-auto right-5" : ""}`}><span className={`rounded-full px-3 py-1.5 text-[10px] font-black ${p.status === "open" ? "bg-white text-slate-900" : "bg-black/30 text-white backdrop-blur"}`}>{p.status === "open" ? t("OPEN", "متاح للتسجيل") : t("COMING SOON", "قريبًا")}</span></div>
                     <div className={`absolute bottom-5 ${ar ? "right-5 text-right" : "left-5"} text-white`}><span className="text-[10px] font-bold uppercase tracking-[.16em] text-white/65">{p.domain[lang]}</span><h2 className="mt-1 text-2xl font-black leading-tight">{p.name[lang]}</h2></div>
