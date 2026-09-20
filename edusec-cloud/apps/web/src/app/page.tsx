@@ -1,6 +1,4 @@
 import { PublicPageShell } from "@/components/public/public-page-shell";
-import { ProgramThemeHome } from "@/components/public/program-theme-home";
-
-export const metadata={title:"BXBII | Technology, Solutions, Industries & Training",description:"Explore BXBII technology, solutions, industries and training programs."};
-
-export default function RootPage(){return <PublicPageShell><ProgramThemeHome/></PublicPageShell>}
+import { TechnologyHomePage } from "@/components/public/technology-home-page";
+export const metadata={title:"BXBII | Deep Technology & Industrial Solutions",description:"Deep technology and industrial solutions from Oman to the world."};
+export default function RootPage(){return <PublicPageShell><TechnologyHomePage/></PublicPageShell>}
