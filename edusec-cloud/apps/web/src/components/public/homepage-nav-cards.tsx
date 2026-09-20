@@ -10,8 +10,8 @@ const cards = [
     ar: "الرئيسية",
     href: "/",
     image: "/images/oman-hero.webp",
-    enInfo: ["BXBII ecosystem", "Technology · Industry · Training", "Built for real-world needs", "From Oman to the world"],
-    arInfo: ["منظومة BXBII", "التكنولوجيا · الصناعة · التدريب", "نبني حلولاً للعالم الحقيقي", "من عُمان إلى العالم"],
+    enInfo: ["BXBII ecosystem", "Technology · Industry · R&D", "Built for real-world needs", "From Oman to the world"],
+    arInfo: ["منظومة BXBII", "التكنولوجيا · الصناعة · البحث والتطوير", "نبني حلولاً للعالم الحقيقي", "من عُمان إلى العالم"],
   },
   {
     en: "Technology",
@@ -44,14 +44,6 @@ const cards = [
     image: "/images/iot-connected.svg",
     enInfo: ["Applied AI", "Edge & Embedded", "Robotics", "Prototyping"],
     arInfo: ["الذكاء الاصطناعي التطبيقي", "الحافة والأنظمة المدمجة", "الروبوتات", "النمذجة الأولية"],
-  },
-  {
-    en: "Training",
-    ar: "التدريب",
-    href: "/programs",
-    image: "/images/semiconductor-hero.svg",
-    enInfo: ["Professional Programs", "Practical Learning", "Technology Skills", "Industry Capability"],
-    arInfo: ["برامج مهنية", "تعلم تطبيقي", "مهارات تقنية", "بناء القدرات الصناعية"],
   },
   {
     en: "About",
