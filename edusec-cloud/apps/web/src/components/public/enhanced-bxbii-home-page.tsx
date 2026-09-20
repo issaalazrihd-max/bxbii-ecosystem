@@ -46,7 +46,7 @@ const pillars = [
   ["Technology", "التكنولوجيا", "Explore our technology domains and engineering capabilities.", "استكشف مجالات التكنولوجيا وقدراتنا الهندسية.", "/technology"],
   ["Solutions", "الحلول", "Apply technology to practical industrial and operational challenges.", "نوظف التقنية لمعالجة التحديات الصناعية والتشغيلية.", "/solutions"],
   ["R&D", "البحث والتطوير", "Turn ideas, prototypes and emerging technologies into practical capabilities.", "نحوّل الأفكار والنماذج الأولية والتقنيات الناشئة إلى قدرات عملية.", "/rd"],
-  ["Training", "التدريب", "Professional programs that connect people with future-ready technology skills.", "برامج مهنية تربط الأفراد بالمهارات التقنية المطلوبة للمستقبل.", "/programs"],
+  ["Training", "التدريب", "Professional programs that connect people with future-ready technology skills.", "برامج مهنية تربط الأفراد بالمهارات التقنية المطلوبة للمستقبل.", "/training"],
 ];
 
 export function EnhancedBxbiiHomePage() {
@@ -203,7 +203,7 @@ export function EnhancedBxbiiHomePage() {
               <span className="text-[10px] font-black uppercase tracking-[.22em] text-[#e31b23]">04 / {t("Training", "التدريب")}</span>
               <h2 className="mt-4 text-4xl font-black tracking-[-.04em] sm:text-6xl">{t("Professional programs. Practical learning.", "برامج مهنية. تعلم تطبيقي.")}</h2>
             </div>
-            <Link href="/programs" className="text-sm font-black text-[#e31b23]">{t("View all programs", "عرض كل البرامج")} {ar ? "←" : "→"}</Link>
+            <Link href="/training" className="text-sm font-black text-[#e31b23]">{t("View all programs", "عرض كل البرامج")} {ar ? "←" : "→"}</Link>
           </div>
 
           {programs.length > 0 ? (
