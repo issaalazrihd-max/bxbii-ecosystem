@@ -27,6 +27,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const domainEn = remoteProgram?.enDomain ?? localProgram!.domain.en;
   const domainAr = remoteProgram?.arDomain ?? localProgram!.domain.ar;
   const isOpen = remoteProgram ? remoteProgram.status === "OPEN" : true;
+  const courses = (await publicApi.getCourses()) ?? [];
+  const matchingCourse = courses.find((x) => x.slug === params.slug);
   const interestHref = `/contact-us?subject=${encodeURIComponent(`Program Interest — ${nameEn}`)}&program=${encodeURIComponent(params.slug)}#contact-form`;
   const programText = `${domainEn} ${nameEn}`.toLowerCase();
   const heroImage = programText.includes("packaging") || programText.includes("assembly") || programText.includes("تغليف") || programText.includes("تجميع")
@@ -45,7 +47,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
       <div className="absolute inset-0 bg-[#07111d]/70" />
       <div className="absolute inset-0 bg-gradient-to-r from-[#07111d] via-[#07111d]/75 to-transparent" />
       <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
-        <Link href="/programs" className="text-sm font-bold text-cyan-200 hover:text-white">← Programs / البرامج</Link>
+        <Link href="/training" className="text-sm font-bold text-cyan-200 hover:text-white">← Training / التدريب</Link>
         <span className="mt-10 block text-[10px] font-black uppercase tracking-[.24em] text-cyan-200">{domainEn} / {domainAr}</span>
         <h1 className="mt-5 text-5xl font-black tracking-[-.06em] sm:text-7xl">{nameEn}</h1><h2 className="mt-3 text-2xl font-bold text-white/70" dir="rtl">{nameAr}</h2>
         <p className="mt-6 max-w-3xl text-lg leading-8 text-white/55">{descriptionEn}</p><p className="mt-2 max-w-3xl text-lg leading-8 text-white/55" dir="rtl">{descriptionAr}</p>
@@ -55,6 +57,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
     <section className="py-16 sm:py-20"><div className="mx-auto max-w-5xl px-5 sm:px-8"><div className="grid gap-5 md:grid-cols-3">
       {[['01','Practical','Practical learning, activities and applied work designed around the program'],['02','Bilingual','Program information is available in Arabic and English'],['03','Industry','Built around practical technology and workplace capability']].map(([n,title,text],i)=><div key={n} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"><div className={`h-2 bg-gradient-to-r ${['from-[#00b8d9] to-[#18324a]','from-[#ff536d] to-[#35215c]','from-[#20c997] to-[#123e43]'][i]}`}/><div className="p-7"><b>{n} · {title}</b><p className="mt-3 text-sm leading-6 text-slate-500">{text}</p></div></div>)}
-    </div><div className="mt-12 rounded-3xl bg-[#07111d] p-8 text-center text-white sm:p-12"><span className="text-[10px] font-black uppercase tracking-[.24em] text-cyan-200">BXBII TRAINING</span><h2 className="mt-4 text-3xl font-black sm:text-4xl">{nameEn}</h2><p className="mt-3 text-white/50">{nameAr} · {durationEn}</p><Link href={interestHref} className="mt-7 inline-flex rounded-xl bg-white px-7 py-4 font-black text-[#07111d] transition hover:bg-cyan-100">{isOpen?"Register interest / سجّل اهتمامك":"Register interest / أبدِ اهتمامك"}</Link></div></div></section>
+    </div><div className="mt-12 rounded-3xl bg-[#07111d] p-8 text-white sm:p-12"><span className="text-[10px] font-black uppercase tracking-[.24em] text-cyan-200">BXBII TRAINING</span><h2 className="mt-4 text-3xl font-black sm:text-4xl">{nameEn}</h2><p className="mt-3 text-white/50">{nameAr} · {durationEn}</p><div className="mt-7 flex flex-wrap justify-center gap-3"><Link href={interestHref} className="rounded-xl bg-white px-7 py-4 font-black text-[#07111d] transition hover:bg-cyan-100">{isOpen?"Start enrollment / ابدأ التسجيل":"Register interest / أبدِ اهتمامك"}</Link>{matchingCourse ? <Link href={`/courses/${matchingCourse.slug}`} className="rounded-xl border border-white/20 px-7 py-4 font-black text-white transition hover:bg-white/10">Take the course / خذ الدورة</Link> : <Link href="/courses" className="rounded-xl border border-white/20 px-7 py-4 font-black text-white transition hover:bg-white/10">Explore courses / استكشف الدورات</Link>}</div></div></div></section>
   </main>;
 }
