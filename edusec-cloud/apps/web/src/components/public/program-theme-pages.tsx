@@ -84,7 +84,6 @@ export function ProgramThemePage({page}:{page:PageKey}){
     <nav className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
       <div className={`mx-auto flex max-w-7xl gap-2 overflow-x-auto px-5 py-3 sm:px-8 lg:px-10 ${ar?"flex-row-reverse":""}`}>
         {links.map(([href,label])=><Link key={href} href={href} className="whitespace-nowrap rounded-xl px-4 py-2.5 text-xs font-black text-slate-500 transition hover:bg-slate-100 hover:text-slate-900">{label}</Link>)}
-        <Link href="/programs" className="whitespace-nowrap rounded-xl bg-[#07111d] px-4 py-2.5 text-xs font-black text-white">{t('Training','التدريب')}</Link>
       </div>
     </nav>
 
