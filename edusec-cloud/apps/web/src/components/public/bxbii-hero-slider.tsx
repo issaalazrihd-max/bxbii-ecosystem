@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {useLanguage} from "./language-provider";
 
 const slides=[
- {en:"Local Talent. Global Impact.",ar:"مواهب عُمانية. أثر عالمي.",subEn:"Advanced training, real-world solutions, and innovation for Oman’s future.",subAr:"تدريب متقدم، حلول واقعية، وابتكار لمستقبل عُمان.",ctaEn:"Explore Our Programs",ctaAr:"استكشف برامجنا"},
+ {en:"Local Talent. Global Impact.",ar:"مواهب عُمانية. أثر عالمي.",subEn:"Advanced technology, real-world solutions, and innovation for Oman’s future.",subAr:"تكنولوجيا متقدمة، حلول واقعية، وابتكار لمستقبل عُمان.",ctaEn:"Explore Technology",ctaAr:"استكشف التقنية"},
  {en:"Built in Oman. Ready for the World.",ar:"من عُمان إلى العالم.",subEn:"Deep technology, industrial intelligence, and capabilities built for critical sectors.",subAr:"تكنولوجيا عميقة، ذكاء صناعي، وقدرات مصممة للقطاعات الحيوية.",ctaEn:"Explore Technology",ctaAr:"استكشف التقنية"},
  {en:"From Ideas to Industrial Impact.",ar:"من الفكرة إلى الأثر الصناعي.",subEn:"Connecting people, technology, and industry to create what comes next.",subAr:"نربط الإنسان والتقنية والصناعة لصناعة ما هو قادم.",ctaEn:"Work With Us",ctaAr:"اعمل معنا"}
 ];
@@ -26,7 +26,7 @@ export function BxbiiHeroSlider(){
     <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/20 px-4 py-2 text-[10px] font-black uppercase tracking-[.25em] text-white/80 backdrop-blur-md"><span className="h-1.5 w-1.5 rounded-full bg-red-400 shadow-[0_0_14px_rgba(248,113,113,.9)]"/>{t("BUILT IN OMAN · FOR A BRIGHTER TOMORROW","من عُمان · لمستقبل أكثر إشراقًا")}</div>
     <h2 key={index} className="text-5xl font-black leading-[.94] tracking-[-.055em] text-white drop-shadow-2xl sm:text-6xl lg:text-8xl">{t(slide.en,slide.ar)}</h2>
     <p key={`p-${index}`} className="mt-6 max-w-xl text-sm leading-7 text-white/80 sm:text-lg">{t(slide.subEn,slide.subAr)}</p>
-    <a href={index===0?"/programs":index===1?"/technology":"/contact-us"} className={`mt-8 inline-flex items-center rounded-full bg-white px-6 py-3.5 text-sm font-black text-[#06101a] shadow-2xl transition hover:-translate-y-0.5 ${ar?"flex-row-reverse":""}`}>
+    <a href={index===0?"/technology":index===1?"/technology":"/contact-us"} className={`mt-8 inline-flex items-center rounded-full bg-white px-6 py-3.5 text-sm font-black text-[#06101a] shadow-2xl transition hover:-translate-y-0.5 ${ar?"flex-row-reverse":""}`}>
      {t(slide.ctaEn,slide.ctaAr)} <span className={ar?"mr-3":"ml-3"}>{ar?"←":"→"}</span>
     </a>
    </div>
