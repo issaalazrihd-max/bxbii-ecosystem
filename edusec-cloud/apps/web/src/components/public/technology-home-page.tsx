@@ -1,5 +1,7 @@
 "use client";
 
+// Deployment configuration: this Next.js app lives in edusec-cloud/apps/web.
+
 import Link from "next/link";
 import { useLanguage } from "./language-provider";
 
