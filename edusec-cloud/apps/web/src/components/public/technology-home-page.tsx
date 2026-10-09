@@ -1,6 +1,6 @@
 "use client";
 
-// Production deployment configuration: Next.js app root is edusec-cloud/apps/web; Node.js 24.x.
+// Production deployment configuration: Next.js app root is edusec-cloud/apps/web; Node.js 24.x and pnpm workspace install.
 
 import Link from "next/link";
 import { useLanguage } from "./language-provider";
