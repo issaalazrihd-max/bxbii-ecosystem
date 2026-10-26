@@ -25,7 +25,9 @@ export function TechnologyHomePage() {
   const t = (en: string, a: string) => ar ? a : en;
   return <main className="overflow-hidden bg-[#050b13] text-white">
     <section className="relative min-h-[760px] overflow-hidden border-b border-white/10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_25%,rgba(50,190,255,.18),transparent_28%),radial-gradient(circle_at_90%_72%,rgba(255,70,55,.15),transparent_24%),linear-gradient(115deg,#040a12,#071525_58%,#02070d)]" />
+      <img src="/images/bxbii-hero-background.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover object-center" />
+      <div className="absolute inset-0 bg-[#040a12]/55" />
+      <div className={`absolute inset-0 ${ar ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-[#040a12]/90 via-[#040a12]/45 to-transparent`} />
       <div className="absolute inset-0 opacity-20 hero-grid" />
       <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-5 py-24 sm:px-8 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
         <div className={ar ? "text-right" : ""}>
