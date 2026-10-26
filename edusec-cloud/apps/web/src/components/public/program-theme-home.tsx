@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useLanguage } from "./language-provider";
 
 const focus = [
@@ -14,7 +13,6 @@ const focus = [
 export function ProgramThemeHome(){
   const {lang}=useLanguage(); const ar=lang==="ar";
   const t=(e:string,a:string)=>ar?a:e;
-  useEffect(()=>{publicApi.getPrograms().then(r=>setPrograms(r??[])).catch(()=>setPrograms([]));},[]);
   return <main className="min-h-screen bg-[#f7f8fa] text-slate-900">
     <section className="relative overflow-hidden bg-[#07111d] py-24 text-white sm:py-36">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(0,194,218,.24),transparent_30%),radial-gradient(circle_at_12%_82%,rgba(255,83,109,.16),transparent_30%)]" />
