@@ -47,7 +47,7 @@ export function HomePage({ programs, partners }: { programs: PublicProgram[]; pa
   return (
     <main className="overflow-hidden bg-white text-slate-950">
       <section className="relative min-h-[720px] overflow-hidden bg-[#07162c] text-white">
-        <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=2200&q=85" alt="Modern learning environment" className="absolute inset-0 h-full w-full object-cover opacity-55" />
+        <img src="/images/semiconductor-hero.svg" alt="Modern learning environment" className="absolute inset-0 h-full w-full object-cover opacity-55" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(91,49,199,.35),transparent_30%),linear-gradient(90deg,rgba(3,12,28,.98)_0%,rgba(3,12,28,.82)_42%,rgba(3,12,28,.25)_100%)]" />
         <div className="absolute inset-0 opacity-20 hero-grid" />
         <div className="relative mx-auto flex min-h-[720px] max-w-7xl items-center px-5 py-24 sm:px-8 lg:px-10">
