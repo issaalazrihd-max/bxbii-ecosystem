@@ -2,6 +2,7 @@
     "name": "edusec-cloud",
     "version": "0.1.0",
     "private": true,
+    "packageManager": "pnpm@9.15.9",
     "description": "EduSec Cloud — Institute Management & ERP platform (Phase 2 foundation scaffold)",
     "scripts": {
           "dev:api": "pnpm --filter @edusec/api start:dev",
