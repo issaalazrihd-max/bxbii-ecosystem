@@ -4,7 +4,7 @@ import { useLanguage } from "./language-provider";
 type Visual={en:string;ar:string;image:string;tag:string};
 const visuals:Record<string,Visual>={
 "/":{en:"Technology for the real world",ar:"تقنية للعالم الحقيقي",tag:"BXBII / TECHNOLOGY",image:"/images/semiconductor-hero.svg"},
-"/technology":{en:"Engineering the intelligence layer",ar:"نهندس طبقة الذكاء",tag:"TECHNOLOGY",image:"https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1800&q=85"},
+"/technology":{en:"Engineering the intelligence layer",ar:"نهندس طبقة الذكاء",tag:"TECHNOLOGY",image:"/images/semiconductor-hero.svg"},
 "/solutions":{en:"Technology built for operations",ar:"تقنية تُبنى للعمليات",tag:"SOLUTIONS",image:"/images/robotics-industrial.svg"},
 "/industries":{en:"Technology where reliability matters",ar:"تقنية حيث الاعتمادية تصنع الفرق",tag:"INDUSTRIES",image:"/images/robotics-industrial.svg"},
 "/rd":{en:"From prototype to field",ar:"من النموذج الأولي إلى الميدان",tag:"R&D",image:"/images/robotics-industrial.svg"},
