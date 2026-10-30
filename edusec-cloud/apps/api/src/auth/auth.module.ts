@@ -5,6 +5,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { PasswordResetService } from "./password-reset.service";
+import { AdminEmailUpdateService } from "./admin-email-update.service";
 import { JwtAccessStrategy } from "./strategies/jwt-access.strategy";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { PermissionsGuard } from "../rbac/permissions.guard";
@@ -16,6 +17,7 @@ import { BranchScopeModule } from "../branch-scope/branch-scope.module";
   providers: [
     AuthService,
     PasswordResetService,
+    AdminEmailUpdateService,
     JwtAccessStrategy,
     // Global guard order matters: authenticate first, then check module
     // permissions, then (per-route) check branch scope.
