@@ -24,8 +24,9 @@ export class AuthService {
 
   /** Validates credentials and returns the user with roles/permissions resolved. Never throws details that reveal whether the email exists. */
   async validateCredentials(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
+    // Case-insensitive + trimmed: phones often auto-capitalise the first letter.
+    const user = await this.prisma.user.findFirst({
+      where: { email: { equals: email.trim(), mode: "insensitive" } },
       include: {
         roles: { include: { role: { include: { permissions: { include: { permission: true } } } } } },
       },

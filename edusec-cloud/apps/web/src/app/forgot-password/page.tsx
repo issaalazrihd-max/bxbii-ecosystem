@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
   return (
     <AuthShell eyebrow="Password reset" title="Forgot your password?" subtitle="Enter the email you use to sign in and we'll send you a link to choose a new password.">
       <form onSubmit={onSubmit} className="space-y-4">
-        <div><label className="mb-1.5 block text-xs font-bold text-slate-600">Email</label><input type="email" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className={authInputClass} /></div>
+        <div><label className="mb-1.5 block text-xs font-bold text-slate-600">Email</label><input type="email" required autoFocus autoCapitalize="none" autoCorrect="off" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className={authInputClass} /></div>
         {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-status-danger">{error}</div>}
         <button type="submit" disabled={loading} className={authButtonClass}>{loading ? "Sending…" : "Send reset link"}</button>
       </form>
