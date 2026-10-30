@@ -10,6 +10,8 @@ export function middleware(request: NextRequest) {
 
   const isCloudRoute =
     pathname === "/login" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/branches") ||
     pathname.startsWith("/cms") ||
