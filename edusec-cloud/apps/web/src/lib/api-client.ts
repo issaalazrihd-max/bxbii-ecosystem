@@ -374,6 +374,10 @@ request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/log
 method: "POST",
 body: JSON.stringify({ email, password }),
 }),
+forgotPassword: (email: string) =>
+request<{ ok: boolean }>("/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) }),
+resetPassword: (token: string, password: string) =>
+request<{ ok: boolean }>("/auth/reset-password", { method: "POST", body: JSON.stringify({ token, password }) }),
 listBranches: () => request<AdminBranch[]>("/branches"),
 createBranch: (dto: { branchCode: string; branchName: string; branchType?: "HEAD_OFFICE" | "BRANCH"; city?: string; country?: string }) =>
 request<AdminBranch>("/branches", { method: "POST", body: JSON.stringify(dto) }),

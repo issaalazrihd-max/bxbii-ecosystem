@@ -4,6 +4,7 @@ import { PassportModule } from "@nestjs/passport";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
+import { PasswordResetService } from "./password-reset.service";
 import { JwtAccessStrategy } from "./strategies/jwt-access.strategy";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { PermissionsGuard } from "../rbac/permissions.guard";
@@ -14,6 +15,7 @@ import { BranchScopeModule } from "../branch-scope/branch-scope.module";
   controllers: [AuthController],
   providers: [
     AuthService,
+    PasswordResetService,
     JwtAccessStrategy,
     // Global guard order matters: authenticate first, then check module
     // permissions, then (per-route) check branch scope.
