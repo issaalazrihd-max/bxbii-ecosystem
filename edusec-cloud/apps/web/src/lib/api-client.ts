@@ -80,10 +80,19 @@ refreshPromise = null;
 return refreshPromise;
 }
 
+/** Turns a raw network failure ("Failed to fetch") into a clear message. */
+async function safeFetch(url: string, init: RequestInit): Promise<Response> {
+try {
+return await fetch(url, init);
+} catch {
+throw new Error("Can't reach the bxbii server right now. Please try again in a few minutes.");
+}
+}
+
 async function request<T>(path: string, options: RequestInit = {}, _retried = false): Promise<T> {
 await ensureAccessToken();
 
-const res = await fetch(`${API_URL}/api/v1${path}`, {
+const res = await safeFetch(`${API_URL}/api/v1${path}`, {
 ...options,
 headers: {
 "Content-Type": "application/json",
