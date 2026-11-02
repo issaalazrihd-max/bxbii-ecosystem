@@ -30,7 +30,7 @@ export default function LoginPage() {
         <div className="absolute -start-24 top-24 h-80 w-80 rounded-full bg-accent/20 blur-3xl" />
         <div className="absolute -end-24 bottom-10 h-96 w-96 rounded-full bg-brand-light/30 blur-3xl" />
         <div className="relative"><div className="text-3xl font-black tracking-[-.06em]">bxbii<span className="text-accent">.</span></div><p className="mt-2 text-xs uppercase tracking-[.2em] text-white/40">Cloud platform</p></div>
-        <div className="relative max-w-lg"><p className="text-xs font-bold uppercase tracking-[.18em] text-white/45">Institute operations</p><h1 className="mt-4 text-5xl font-black leading-tight">One workspace for your entire operation.</h1><p className="mt-5 text-lg leading-8 text-white/60">Manage people, programs, branches and finance from a single operational layer.</p></div>
+        <div className="relative max-w-lg"><h1 className="text-5xl font-black leading-tight">One workspace for your entire operation.</h1><p className="mt-5 text-lg leading-8 text-white/60">Manage people, programs, branches and finance from a single operational layer.</p></div>
         <div className="relative flex gap-8 text-xs font-semibold text-white/40"><span>People</span><span>Programs</span><span>Finance</span><span>Content</span></div>
       </section>
 
