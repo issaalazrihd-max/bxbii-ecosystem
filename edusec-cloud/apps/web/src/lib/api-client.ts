@@ -384,6 +384,8 @@ request<{ accessToken: string; refreshToken: string; user: unknown }>("/auth/log
 method: "POST",
 body: JSON.stringify({ email, password }),
 }),
+changePassword: (currentPassword: string, newPassword: string) =>
+request<{ ok: boolean }>("/auth/change-password", { method: "POST", body: JSON.stringify({ currentPassword, newPassword }) }),
 forgotPassword: (email: string) =>
 request<{ ok: boolean }>("/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) }),
 resetPassword: (token: string, password: string) =>

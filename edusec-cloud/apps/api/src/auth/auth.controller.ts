@@ -4,7 +4,7 @@ import { CurrentUser } from "./decorators/current-user.decorator";
 import { AuthService, AccessTokenPayload } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { RefreshDto } from "./dto/refresh.dto";
-import { ForgotPasswordDto, ResetPasswordDto } from "./dto/password-reset.dto";
+import { ChangePasswordDto, ForgotPasswordDto, ResetPasswordDto } from "./dto/password-reset.dto";
 import { PasswordResetService } from "./password-reset.service";
 
 @Controller("auth")
@@ -49,6 +49,13 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
     await this.passwordReset.resetPassword(dto.token, dto.password);
+    return { ok: true };
+  }
+
+  @Post("change-password")
+  @HttpCode(HttpStatus.OK)
+  async changePassword(@CurrentUser() user: AccessTokenPayload, @Body() dto: ChangePasswordDto) {
+    await this.passwordReset.changePassword(user.sub, dto.currentPassword, dto.newPassword);
     return { ok: true };
   }
 

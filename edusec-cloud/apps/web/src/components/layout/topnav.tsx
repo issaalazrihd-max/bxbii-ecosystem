@@ -13,6 +13,7 @@ export function TopNav() {
         <Link href="/" className="hidden rounded-lg px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 sm:block">Public site ↗</Link>
         <button className="relative grid h-10 w-10 place-items-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50" aria-label="Notifications">♢<span className="absolute end-2 top-2 h-1.5 w-1.5 rounded-full bg-accent" /></button>
         <div className="hidden h-8 w-px bg-slate-200 sm:block" />
+        <Link href="/dashboard/password" className="rounded-lg px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100">Change password</Link>
         <div className="flex items-center gap-2">
           <div className="grid h-10 w-10 place-items-center rounded-full bg-brand text-sm font-black text-white">A</div>
           <div className="hidden leading-tight lg:block"><div className="text-sm font-bold text-slate-800">Administrator</div><div className="text-[11px] text-slate-400">bxbii Cloud</div></div>

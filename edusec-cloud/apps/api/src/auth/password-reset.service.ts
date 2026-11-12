@@ -94,6 +94,26 @@ export class PasswordResetService {
     }
   }
 
+  /** Signed-in user changes their own password; other sessions are signed out. */
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || user.status !== "ACTIVE") throw new BadRequestException("Account not found.");
+    if (!(await argon2.verify(user.passwordHash, currentPassword))) {
+      throw new BadRequestException("Your current password is incorrect.");
+    }
+    if (currentPassword === newPassword) {
+      throw new BadRequestException("The new password must be different from the current one.");
+    }
+    const passwordHash = await argon2.hash(newPassword);
+    await this.prisma.$transaction([
+      this.prisma.user.update({ where: { id: user.id }, data: { passwordHash } }),
+      this.prisma.refreshToken.updateMany({
+        where: { userId: user.id, revokedAt: null },
+        data: { revokedAt: new Date() },
+      }),
+    ]);
+  }
+
   async resetPassword(token: string, newPassword: string): Promise<void> {
     const invalid = new BadRequestException(
       "This reset link is invalid or has expired. Please request a new one.",
