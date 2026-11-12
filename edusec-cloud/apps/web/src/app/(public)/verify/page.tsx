@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+// API now runs on Render (moved from Railway). Override with NEXT_PUBLIC_BXBII_API_URL for local dev.
+const API_URL = process.env.NEXT_PUBLIC_BXBII_API_URL ?? "https://bxbii-api.onrender.com";
 
 export default function VerifyCertificatePage(){
  const [token,setToken]=useState(""); const [loading,setLoading]=useState(false); const [result,setResult]=useState<any>(null); const [error,setError]=useState("");

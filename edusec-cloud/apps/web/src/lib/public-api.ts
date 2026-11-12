@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+// API now runs on Render (moved from Railway). Override with NEXT_PUBLIC_BXBII_API_URL for local dev.
+const API_URL = process.env.NEXT_PUBLIC_BXBII_API_URL ?? "https://bxbii-api.onrender.com";
 
 /**
  * Read-only client for the unauthenticated public-site endpoints
