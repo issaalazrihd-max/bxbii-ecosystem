@@ -1,6 +1,12 @@
 -- BXBII catalog expansion: Physical AI + Semiconductor Design & Packaging
 -- Safe, idempotent catalog seed for the fixed v1 tenant.
 
+-- Make sure the fixed v1 tenant exists (fresh databases get it before the
+-- seed script runs).
+INSERT INTO "tenants" ("id","name","created_at","updated_at")
+VALUES ('00000000-0000-0000-0000-000000000001','Demo Institute',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+ON CONFLICT ("id") DO NOTHING;
+
 INSERT INTO "programs" (
   "id","tenant_id","slug","ar_domain","en_domain","ar_name","en_name",
   "ar_description","en_description","ar_duration","en_duration","ar_format","en_format",
