@@ -1,0 +1,42 @@
+# Render Blueprint for the bxbii API (free plan).
+# The Next.js web app stays on Vercel; only the NestJS API runs here.
+# Database: external Postgres (Supabase) supplied via DATABASE_URL.
+services:
+  - type: web
+    name: bxbii-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    rootDir: edusec-cloud
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    # Applies pending migrations and the idempotent seed on every start,
+    # then starts the API (Render's free plan has no pre-deploy step).
+    dockerCommand: sh -c "cd /repo/packages/db && node_modules/.bin/prisma migrate deploy && (node_modules/.bin/tsx src/seed.ts || echo 'seed skipped'); cd /repo && node apps/api/dist/main.js"
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PADDLE_API_KEY
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_ACCESS_TTL
+        value: 15m
+      - key: JWT_REFRESH_TTL
+        value: 7d
+      - key: DEFAULT_TENANT_ID
+        value: 00000000-0000-0000-0000-000000000001
+      - key: PADDLE_MODE
+        value: production
+      - key: STORAGE_DRIVER
+        value: local
+      - key: API_PORT
+        value: "4000"
+      - key: PORT
+        value: "4000"
+      - key: WEB_APP_URL
+        value: https://app.bxbii.com
