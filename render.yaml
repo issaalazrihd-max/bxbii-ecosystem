@@ -12,7 +12,7 @@ services:
     dockerContext: .
     # Applies pending migrations and the idempotent seed on every start,
     # then starts the API (Render's free plan has no pre-deploy step).
-    dockerCommand: sh -c "cd /repo/packages/db && node_modules/.bin/prisma migrate deploy && (node_modules/.bin/tsx src/seed.ts || echo 'seed skipped'); cd /repo && node apps/api/dist/main.js"
+    dockerCommand: sh /repo/packages/db/render-start.sh
     healthCheckPath: /api/v1/health
     autoDeploy: true
     envVars:
